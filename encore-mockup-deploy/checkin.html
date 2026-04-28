@@ -200,19 +200,24 @@
   .audr-list { display: flex; flex-direction: column; gap: 10px; }
   .audr {
     display: grid;
-    grid-template-columns: 60px 50px 1fr auto auto;
-    gap: 14px;
+    grid-template-columns: 56px max-content 1fr auto auto;
+    gap: 12px;
     align-items: center;
     background: var(--white-soft);
     border: 1.5px solid var(--line);
     border-radius: 16px;
-    padding: 14px 18px;
-    transition: all 0.2s ease;
+    padding: 14px 16px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    position: relative;
   }
   .audr.checked-in { background: rgba(79, 138, 74, 0.04); border-color: var(--green); }
   .audr.late { background: rgba(192, 74, 61, 0.04); border-color: var(--red); }
   .audr.in-room { background: var(--yellow-soft); border-color: var(--yellow-dark); }
-  .audr.done { opacity: 0.5; }
+  .audr.done { opacity: 0.55; }
+  .audr.menu-open { z-index: 60; }
+
+  /* When number-entry is active, hide the status column to give room */
+  .audr.editing .audr-status { display: none; }
 
   .audr-slot {
     font-family: monospace;
@@ -254,6 +259,125 @@
     transform: scale(1.05);
   }
   button.audr-num.empty:active { transform: scale(0.95); }
+
+  /* Filled number badge — tappable to edit, with subtle pencil hint on hover */
+  button.audr-num.filled-btn {
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+  }
+  button.audr-num.filled-btn::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 14px;
+    border: 2px dashed transparent;
+    transition: border-color 0.15s ease;
+    pointer-events: none;
+  }
+  button.audr-num.filled-btn:hover::after {
+    border-color: var(--ink-soft);
+  }
+  button.audr-num.filled-btn:active { transform: scale(0.96); }
+
+  /* Editable name button — looks like text but is tappable, with always-visible pencil */
+  button.audr-name.editable-name {
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.2;
+    text-align: left;
+    cursor: pointer;
+    padding: 2px 6px 2px 0;
+    color: inherit;
+    border-radius: 4px;
+    transition: background 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  button.audr-name.editable-name .edit-pencil {
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+  }
+  button.audr-name.editable-name:hover {
+    background: rgba(26,26,24,0.06);
+  }
+  button.audr-name.editable-name:hover .edit-pencil {
+    opacity: 1;
+    color: var(--ink);
+  }
+
+  /* More-actions button (⋯) — make it clearly tappable */
+  .check-btn.more-btn {
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .check-btn.more-btn:hover {
+    background: var(--cream-shell);
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+
+  /* Row menu popover */
+  .audr-actions { position: relative; }
+  .row-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(26,26,24,0.18);
+    z-index: 50;
+    min-width: 220px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .row-menu-item {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.1s ease;
+  }
+  .row-menu-item:hover { background: var(--cream-shell); }
+  .row-menu-item.danger { color: var(--red); }
+  .row-menu-item.danger:hover { background: var(--red-soft); }
+  .row-menu-item i { font-size: 14px; opacity: 0.7; }
+  .row-menu-divider {
+    height: 1px;
+    background: var(--line-soft);
+    margin: 4px 6px;
+  }
+
   div.audr-num.empty {
     background: var(--cream-shell);
     border: 1.5px dashed var(--line);
@@ -352,7 +476,13 @@
   .audr.in-room .audr-num { background: var(--yellow-dark); color: var(--ink); }
   .audr.late .audr-num.empty { border-color: var(--red); color: var(--red); }
 
-  .audr-info { min-width: 0; }
+  .audr-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+  }
   .audr-name {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -420,13 +550,21 @@
 
   @media (max-width: 700px) {
     .audr {
-      grid-template-columns: 50px 50px 1fr;
+      grid-template-columns: 50px max-content 1fr;
       gap: 10px;
     }
     .audr > .audr-status { display: none; }
-    .audr > .audr-actions { grid-column: 1 / -1; margin-top: 4px; }
-    .audr-actions { width: 100%; }
-    .audr-actions .check-btn { flex: 1; }
+    .audr > .audr-actions {
+      grid-column: 1 / -1;
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      width: 100%;
+    }
+    .audr-actions .check-btn:not(.more-btn) { flex: 1; }
+    .audr-actions .more-btn { flex-shrink: 0; }
+    /* On mobile, keep ⋯ menu pinned to right */
+    .row-menu { right: 0; left: auto; }
   }
 
   .group-head {
@@ -760,6 +898,73 @@ function checkIn(id, explicitNumber) {
 // Tracks which auditioner is being prompted for a number (so we can re-render around it)
 let pendingNumberFor = null;
 let pendingNumberError = null;
+// Tracks which row's ⋯ menu is open
+let openMenuFor = null;
+
+function toggleMenu(event, id) {
+  event.stopPropagation();
+  openMenuFor = (openMenuFor === id) ? null : id;
+  render();
+}
+
+function closeMenu() {
+  if (openMenuFor != null) {
+    openMenuFor = null;
+    render();
+  }
+}
+
+function sendBackToWaiting(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  a.status = 'checked-in';
+  openMenuFor = null;
+  saveState();
+  render();
+  showToast(a.name + ' sent back to waiting', 'success');
+}
+
+function unmarkDone(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  // Move back to in-room (most likely intent of "they aren't actually done")
+  // First, kick anyone currently in-room out, since only one can be in the room
+  const current = auditioners.find(x => x.status === 'in-room' && x.id !== id);
+  if (current) current.status = 'checked-in';
+  a.status = 'in-room';
+  openMenuFor = null;
+  saveState();
+  render();
+  showToast(a.name + ' is back in the room', 'success');
+}
+
+function removeAuditioner(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  if (!confirm('Remove ' + a.name + ' from today\'s list? This can\'t be undone (use Reset demo to restore).')) return;
+  auditioners = auditioners.filter(x => x.id !== id);
+  openMenuFor = null;
+  saveState();
+  render();
+  showToast(a.name + ' removed', 'warn');
+}
+
+function promptName(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  const newName = prompt('Edit name:', a.name);
+  if (newName == null) return; // cancelled
+  const trimmed = newName.trim();
+  if (!trimmed) {
+    showToast('Name cannot be empty', 'warn');
+    return;
+  }
+  a.name = trimmed;
+  openMenuFor = null;
+  saveState();
+  render();
+  showToast('Name updated', 'success');
+}
 
 function promptNumber(id) {
   pendingNumberFor = id;
@@ -792,7 +997,7 @@ function confirmNumber(id, value) {
     }, 0);
     return;
   }
-  // Check if number is already taken by ANY active person (no duplicates allowed)
+  // Check if number is already taken by ANY other person (no duplicates allowed)
   const taken = auditioners.find(a => a.id !== id && a.number === num);
   if (taken) {
     pendingNumberError = '#' + num + ' is ' + taken.name;
@@ -805,7 +1010,19 @@ function confirmNumber(id, value) {
   }
   pendingNumberFor = null;
   pendingNumberError = null;
-  checkIn(id, num);
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  // If they're already checked in, in-room, or done — just update the number
+  if (a.status === 'checked-in' || a.status === 'in-room' || a.status === 'done') {
+    const oldNum = a.number;
+    a.number = num;
+    saveState();
+    render();
+    showToast('#' + oldNum + ' → #' + num + ' · ' + a.name, 'success');
+  } else {
+    // Otherwise, this is a check-in
+    checkIn(id, num);
+  }
 }
 
 function handleNumberKey(event, id) {
@@ -1055,29 +1272,42 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function numEntryWidget(a) {
+  // Renders the inline input for a person being edited or assigned a number
+  const suggested = a.number != null ? a.number : getNextNumber();
+  const errorHtml = pendingNumberError
+    ? '<div class="num-entry-error">' + escapeHtml(pendingNumberError) + '</div>'
+    : '';
+  return '<div class="num-entry-wrap">' +
+           '<div class="num-entry">' +
+             '<input type="number" min="1" value="' + suggested + '" ' +
+               'data-pending-id="' + a.id + '" ' +
+               'onkeydown="handleNumberKey(event, ' + a.id + ')">' +
+             errorHtml +
+           '</div>' +
+           '<button class="num-confirm" onclick="confirmFromInput(' + a.id + ')" title="Save number"><i class="ph-fill ph-check"></i></button>' +
+           '<button class="num-cancel" onclick="cancelPrompt()" title="Cancel">×</button>' +
+         '</div>';
+}
+
 function emptyNumBadge(a) {
   if (pendingNumberFor === a.id) {
-    const suggested = getNextNumber();
-    const errorHtml = pendingNumberError
-      ? '<div class="num-entry-error">' + escapeHtml(pendingNumberError) + '</div>'
-      : '';
-    return '<div class="num-entry-wrap">' +
-             '<div class="num-entry">' +
-               '<input type="number" min="1" value="' + suggested + '" ' +
-                 'data-pending-id="' + a.id + '" ' +
-                 'onkeydown="handleNumberKey(event, ' + a.id + ')">' +
-               errorHtml +
-             '</div>' +
-             '<button class="num-confirm" onclick="confirmFromInput(' + a.id + ')" title="Save number"><i class="ph-fill ph-check"></i></button>' +
-             '<button class="num-cancel" onclick="cancelPrompt()" title="Cancel">×</button>' +
-           '</div>';
+    return numEntryWidget(a);
   }
   return '<button class="audr-num empty" onclick="promptNumber(' + a.id + ')" title="Tap to assign a number">+</button>';
 }
 
+function filledNumBadge(a) {
+  if (pendingNumberFor === a.id) {
+    return numEntryWidget(a);
+  }
+  return '<button class="audr-num filled-btn" onclick="promptNumber(' + a.id + ')" title="Tap to edit number">' + a.number + '</button>';
+}
+
 function rowExpected(a) {
   const walkInTag = a.isWalkin ? '<span class="walkin-tag">Walk-in</span> · ' : '';
-  return '<div class="audr">' +
+  const editingClass = pendingNumberFor === a.id ? ' editing' : '';
+  return '<div class="audr' + editingClass + '">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
     emptyNumBadge(a) +
     '<div class="audr-info">' +
@@ -1087,6 +1317,8 @@ function rowExpected(a) {
     '<div class="audr-status"><span class="status-dot"></span> Expected</div>' +
     '<div class="audr-actions">' +
       '<button class="check-btn green" onclick="promptNumber(' + a.id + ')">+ Check in</button>' +
+      '<button class="check-btn outline more-btn" onclick="toggleMenu(event, ' + a.id + ')" title="More actions">⋯</button>' +
+      menuFor(a) +
     '</div>' +
   '</div>';
 }
@@ -1094,7 +1326,8 @@ function rowExpected(a) {
 function rowLate(a) {
   const slotMin = slotToMinutes(a.slot);
   const minsLate = slotMin != null ? Math.max(0, getDemoNow() - slotMin) : 0;
-  return '<div class="audr late">' +
+  const editingClass = pendingNumberFor === a.id ? ' editing' : '';
+  return '<div class="audr late' + editingClass + '">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
     emptyNumBadge(a) +
     '<div class="audr-info">' +
@@ -1105,53 +1338,95 @@ function rowLate(a) {
     '<div class="audr-actions">' +
       '<button class="check-btn outline icon-only" title="Call parent" onclick="alert(\'Would call ' + escapeHtml(a.parent).replace(/\'/g, '\\\'') + '\')"><i class="ph-fill ph-phone"></i></button>' +
       '<button class="check-btn green" onclick="promptNumber(' + a.id + ')">+ Check in</button>' +
+      '<button class="check-btn outline more-btn" onclick="toggleMenu(event, ' + a.id + ')" title="More actions">⋯</button>' +
+      menuFor(a) +
     '</div>' +
   '</div>';
 }
 
 function rowCheckedIn(a) {
   const walkInTag = a.isWalkin ? '<span class="walkin-tag">Walk-in</span> · ' : '';
-  return '<div class="audr checked-in">' +
+  const editingClass = pendingNumberFor === a.id ? ' editing' : '';
+  const menuClass = openMenuFor === a.id ? ' menu-open' : '';
+  return '<div class="audr checked-in' + editingClass + menuClass + '">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
-    '<div class="audr-num">' + a.number + '</div>' +
+    filledNumBadge(a) +
     '<div class="audr-info">' +
-      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
       '<div class="audr-meta">' + walkInTag + 'Age ' + a.age + ' · Checked in ' + escapeHtml(a.checkedInAt || '') + '</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> Waiting</div>' +
     '<div class="audr-actions">' +
       '<button class="check-btn yellow" onclick="moveToRoom(' + a.id + ')">→ In room</button>' +
-      '<button class="check-btn outline" onclick="undoCheckIn(' + a.id + ')">Undo</button>' +
+      '<button class="check-btn outline more-btn" onclick="toggleMenu(event, ' + a.id + ')" title="More actions">⋯</button>' +
+      menuFor(a) +
     '</div>' +
   '</div>';
 }
 
 function rowInRoom(a) {
-  return '<div class="audr in-room">' +
+  const editingClass = pendingNumberFor === a.id ? ' editing' : '';
+  const menuClass = openMenuFor === a.id ? ' menu-open' : '';
+  return '<div class="audr in-room' + editingClass + menuClass + '">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
-    '<div class="audr-num">' + a.number + '</div>' +
+    filledNumBadge(a) +
     '<div class="audr-info">' +
-      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
       '<div class="audr-meta">Age ' + a.age + ' · Auditioning now</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> In room</div>' +
     '<div class="audr-actions">' +
-      '<button class="check-btn outline" onclick="markDone(' + a.id + ')">✓ Mark done</button>' +
+      '<button class="check-btn outline" onclick="markDone(' + a.id + ')"><i class="ph-fill ph-check"></i> Mark done</button>' +
+      '<button class="check-btn outline more-btn" onclick="toggleMenu(event, ' + a.id + ')" title="More actions">⋯</button>' +
+      menuFor(a) +
     '</div>' +
   '</div>';
 }
 
 function rowDone(a) {
-  return '<div class="audr done">' +
+  const editingClass = pendingNumberFor === a.id ? ' editing' : '';
+  const menuClass = openMenuFor === a.id ? ' menu-open' : '';
+  return '<div class="audr done' + editingClass + menuClass + '">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
-    '<div class="audr-num">' + (a.number || '—') + '</div>' +
+    filledNumBadge(a) +
     '<div class="audr-info">' +
-      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
       '<div class="audr-meta">Age ' + a.age + ' · Auditioned ' + escapeHtml(a.checkedInAt || '') + '</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> Done</div>' +
-    '<div class="audr-actions"></div>' +
+    '<div class="audr-actions">' +
+      '<button class="check-btn outline more-btn" onclick="toggleMenu(event, ' + a.id + ')" title="More actions">⋯</button>' +
+      menuFor(a) +
+    '</div>' +
   '</div>';
+}
+
+function menuFor(a) {
+  if (openMenuFor !== a.id) return '';
+  let items = '';
+  if (a.status === 'expected' || a.status === 'late') {
+    items += '<button class="row-menu-item" onclick="promptName(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit name</button>';
+    items += '<div class="row-menu-divider"></div>';
+    items += '<button class="row-menu-item danger" onclick="removeAuditioner(' + a.id + ')"><i class="ph-fill ph-trash"></i> Remove from list</button>';
+  } else if (a.status === 'checked-in') {
+    items += '<button class="row-menu-item" onclick="promptNumber(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit number</button>';
+    items += '<button class="row-menu-item" onclick="promptName(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit name</button>';
+    items += '<div class="row-menu-divider"></div>';
+    items += '<button class="row-menu-item" onclick="undoCheckIn(' + a.id + ')"><i class="ph-fill ph-arrow-u-up-left"></i> Send back to expected</button>';
+    items += '<button class="row-menu-item danger" onclick="removeAuditioner(' + a.id + ')"><i class="ph-fill ph-trash"></i> Remove from list</button>';
+  } else if (a.status === 'in-room') {
+    items += '<button class="row-menu-item" onclick="promptNumber(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit number</button>';
+    items += '<button class="row-menu-item" onclick="promptName(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit name</button>';
+    items += '<div class="row-menu-divider"></div>';
+    items += '<button class="row-menu-item" onclick="sendBackToWaiting(' + a.id + ')"><i class="ph-fill ph-arrow-u-up-left"></i> Send back to waiting</button>';
+  } else if (a.status === 'done') {
+    items += '<button class="row-menu-item" onclick="promptNumber(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit number</button>';
+    items += '<button class="row-menu-item" onclick="promptName(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit name</button>';
+    items += '<div class="row-menu-divider"></div>';
+    items += '<button class="row-menu-item" onclick="unmarkDone(' + a.id + ')"><i class="ph-fill ph-arrow-u-up-left"></i> Send back to in-room</button>';
+    items += '<button class="row-menu-item" onclick="sendBackToWaiting(' + a.id + ')"><i class="ph-fill ph-arrow-u-up-left"></i> Send back to waiting</button>';
+  }
+  return '<div class="row-menu" onclick="event.stopPropagation()">' + items + '</div>';
 }
 
 document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -1184,6 +1459,16 @@ document.getElementById('walkinModal').addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+    closeMenu();
+  }
+});
+
+// Close the ⋯ menu when clicking outside it
+document.addEventListener('click', (e) => {
+  if (openMenuFor != null) {
+    // If click is inside a row-menu or on a more-btn, leave alone (those handle themselves)
+    if (e.target.closest('.row-menu') || e.target.closest('.more-btn')) return;
+    closeMenu();
   }
 });
 
