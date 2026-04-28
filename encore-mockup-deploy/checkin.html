@@ -7,7 +7,7 @@
 <title>Check-in — Encore Auditions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="app.css">
 <style>
   body { background: var(--cream); }
@@ -27,7 +27,7 @@
     flex-wrap: wrap;
   }
   .topbar-brand {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 18px;
     letter-spacing: 0.06em;
@@ -36,12 +36,12 @@
   }
   .topbar-brand .star { color: var(--yellow-dark); }
   .topbar-show {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 14px;
     color: var(--ink-soft);
   }
-  .topbar-show em { font-style: italic; color: var(--coral); }
+  .topbar-show em { font-style: normal; font-weight: 700; color: var(--coral); }
   .topbar-time {
     font-family: monospace;
     font-size: 13px;
@@ -79,7 +79,7 @@
   .stat.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
   .stat.urgent { background: var(--coral); color: white; border-color: var(--coral); }
   .stat-num {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 30px;
     line-height: 1;
@@ -97,7 +97,7 @@
   .checkin-search {
     background: var(--white-soft);
     border: 2px solid var(--ink);
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 14px 18px;
     margin-bottom: 22px;
     display: flex;
@@ -204,7 +204,7 @@
     align-items: center;
     background: var(--white-soft);
     border: 1.5px solid var(--line);
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 14px 18px;
     transition: all 0.2s ease;
   }
@@ -226,7 +226,7 @@
     border-radius: 12px;
     background: var(--ink);
     color: var(--cream);
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 18px;
     display: grid; place-items: center;
@@ -283,7 +283,7 @@
     background: none;
     border: none;
     text-align: center;
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 18px;
     color: var(--ink);
@@ -353,7 +353,7 @@
 
   .audr-info { min-width: 0; }
   .audr-name {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 17px;
     line-height: 1.2;
@@ -455,7 +455,6 @@
     color: var(--muted);
     padding: 32px 14px;
     font-size: 13px;
-    font-style: italic;
     background: var(--cream-shell);
     border-radius: 12px;
   }
@@ -474,7 +473,7 @@
   .modal.show { display: flex; }
   .modal-card {
     background: var(--white-soft);
-    border-radius: 18px;
+    border-radius: 24px;
     width: 100%;
     max-width: 480px;
     overflow: hidden;
@@ -485,7 +484,7 @@
     display: flex; justify-content: space-between; align-items: center;
   }
   .modal-head h2 {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600; font-size: 19px;
     margin: 0;
   }

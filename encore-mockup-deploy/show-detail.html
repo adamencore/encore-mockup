@@ -7,12 +7,12 @@
 <title>Lion King JR — Encore</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="app.css">
 <style>
   .show-hero {
     background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark));
-    border-radius: 18px;
+    border-radius: 24px;
     padding: 40px 36px;
     color: var(--ink);
     position: relative;
@@ -20,7 +20,7 @@
     margin-bottom: 28px;
   }
   .show-hero h1 {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: clamp(34px, 5vw, 52px);
     line-height: 1;
@@ -29,7 +29,7 @@
     position: relative;
     z-index: 2;
   }
-  .show-hero h1 em { font-style: italic; color: var(--ink); }
+  .show-hero h1 em { font-style: normal; font-weight: 700; color: var(--ink); }
   .show-hero .meta {
     font-size: 14px;
     color: rgba(26,26,24,0.7);
@@ -41,7 +41,7 @@
     position: absolute;
     right: -20px; top: 50%;
     transform: translateY(-50%);
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 280px;
     color: rgba(26,26,24,0.08);
     line-height: 1;
@@ -66,7 +66,7 @@
   .callback-banner {
     background: var(--ink);
     color: var(--cream);
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 22px 24px;
     margin-bottom: 28px;
     display: flex;
@@ -76,7 +76,7 @@
   }
   .cb-icon {
     width: 56px; height: 56px;
-    border-radius: 14px;
+    border-radius: 16px;
     background: var(--yellow);
     color: var(--ink);
     display: grid; place-items: center;
@@ -84,7 +84,7 @@
   }
   .cb-info { flex: 1; min-width: 200px; }
   .cb-title {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600; font-size: 18px;
     margin: 0 0 3px;
   }
@@ -108,14 +108,14 @@
   .schedule {
     background: var(--white-soft);
     border: 1.5px solid var(--line);
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
   }
   .schedule h3 {
     margin: 0;
     padding: 16px 20px;
     border-bottom: 1px solid var(--line);
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 16px;
   }
@@ -162,14 +162,14 @@
   .cast-card {
     background: var(--white-soft);
     border: 1.5px solid var(--line);
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
   }
   .cast-card h3 {
     margin: 0;
     padding: 16px 20px;
     border-bottom: 1px solid var(--line);
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 16px;
     display: flex;
@@ -261,7 +261,7 @@
   .cast-card {
     background: var(--white-soft);
     border: 1.5px solid var(--line);
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 14px 10px 12px;
     text-align: center;
     transition: border-color 0.15s ease, transform 0.1s ease;
@@ -299,7 +299,7 @@
 
   .cast-letter-head {
     grid-column: 1 / -1;
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 16px;
     color: var(--muted);
@@ -312,7 +312,7 @@
   .cast-empty {
     background: var(--cream-shell);
     border: 1.5px dashed var(--line);
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 28px;
     text-align: center;
     color: var(--muted);
@@ -439,7 +439,7 @@
 
         <div>
           <div class="card" style="margin-bottom: 16px;">
-            <h3 style="font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin: 0 0 14px;">What to bring on audition day</h3>
+            <h3 style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; margin: 0 0 14px;">What to bring on audition day</h3>
             <ul style="margin: 0; padding-left: 18px; font-size: 14px; color: var(--ink-soft); line-height: 1.7;">
               <li>Printed headshot &amp; resume</li>
               <li>Comfortable clothes &amp; shoes for the dance call</li>
@@ -449,7 +449,7 @@
           </div>
 
           <div class="card">
-            <h3 style="font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin: 0 0 14px;">Show info</h3>
+            <h3 style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; margin: 0 0 14px;">Show info</h3>
             <div class="info-row"><span class="info-label">Show dates</span><span class="info-val">Jun 26–28, 2026</span></div>
             <div class="info-row"><span class="info-label">Venue</span><span class="info-val">Encore Studio A · St. George</span></div>
             <div class="info-row"><span class="info-label">Tuition</span><span class="info-val">$145 (invoice sent)</span></div>

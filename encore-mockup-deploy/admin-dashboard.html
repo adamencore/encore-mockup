@@ -7,7 +7,7 @@
 <title>Admin — Encore</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="app.css">
 <style>
   /* Admin sidebar variant — different accent */
@@ -48,7 +48,7 @@
   .stat-tile {
     background: var(--white-soft);
     border: 1.5px solid var(--line);
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 18px 20px;
   }
   .stat-tile.active {
@@ -66,7 +66,7 @@
   }
   .stat-tile.active .stat-label { color: rgba(255,255,255,0.85); }
   .stat-num {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 30px;
     line-height: 1;
@@ -114,7 +114,7 @@
   .ai-plum { background: var(--plum-soft); color: var(--plum); }
   .activity-info { flex: 1; min-width: 0; }
   .activity-title { font-size: 14px; font-weight: 600; margin: 0; line-height: 1.3; }
-  .activity-title em { font-style: italic; color: var(--coral); }
+  .activity-title em { font-style: normal; font-weight: 700; color: var(--coral); }
   .activity-sub { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
   .activity-time {
     font-size: 11px; color: var(--muted);
@@ -130,7 +130,7 @@
   .admin-show-card {
     background: var(--white-soft);
     border: 1.5px solid var(--line);
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 18px;
     cursor: pointer;
     transition: border-color 0.15s ease, transform 0.1s ease;
@@ -147,7 +147,7 @@
     border-radius: 10px;
     background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark));
     display: grid; place-items: center;
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 22px;
     color: white;
     font-weight: 700;
@@ -158,14 +158,14 @@
   .admin-show-icon.plum { background: linear-gradient(135deg, #9968A0, var(--plum)); }
   .admin-show-icon.sage { background: linear-gradient(135deg, #8AAA7B, var(--sage)); }
   .admin-show-info h4 {
-    font-family: 'Fraunces', serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 16px;
     margin: 0 0 2px;
     line-height: 1.2;
     letter-spacing: -0.005em;
   }
-  .admin-show-info h4 em { font-style: italic; color: var(--coral); }
+  .admin-show-info h4 em { font-style: normal; font-weight: 700; color: var(--coral); }
   .admin-show-info p { font-size: 11px; color: var(--muted); margin: 0; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
 
   .admin-show-stats {
@@ -178,7 +178,7 @@
     border-bottom: 1px solid var(--line-soft);
   }
   .ass-cell { text-align: center; }
-  .ass-num { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; line-height: 1; }
+  .ass-num { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px; line-height: 1; }
   .ass-lbl { font-size: 10px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
   .admin-show-status { display: flex; gap: 6px; flex-wrap: wrap; }
 </style>
