@@ -223,6 +223,61 @@
     font-weight: 500;
     font-size: 22px;
   }
+
+  /* Inline number entry */
+  .num-entry {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--white-soft);
+    border: 2px solid var(--ink);
+    display: grid; place-items: center;
+    position: relative;
+    box-shadow: 0 0 0 4px var(--yellow-soft);
+  }
+  .num-entry input {
+    width: 100%; height: 100%;
+    background: none;
+    border: none;
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    padding: 0;
+    -moz-appearance: textfield;
+  }
+  .num-entry input:focus { outline: none; }
+  .num-entry input::-webkit-outer-spin-button,
+  .num-entry input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .num-entry-error {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 6px;
+    background: var(--red);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .num-entry-error::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-bottom-color: var(--red);
+  }
   .audr.checked-in .audr-num { background: var(--green); }
   .audr.in-room .audr-num { background: var(--yellow-dark); color: var(--ink); }
   .audr.late .audr-num.empty { border-color: var(--red); color: var(--red); }
@@ -490,16 +545,21 @@
           <input class="input" id="wi-age" type="number" placeholder="11">
         </div>
         <div class="field-block">
-          <label>T-shirt size</label>
-          <select class="input" id="wi-size">
-            <option>Youth Small</option>
-            <option>Youth Medium</option>
-            <option selected>Youth Large</option>
-            <option>Adult Small</option>
-            <option>Adult Medium</option>
-            <option>Adult Large</option>
-          </select>
+          <label>Audition number *</label>
+          <input class="input" id="wi-number" type="number" min="1" placeholder="Auto">
         </div>
+      </div>
+
+      <div class="field-block">
+        <label>T-shirt size</label>
+        <select class="input" id="wi-size">
+          <option>Youth Small</option>
+          <option>Youth Medium</option>
+          <option selected>Youth Large</option>
+          <option>Adult Small</option>
+          <option>Adult Medium</option>
+          <option>Adult Large</option>
+        </select>
       </div>
 
       <div class="field-block">
@@ -609,15 +669,66 @@ function showToast(message, type) {
   window._toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-function checkIn(id) {
+function checkIn(id, explicitNumber) {
   const a = auditioners.find(x => x.id === id);
   if (!a) return;
   a.status = 'checked-in';
-  a.number = getNextNumber();
+  a.number = explicitNumber != null ? explicitNumber : getNextNumber();
   a.checkedInAt = nowTimeStr();
   saveState();
   render();
   showToast(a.name + ' checked in · #' + a.number, 'success');
+}
+
+// Tracks which auditioner is being prompted for a number (so we can re-render around it)
+let pendingNumberFor = null;
+let pendingNumberError = null;
+
+function promptNumber(id) {
+  pendingNumberFor = id;
+  pendingNumberError = null;
+  render();
+  // Focus the input after render
+  setTimeout(() => {
+    const inp = document.querySelector('.num-entry input');
+    if (inp) {
+      inp.focus();
+      inp.select();
+    }
+  }, 0);
+}
+
+function cancelPrompt() {
+  pendingNumberFor = null;
+  pendingNumberError = null;
+  render();
+}
+
+function confirmNumber(id, value) {
+  const num = parseInt(value, 10);
+  if (!num || num < 1) {
+    pendingNumberError = 'Enter a number';
+    render();
+    setTimeout(() => {
+      const inp = document.querySelector('.num-entry input');
+      if (inp) inp.focus();
+    }, 0);
+    return;
+  }
+  // Check if number is already taken (excluding done/late/expected — only active assignments)
+  const taken = auditioners.find(a => a.id !== id && a.number === num && a.status !== 'expected' && a.status !== 'late');
+  if (taken) {
+    pendingNumberError = '#' + num + ' is ' + taken.name;
+    render();
+    setTimeout(() => {
+      const inp = document.querySelector('.num-entry input');
+      if (inp) { inp.focus(); inp.select(); }
+    }, 0);
+    return;
+  }
+  pendingNumberFor = null;
+  pendingNumberError = null;
+  checkIn(id, num);
 }
 
 function undoCheckIn(id) {
@@ -649,20 +760,45 @@ function markDone(id) {
   showToast(a.name + ' marked done');
 }
 
+function clearWalkinForm() {
+  ['wi-name','wi-age','wi-number','wi-parent','wi-phone','wi-email'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('wi-size').selectedIndex = 2;
+}
+
 function openWalkin() { document.getElementById('walkinModal').classList.add('show'); }
+
 function closeWalkin() {
   document.getElementById('walkinModal').classList.remove('show');
-  ['wi-name','wi-age','wi-parent','wi-phone','wi-email'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('wi-size').selectedIndex = 2;
+  clearWalkinForm();
 }
 
 function submitWalkin() {
   const name = document.getElementById('wi-name').value.trim();
   const age = document.getElementById('wi-age').value.trim();
+  const numberRaw = document.getElementById('wi-number').value.trim();
   const parent = document.getElementById('wi-parent').value.trim();
   if (!name || !age) {
     showToast('Name and age are required', 'warn');
     return;
+  }
+  let number;
+  if (numberRaw) {
+    number = parseInt(numberRaw, 10);
+    if (!number || number < 1) {
+      showToast('Audition number must be a positive number', 'warn');
+      return;
+    }
+    // Check if number is already in use by an active person
+    const taken = auditioners.find(a => a.number === number && a.status !== 'expected' && a.status !== 'late');
+    if (taken) {
+      showToast('#' + number + ' is already taken by ' + taken.name, 'warn');
+      return;
+    }
+  } else {
+    number = getNextNumber();
   }
   const newId = Math.max(0, ...auditioners.map(a => a.id)) + 1;
   const newPerson = {
@@ -672,7 +808,7 @@ function submitWalkin() {
     parent: parent || '—',
     slot: 'Walk-in',
     status: 'checked-in',
-    number: getNextNumber(),
+    number: number,
     checkedInAt: nowTimeStr(),
     isWalkin: true
   };
@@ -798,18 +934,34 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function emptyNumBadge(a) {
+  if (pendingNumberFor === a.id) {
+    const suggested = getNextNumber();
+    const errorHtml = pendingNumberError
+      ? '<div class="num-entry-error">' + escapeHtml(pendingNumberError) + '</div>'
+      : '';
+    return '<div class="num-entry">' +
+             '<input type="number" min="1" value="' + suggested + '" ' +
+             'onkeydown="if(event.key===\'Enter\'){confirmNumber(' + a.id + ', this.value);}else if(event.key===\'Escape\'){cancelPrompt();}" ' +
+             'onblur="setTimeout(()=>{if(pendingNumberFor===' + a.id + '){confirmNumber(' + a.id + ', this.value);}}, 100);">' +
+             errorHtml +
+           '</div>';
+  }
+  return '<button class="audr-num empty" onclick="promptNumber(' + a.id + ')" title="Tap to assign a number">+</button>';
+}
+
 function rowExpected(a) {
   const walkInTag = a.isWalkin ? '<span class="walkin-tag">Walk-in</span> · ' : '';
   return '<div class="audr">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
-    '<button class="audr-num empty" onclick="checkIn(' + a.id + ')" title="Tap to assign number and check in">+</button>' +
+    emptyNumBadge(a) +
     '<div class="audr-info">' +
       '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
       '<div class="audr-meta">' + walkInTag + 'Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + '</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> Expected</div>' +
     '<div class="audr-actions">' +
-      '<button class="check-btn green" onclick="checkIn(' + a.id + ')">+ Check in</button>' +
+      '<button class="check-btn green" onclick="promptNumber(' + a.id + ')">+ Check in</button>' +
     '</div>' +
   '</div>';
 }
@@ -819,7 +971,7 @@ function rowLate(a) {
   const minsLate = slotMin != null ? Math.max(0, getDemoNow() - slotMin) : 0;
   return '<div class="audr late">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
-    '<button class="audr-num empty" onclick="checkIn(' + a.id + ')" title="Tap to assign number and check in">+</button>' +
+    emptyNumBadge(a) +
     '<div class="audr-info">' +
       '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
       '<div class="audr-meta"><span class="late-tag">' + minsLate + ' min late</span> · Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + '</div>' +
@@ -827,7 +979,7 @@ function rowLate(a) {
     '<div class="audr-status"><span class="status-dot"></span> No show?</div>' +
     '<div class="audr-actions">' +
       '<button class="check-btn outline icon-only" title="Call parent" onclick="alert(\'Would call ' + escapeHtml(a.parent).replace(/\'/g, '\\\'') + '\')">📞</button>' +
-      '<button class="check-btn green" onclick="checkIn(' + a.id + ')">+ Check in</button>' +
+      '<button class="check-btn green" onclick="promptNumber(' + a.id + ')">+ Check in</button>' +
     '</div>' +
   '</div>';
 }
