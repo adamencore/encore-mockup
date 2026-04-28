@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Show — Encore Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .sidebar.admin {
+    background: var(--ink);
+    border-right: 1px solid #2C2C28;
+  }
+  .sidebar.admin .sb-brand { color: var(--cream); }
+  .sidebar.admin .sb-brand .star { color: var(--yellow); }
+  .sidebar.admin .sb-section-label { color: rgba(251,246,236,0.4); }
+  .sidebar.admin .sb-link { color: rgba(251,246,236,0.65); }
+  .sidebar.admin .sb-link:hover { background: rgba(255,255,255,0.07); color: var(--cream); }
+  .sidebar.admin .sb-link.active { background: var(--yellow); color: var(--ink); }
+  .sidebar.admin .sb-link.active .sb-icon { color: var(--ink); }
+  .sidebar.admin .sb-foot { border-top: 1px solid #2C2C28; }
+  .admin-mode-badge { background: var(--yellow); color: var(--ink); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; margin-right: 8px; }
+
+  /* Draft banner */
+  .draft-banner {
+    background: var(--coral);
+    color: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .draft-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.18);
+    color: white;
+    display: grid; place-items: center;
+    font-size: 16px; flex-shrink: 0;
+    font-weight: 700;
+  }
+  .draft-info { flex: 1; min-width: 200px; }
+  .draft-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 15px;
+    margin: 0 0 2px;
+  }
+  .draft-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    margin: 0;
+  }
+
+  /* Editor head */
+  .editor-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 24px;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    margin-bottom: 18px;
+  }
+  .editor-icon {
+    width: 56px; height: 56px;
+    border-radius: 12px;
+    background: var(--cream-shell);
+    border: 1.5px dashed var(--line);
+    display: grid; place-items: center;
+    color: var(--muted);
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .editor-info { flex: 1; min-width: 0; }
+  .editor-info h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 24px;
+    margin: 0 0 3px;
+    letter-spacing: -0.005em;
+  }
+  .editor-info h1 em { font-style: italic; color: var(--coral); }
+  .editor-info p { font-size: 12px; color: var(--muted); margin: 0; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+  /* Setup checklist */
+  .checklist {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .checklist h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 17px;
+    margin: 0 0 4px;
+    letter-spacing: -0.005em;
+  }
+  .checklist .ch-sub {
+    font-size: 12px; color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .checklist-progress {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .checklist-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--cream-shell);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .checklist-bar > span {
+    display: block; height: 100%;
+    background: var(--coral);
+    border-radius: 999px;
+    width: 14%;
+    transition: width 0.3s ease;
+  }
+  .checklist-progress-text {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+    font-size: 14px;
+  }
+  .check-item:first-of-type { border-top: none; }
+  .check-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    background: var(--white-soft);
+    display: grid; place-items: center;
+    color: var(--muted);
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .check-item.done .check-circle {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .check-info { flex: 1; }
+  .check-title { font-weight: 600; font-size: 13px; }
+  .check-item.done .check-title { color: var(--muted); text-decoration: line-through; }
+  .check-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .check-action {
+    background: none;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .check-action:hover { border-color: var(--ink-soft); color: var(--ink); }
+  .check-action.required {
+    border-color: var(--coral);
+    color: var(--coral);
+  }
+
+  /* Tabs */
+  .editor-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1.5px solid var(--line);
+    margin-bottom: 28px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ed-tab {
+    background: none; border: none;
+    padding: 12px 18px;
+    font-family: inherit;
+    font-size: 14px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+    display: flex; align-items: center; gap: 8px;
+    line-height: 1;
+  }
+  .ed-tab:hover { color: var(--ink); }
+  .ed-tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--coral);
+  }
+  .ed-tab.disabled { color: var(--muted); opacity: 0.5; cursor: not-allowed; }
+  .ed-tab .lock {
+    font-size: 10px;
+  }
+
+  /* Tab panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .form-section {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .form-section h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 17px;
+    margin: 0 0 4px;
+    letter-spacing: -0.005em;
+  }
+  .form-section .helper {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  textarea.input {
+    min-height: 90px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+
+  /* Empty states */
+  .empty-state {
+    background: var(--cream-shell);
+    border: 1.5px dashed var(--line);
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+  }
+  .empty-state .em-icon {
+    font-size: 28px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .empty-state h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 4px;
+  }
+  .empty-state p {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 14px;
+    line-height: 1.5;
+  }
+
+  /* Sticky save bar */
+  .save-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--cream-shell);
+    padding: 16px 0;
+    border-top: 1.5px solid var(--line);
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .save-info {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .save-info strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar admin">
+    <a href="admin-dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link active" href="admin-shows.html"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
+      <a class="sb-link" href="admin-show-editor.html"><span class="sb-icon">✎</span> Show editor</a>
+      <a class="sb-link" href="#"><span class="sb-icon">★</span> Auditioners</a>
+      <a class="sb-link" href="#"><span class="sb-icon">♟</span> Families</a>
+      <div class="sb-section-label">Super admin</div>
+      <a class="sb-link" href="admin-invoices.html"><span class="sb-icon">$</span> Invoices</a>
+      <a class="sb-link" href="admin-content.html"><span class="sb-icon">📰</span> Content</a>
+      <a class="sb-link" href="#"><span class="sb-icon">📊</span> Reports</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">↗</span> View as parent</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search…"></div>
+        <div class="header-actions">
+          <span class="admin-mode-badge">★ Super Admin</span>
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar" style="background: var(--ink);">AR</div>
+            <div class="hu-info"><span class="hu-name">Adam Record</span><span class="hu-sub">Owner</span></div>
+          </div>
+        </div>
+      </div>
+
+      <a class="back-link" href="admin-shows.html">← Back to all shows</a>
+
+      <!-- DRAFT BANNER -->
+      <div class="draft-banner">
+        <div class="draft-icon">●</div>
+        <div class="draft-info">
+          <h3 class="draft-title">This show is a draft</h3>
+          <p class="draft-sub">Not visible to parents yet. Complete the setup checklist below, then click Publish to open auditions.</p>
+        </div>
+        <button class="btn btn-secondary" style="background: white; border-color: white; color: var(--ink);">Save draft</button>
+      </div>
+
+      <!-- Editor head -->
+      <div class="editor-head">
+        <div class="editor-icon">+</div>
+        <div class="editor-info">
+          <h1>New show</h1>
+          <p>Draft · started just now · not published</p>
+        </div>
+      </div>
+
+      <!-- SETUP CHECKLIST -->
+      <div class="checklist">
+        <h3>Setup checklist</h3>
+        <p class="ch-sub">Complete these before publishing. Estimated time: 15 min.</p>
+
+        <div class="checklist-progress">
+          <span class="checklist-progress-text">1 of 7</span>
+          <div class="checklist-bar"><span></span></div>
+          <span class="checklist-progress-text" style="color: var(--coral);">14%</span>
+        </div>
+
+        <div class="check-item done">
+          <div class="check-circle">✓</div>
+          <div class="check-info">
+            <div class="check-title">Show created</div>
+            <div class="check-sub">Started moments ago</div>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">1</div>
+          <div class="check-info">
+            <div class="check-title">Add show title &amp; basic info</div>
+            <div class="check-sub">Title, age range, season</div>
+          </div>
+          <button class="check-action required">Required</button>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">2</div>
+          <div class="check-info">
+            <div class="check-title">Set audition window &amp; fees</div>
+            <div class="check-sub">When does registration open and close? What's the fee?</div>
+          </div>
+          <button class="check-action required">Required</button>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">3</div>
+          <div class="check-info">
+            <div class="check-title">Add roles</div>
+            <div class="check-sub">Lead, supporting, ensemble</div>
+          </div>
+          <button class="check-action required">Required</button>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">4</div>
+          <div class="check-info">
+            <div class="check-title">Enter rehearsal &amp; performance dates</div>
+            <div class="check-sub">Auto-populates the conflict checkboxes for parents</div>
+          </div>
+          <button class="check-action required">Required</button>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">5</div>
+          <div class="check-info">
+            <div class="check-title">Set audition slot times</div>
+            <div class="check-sub">When parents pick their audition slot</div>
+          </div>
+          <button class="check-action required">Required</button>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">6</div>
+          <div class="check-info">
+            <div class="check-title">Upload show poster</div>
+            <div class="check-sub">Optional · used as the card banner</div>
+          </div>
+          <button class="check-action">Optional</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="editor-tabs">
+        <button class="ed-tab active" data-tab="setup">Setup</button>
+        <button class="ed-tab" data-tab="schedule">Schedule</button>
+        <button class="ed-tab disabled" data-tab="submissions">Submissions <span class="lock">🔒</span></button>
+        <button class="ed-tab disabled" data-tab="cast">Cast <span class="lock">🔒</span></button>
+        <button class="ed-tab" data-tab="settings">Settings</button>
+      </div>
+
+      <!-- ========== SETUP ========== -->
+      <div class="panel active" data-panel="setup">
+
+        <div class="form-section">
+          <h3>Basics</h3>
+          <p class="helper">Public-facing show information. This is what parents see on cards and audition pages.</p>
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Show title <span style="color: var(--coral);">*</span></label>
+              <input class="input" placeholder="e.g. Disney's Frozen JR">
+            </div>
+            <div class="field">
+              <label class="field-label">Season <span style="color: var(--coral);">*</span></label>
+              <select class="input">
+                <option>— Select season —</option>
+                <option>Fall 2026</option>
+                <option>Winter 2026</option>
+                <option>Spring 2027</option>
+                <option>Summer 2027</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Age min <span style="color: var(--coral);">*</span></label>
+              <input class="input" type="number" placeholder="8">
+            </div>
+            <div class="field">
+              <label class="field-label">Age max <span style="color: var(--coral);">*</span></label>
+              <input class="input" type="number" placeholder="13">
+            </div>
+            <div class="field full">
+              <label class="field-label">Description</label>
+              <textarea class="input" placeholder="A brief description for parents browsing the auditions list…"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Audition window &amp; fees</h3>
+          <p class="helper">When can parents register, and what does it cost?</p>
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Registration opens <span style="color: var(--coral);">*</span></label>
+              <input class="input" type="date">
+            </div>
+            <div class="field">
+              <label class="field-label">Registration closes <span style="color: var(--coral);">*</span></label>
+              <input class="input" type="date">
+            </div>
+            <div class="field">
+              <label class="field-label">Audition fee</label>
+              <input class="input" placeholder="$25">
+            </div>
+            <div class="field">
+              <label class="field-label">Tuition (if cast) <span style="color: var(--coral);">*</span></label>
+              <input class="input" placeholder="$145">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Roles</h3>
+          <p class="helper">Add the roles directors will cast. You can also paste a list (one role per line).</p>
+          <div class="empty-state">
+            <div class="em-icon">♟</div>
+            <h4>No roles yet</h4>
+            <p>Add roles like Simba, Young Simba, Ensemble. These power role-tagging and casting.</p>
+            <button class="btn btn-primary">+ Add first role</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Show poster</h3>
+          <p class="helper">Optional. Used as the card banner on the parent dashboard. Recommended 600 × 900 px.</p>
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <div style="width: 100px; height: 100px; border-radius: 12px; background: var(--cream-shell); border: 1.5px dashed var(--line); display: grid; place-items: center; color: var(--muted); font-size: 28px;">📷</div>
+            <div>
+              <button class="btn btn-secondary">Upload poster</button>
+              <p style="font-size: 12px; color: var(--muted); margin: 8px 0 0;">JPG or PNG · max 5 MB</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========== SCHEDULE ========== -->
+      <div class="panel" data-panel="schedule">
+        <div class="form-section">
+          <h3>Rehearsal &amp; performance dates</h3>
+          <p class="helper">These auto-populate the conflict checkboxes for parents during registration. Parents will see this list and can mark which dates they can't attend.</p>
+          <div class="empty-state">
+            <div class="em-icon">📅</div>
+            <h4>No dates yet</h4>
+            <p>Add each rehearsal, tech rehearsal, and performance. You can also bulk import from a spreadsheet.</p>
+            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+              <button class="btn btn-primary">+ Add date</button>
+              <button class="btn btn-secondary">📋 Bulk import</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Audition slots</h3>
+          <p class="helper">When parents pick their audition slot during registration.</p>
+          <div class="empty-state">
+            <div class="em-icon">⏰</div>
+            <h4>No slots yet</h4>
+            <p>Add audition days &amp; the slot length. We'll generate the available time slots automatically.</p>
+            <button class="btn btn-primary">+ Add audition day</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== SETTINGS ========== -->
+      <div class="panel" data-panel="settings">
+
+        <div class="form-section">
+          <h3>Public-facing settings</h3>
+          <p class="helper">How this show behaves for parents and auditioners.</p>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+              <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--coral);" checked>
+              <div>
+                <div style="font-weight: 600; font-size: 14px;">Public director feedback</div>
+                <div style="font-size: 12px; color: var(--muted);">Release written notes &amp; star ratings to auditioners after casting</div>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+              <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--coral);" checked>
+              <div>
+                <div style="font-weight: 600; font-size: 14px;">Show conflict checkboxes</div>
+                <div style="font-size: 12px; color: var(--muted);">Let parents mark dates they can't make during registration</div>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+              <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--coral);" checked>
+              <div>
+                <div style="font-weight: 600; font-size: 14px;">Require audition music</div>
+                <div style="font-size: 12px; color: var(--muted);">Auditioners must upload music or paste a YouTube link</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Team access</h3>
+          <p class="helper">Who can edit this show + see audition data. Add directors and stage managers.</p>
+          <div class="empty-state">
+            <div class="em-icon">👥</div>
+            <h4>Just you, for now</h4>
+            <p>Add team members so they can see auditions, take notes, and post the cast list.</p>
+            <button class="btn btn-primary">+ Invite team member</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SAVE BAR -->
+      <div class="save-bar">
+        <div class="save-info">
+          <strong>Draft saved</strong> · last edit just now
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary">Save draft</button>
+          <button class="btn btn-primary" disabled style="opacity: 0.5; cursor: not-allowed;">Publish (5 required steps left)</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  document.querySelectorAll('.ed-tab:not(.disabled)').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.ed-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      const panel = document.querySelector('.panel[data-panel="' + target + '"]');
+      if (panel) panel.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
