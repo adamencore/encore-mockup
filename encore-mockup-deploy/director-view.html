@@ -11,21 +11,21 @@
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 <style>
   :root {
-    --cream: #FBF6EC;
-    --cream-dark: #F2EAD6;
-    --ink: #1A1A18;
-    --ink-soft: #4B4943;
-    --muted: #8E887C;
-    --line: #E5DCC7;
-    --line-soft: #EFE7D4;
-    --yellow: #F4CB3A;
-    --yellow-dark: #E0B423;
-    --teal: #2A6F73;
-    --teal-soft: rgba(42, 111, 115, 0.1);
-    --coral: #E26B4A;
-    --coral-soft: rgba(226, 107, 74, 0.08);
-    --white-soft: #FFFDF7;
-    --green: #4F8A4A;
+    --cream: #FAFAFD;
+    --cream-dark: #EEEFFD;
+    --ink: #122056;
+    --ink-soft: #3D4775;
+    --muted: #7A82A8;
+    --line: #E0E2F2;
+    --line-soft: #EEEFFD;
+    --yellow: #5B65DC;
+    --yellow-dark: #4750C9;
+    --teal: #122056;
+    --teal-soft: rgba(18, 32, 86, 0.1);
+    --coral: #5B65DC;
+    --coral-soft: rgba(91, 101, 220, 0.08);
+    --white-soft: #FFFFFF;
+    --green: #2F7A6F;
   }
 
   * { box-sizing: border-box; }
@@ -41,7 +41,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  ::selection { background: var(--yellow); color: var(--ink); }
+  ::selection { background: var(--periwinkle); color: white; }
 
   /* APP HEADER */
   .app-header {
@@ -52,7 +52,7 @@
     top: 0;
     z-index: 50;
     backdrop-filter: blur(8px);
-    background: rgba(251, 246, 236, 0.95);
+    background: rgba(250, 250, 253, 0.95);
   }
   .app-header-row {
     max-width: 880px;
@@ -67,10 +67,9 @@
     align-items: center;
     color: var(--brand-dblue);
   }
-  .app-brand img {
+  .app-brand .encore-logo {
     height: 26px;
-    width: auto;
-    display: block;
+    width: 127px;
   }
   .app-user {
     display: flex;
@@ -194,7 +193,7 @@
   .show-name em { font-style: normal; font-weight: 700; color: var(--yellow); font-weight: 600; }
   .show-meta {
     font-size: 13px;
-    color: rgba(251, 246, 236, 0.7);
+    color: rgba(250, 250, 253, 0.7);
   }
 
   main {
@@ -261,7 +260,7 @@
   .search-input:focus {
     outline: none;
     border-color: var(--ink);
-    box-shadow: 0 0 0 4px rgba(244, 203, 58, 0.3);
+    box-shadow: 0 0 0 4px rgba(91, 101, 220, 0.3);
   }
 
   /* AUDITIONER LIST */
@@ -413,7 +412,7 @@
     color: white;
     background: var(--cream-dark);
     overflow: hidden;
-    box-shadow: 0 6px 20px -8px rgba(26, 26, 24, 0.25);
+    box-shadow: 0 6px 20px -8px rgba(18, 32, 86, 0.25);
   }
   .detail-photo img {
     width: 100%;
@@ -570,7 +569,7 @@
   }
   .conflict-item:first-child { border-top: none; }
   .conflict-item.perf {
-    background: rgba(244, 203, 58, 0.18);
+    background: rgba(91, 101, 220, 0.18);
     color: var(--ink);
     font-weight: 600;
   }
@@ -675,8 +674,7 @@
     border-color: var(--coral);
   }
   .cb-btn.active.maybe {
-    background: var(--yellow);
-    color: var(--ink);
+    background: var(--periwinkle); color: white;
     border-color: var(--yellow-dark);
   }
   .cb-btn.active.no {
@@ -703,7 +701,7 @@
     outline: none;
     border-color: var(--ink);
     background: white;
-    box-shadow: 0 0 0 4px rgba(244, 203, 58, 0.3);
+    box-shadow: 0 0 0 4px rgba(91, 101, 220, 0.3);
   }
   .notes-meta {
     display: flex;
@@ -833,9 +831,9 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg,
-      rgba(244,203,58,0) 0%,
-      rgba(244,203,58,0.18) 50%,
-      rgba(244,203,58,0) 100%);
+      rgba(91, 101, 220,0) 0%,
+      rgba(91, 101, 220,0.18) 50%,
+      rgba(91, 101, 220,0) 100%);
     border-radius: 12px;
     animation: aiShimmer 1.4s ease infinite;
     z-index: 1;
@@ -866,7 +864,7 @@
     border-radius: 999px;
   }
   .ai-content {
-    background: linear-gradient(135deg, rgba(244, 203, 58, 0.06), rgba(226, 107, 74, 0.06));
+    background: linear-gradient(135deg, rgba(91, 101, 220, 0.06), rgba(91, 101, 220, 0.06));
     border: 1.5px solid var(--line);
     border-radius: 12px;
     padding: 18px 22px;
@@ -908,7 +906,7 @@
 
   /* MUSIC PLAYER — director view */
   .music-card {
-    background: linear-gradient(135deg, #2C2C28, #1A1A18);
+    background: linear-gradient(135deg, #1A2557, #122056);
     border-radius: 16px;
     padding: 18px 20px;
     color: var(--cream);
@@ -920,8 +918,7 @@
   .music-icon {
     width: 42px; height: 42px;
     border-radius: 10px;
-    background: var(--yellow);
-    color: var(--ink);
+    background: var(--periwinkle); color: white;
     display: grid; place-items: center;
     font-size: 18px; flex-shrink: 0;
     font-weight: 700;
@@ -936,11 +933,10 @@
   }
   .music-source {
     font-size: 11px;
-    color: rgba(251,246,236,0.6);
+    color: rgba(250, 250, 253,0.6);
   }
   .music-cut {
-    background: var(--yellow);
-    color: var(--ink);
+    background: var(--periwinkle); color: white;
     padding: 4px 10px;
     border-radius: 999px;
     font-size: 11px;
@@ -956,7 +952,7 @@
   .music-play {
     width: 42px; height: 42px;
     border-radius: 50%;
-    background: var(--yellow); color: var(--ink);
+    background: var(--periwinkle); color: white;
     border: none; cursor: pointer;
     display: grid; place-items: center;
     font-size: 16px; font-weight: 700;
@@ -970,7 +966,7 @@
     font-family: monospace;
     font-size: 12px;
     font-variant-numeric: tabular-nums;
-    color: rgba(251,246,236,0.85);
+    color: rgba(250, 250, 253,0.85);
     min-width: 88px;
   }
   .music-actions {
@@ -991,10 +987,9 @@
   }
   .music-btn:hover { background: rgba(255,255,255,0.18); }
   .music-btn.primary {
-    background: var(--yellow);
-    color: var(--ink);
+    background: var(--periwinkle); color: white;
   }
-  .music-btn.primary:hover { background: #F8DA5F; }
+  .music-btn.primary:hover { background: #9CA4E8; }
 
   .music-waveform {
     position: relative;
@@ -1016,7 +1011,7 @@
   .music-region {
     position: absolute;
     top: 0; bottom: 0;
-    background: rgba(244, 203, 58, 0.22);
+    background: rgba(91, 101, 220, 0.22);
     border-left: 2px solid var(--yellow);
     border-right: 2px solid var(--yellow);
     pointer-events: none;
@@ -1041,7 +1036,7 @@
   }
   .detail-photo.clickable:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px -10px rgba(26, 26, 24, 0.35);
+    box-shadow: 0 12px 28px -10px rgba(18, 32, 86, 0.35);
   }
   .photo-overlay {
     position: absolute;
@@ -1682,7 +1677,7 @@
 
 <header class="app-header">
   <div class="app-header-row">
-    <div class="app-brand"><img src="encore-logo-current.svg" alt="Encore"></div>
+    <div class="app-brand"><span class="encore-logo" role="img" aria-label="Encore"></span></div>
     <div class="role-switcher" id="roleSwitcher">
       <button class="role-current" id="roleCurrent">
         <span class="role-text">Director</span>

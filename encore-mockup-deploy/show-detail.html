@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="app.css">
 <style>
   .show-hero {
-    background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark));
+    background: linear-gradient(135deg, #9CA4E8, var(--yellow-dark));
     border-radius: 24px;
     padding: 40px 36px;
     color: var(--ink);
@@ -33,7 +33,7 @@
   .show-hero h1 em { font-style: normal; font-weight: 700; color: var(--ink); }
   .show-hero .meta {
     font-size: 14px;
-    color: rgba(26,26,24,0.7);
+    color: rgba(18, 32, 86,0.7);
     margin: 0 0 22px;
     position: relative;
     z-index: 2;
@@ -44,7 +44,7 @@
     transform: translateY(-50%);
     font-family: 'Inter', sans-serif;
     font-size: 280px;
-    color: rgba(26,26,24,0.08);
+    color: rgba(18, 32, 86,0.08);
     line-height: 1;
     pointer-events: none;
     font-weight: 700;
@@ -78,8 +78,7 @@
   .cb-icon {
     width: 56px; height: 56px;
     border-radius: 16px;
-    background: var(--yellow);
-    color: var(--ink);
+    background: var(--periwinkle); color: white;
     display: grid; place-items: center;
     font-size: 28px; flex-shrink: 0;
   }
@@ -91,7 +90,7 @@
   }
   .cb-sub {
     font-size: 13px;
-    color: rgba(251, 246, 236, 0.75);
+    color: rgba(250, 250, 253, 0.75);
     margin: 0;
   }
 
@@ -157,7 +156,7 @@
     background: var(--coral);
     color: white;
   }
-  .sched-tag.perf-tag { background: var(--yellow); color: var(--ink); }
+  .sched-tag.perf-tag { background: var(--periwinkle); color: white; }
 
   /* Cast list */
   .cast-card {
@@ -327,7 +326,7 @@
 <div class="app">
 
   <aside class="sidebar">
-    <a href="dashboard.html" class="sb-brand"><img src="encore-logo-current.svg" alt="Encore"></a>
+    <a href="dashboard.html" class="sb-brand"><span class="encore-logo" role="img" aria-label="Encore"></span></a>
     <nav class="sb-nav">
       <a class="sb-link" href="dashboard.html"><i class="ph-fill ph-house sb-icon"></i> Dashboard</a>
       <a class="sb-link" href="auditions.html"><i class="ph-fill ph-star sb-icon"></i> Open auditions <span class="badge">4</span></a>

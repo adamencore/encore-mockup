@@ -59,11 +59,10 @@
   }
   .landing-logo-img {
     height: 56px;
-    width: auto;
-    display: block;
+    width: 274px; /* 4.9:1 ratio */
   }
   @media (max-width: 760px) {
-    .landing-logo-img { height: 44px; }
+    .landing-logo-img { height: 44px; width: 215px; }
   }
   .star-decoration {
     color: var(--yellow-dark);
@@ -117,9 +116,9 @@
     font-weight: 700;
     color: white;
   }
-  .view-icon.parent { background: linear-gradient(135deg, #F08A6E, var(--coral)); }
-  .view-icon.director { background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark)); color: var(--ink); }
-  .view-icon.admin { background: linear-gradient(135deg, #2C2C28, var(--ink)); }
+  .view-icon.parent { background: linear-gradient(135deg, #9CA4E8, var(--coral)); }
+  .view-icon.director { background: linear-gradient(135deg, #9CA4E8, var(--yellow-dark)); color: var(--ink); }
+  .view-icon.admin { background: linear-gradient(135deg, #1A2557, var(--ink)); }
 
   .view-card h2 {
     font-family: 'Inter', sans-serif;
@@ -198,7 +197,7 @@
 
   <div class="landing-hero">
     <div class="landing-logo">
-      <img src="encore-logo-current.svg" alt="Encore" class="landing-logo-img">
+      <span class="encore-logo landing-logo-img" role="img" aria-label="Encore"></span>
     </div>
     <span class="landing-eyebrow">Audition platform · Mockup preview</span>
     <h1>Audition platform <em>preview</em></h1>

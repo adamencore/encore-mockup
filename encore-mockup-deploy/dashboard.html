@@ -24,7 +24,7 @@
   .greeting-date {
     font-size: 11px; font-weight: 700;
     letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--yellow); margin-bottom: 10px;
+    color: #9CA4E8; margin-bottom: 10px;
   }
   .greeting h1 {
     font-family: 'Inter', sans-serif; font-weight: 800;
@@ -35,18 +35,18 @@
   .greeting h1 em {
     font-style: normal;
     font-weight: 800;
-    background: linear-gradient(120deg, var(--yellow), #F8DA5F);
+    background: linear-gradient(120deg, #FFFFFF, #9CA4E8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .greeting p {
-    margin: 0; color: rgba(251, 246, 236, 0.72);
+    margin: 0; color: rgba(250, 250, 253, 0.72);
     font-size: 14.5px;
   }
   .greeting p em {
     font-style: normal; font-weight: 700;
-    color: rgba(244, 203, 58, 0.9);
+    color: rgba(91, 101, 220, 0.9);
   }
   .greeting-art {
     position: absolute; right: 28px; top: 50%;
@@ -125,7 +125,7 @@
   .portfolio-icon {
     width: 56px; height: 56px;
     border-radius: 16px;
-    background: rgba(244, 203, 58, 0.2);
+    background: rgba(91, 101, 220, 0.2);
     color: var(--yellow);
     display: grid; place-items: center;
     font-size: 26px; flex-shrink: 0;
@@ -138,7 +138,7 @@
   }
   .portfolio-sub {
     font-size: 13px; margin: 0;
-    color: rgba(251, 246, 236, 0.82);
+    color: rgba(250, 250, 253, 0.82);
     line-height: 1.45;
   }
   .portfolio-arrow { font-size: 22px; color: var(--yellow); flex-shrink: 0; }
@@ -231,7 +231,7 @@
   .news-list { display: flex; flex-direction: column; gap: 10px; }
   .news-item { background: var(--white-soft); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px; cursor: pointer; transition: border-color 0.15s ease; }
   .news-item:hover { border-color: var(--ink-soft); }
-  .news-item.feature { background: linear-gradient(135deg, var(--coral) 0%, #C95736 100%); color: white; border-color: var(--coral); }
+  .news-item.feature { background: linear-gradient(135deg, var(--coral) 0%, #4750C9 100%); color: white; border-color: var(--coral); }
   .news-tag { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--cream-dark); color: var(--ink-soft); margin-bottom: 8px; line-height: 1.4; }
   .news-tag.event { background: var(--yellow-soft); color: var(--yellow-dark); }
   .news-tag.opp { background: var(--teal-soft); color: var(--teal); }
@@ -247,7 +247,7 @@
   .up-icon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-size: 15px; flex-shrink: 0; }
   .up-icon.coral { background: var(--coral-soft); color: var(--coral); }
   .up-icon.teal { background: var(--teal-soft); color: var(--teal); }
-  .up-icon.yellow { background: rgba(244, 203, 58, 0.25); color: var(--yellow-dark); }
+  .up-icon.yellow { background: rgba(91, 101, 220, 0.25); color: var(--yellow-dark); }
   .up-icon.sage { background: var(--sage-soft); color: var(--sage); }
   .up-info { flex: 1; min-width: 0; }
   .up-title { font-size: 13px; font-weight: 600; margin: 0; line-height: 1.3; }
@@ -263,7 +263,7 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <a href="dashboard.html" class="sb-brand"><img src="encore-logo-current.svg" alt="Encore"></a>
+    <a href="dashboard.html" class="sb-brand"><span class="encore-logo" role="img" aria-label="Encore"></span></a>
     <nav class="sb-nav">
       <a class="sb-link active" href="dashboard.html"><i class="ph-fill ph-house sb-icon"></i> Dashboard</a>
       <a class="sb-link" href="auditions.html"><i class="ph-fill ph-star sb-icon"></i> Open auditions <span class="badge">4</span></a>

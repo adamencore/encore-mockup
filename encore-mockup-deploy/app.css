@@ -1,37 +1,58 @@
 :root {
-  --cream: #FBF6EC;
-  --cream-dark: #F2EAD6;
-  --cream-shell: #EDE8DC;
-  --ink: #1A1A18;
-  --ink-soft: #4B4943;
-  --muted: #8E887C;
-  --line: #E5DCC7;
-  --line-soft: #EFE7D4;
-  --yellow: #F4CB3A;
-  --yellow-dark: #E0B423;
-  --yellow-soft: rgba(244, 203, 58, 0.15);
-  --teal: #2A6F73;
-  --teal-soft: rgba(42, 111, 115, 0.1);
-  --coral: #E26B4A;
-  --coral-soft: rgba(226, 107, 74, 0.08);
-  --plum: #7B4F7B;
-  --plum-soft: rgba(123, 79, 123, 0.1);
-  --sage: #6B8C5E;
-  --sage-soft: rgba(107, 140, 94, 0.12);
-  --white-soft: #FFFDF7;
-  --green: #4F8A4A;
-  --green-soft: rgba(79, 138, 74, 0.1);
-  --red: #C04A3D;
-  --red-soft: rgba(192, 74, 61, 0.08);
+  /* ===== CORE PALETTE (Navy / Periwinkle) ===== */
+  --ink: #122056;             /* Primary text / dark UI */
+  --ink-soft: #3D4775;        /* Secondary text */
+  --muted: #7A82A8;           /* Tertiary text, placeholders */
+  --line: #E0E2F2;            /* Borders */
+  --line-soft: #EEEFFD;       /* Subtle dividers */
 
-  /* New pastel block colors for stat tiles */
-  --pastel-sage: #BDCFA8;
-  --pastel-mustard: #EFCB5C;
-  --pastel-lavender: #A8A4D6;
-  --pastel-rose: #E8B5A8;
+  /* Backgrounds */
+  --cream: #FAFAFD;           /* Page background (renamed for compatibility) */
+  --cream-dark: #EEEFFD;      /* Slightly tinted surface */
+  --cream-shell: #EEEFFD;     /* Section/sidebar fill */
+  --white-soft: #FFFFFF;      /* Cards / clean surfaces */
 
-  /* Brand */
-  --brand-dblue: #35444d;
+  /* Primary brand action */
+  --periwinkle: #5B65DC;
+  --periwinkle-soft: rgba(91, 101, 220, 0.1);
+  --periwinkle-dark: #4750C9;
+
+  /* ===== STATUS / ACCENTS (folded into cool palette) ===== */
+  /* "em" emphasis and links — use periwinkle */
+  --coral: #5B65DC;           /* Maps em/show titles to periwinkle */
+  --coral-soft: rgba(91, 101, 220, 0.08);
+
+  /* "Yellow" is now a deep periwinkle highlight */
+  --yellow: #5B65DC;
+  --yellow-dark: #4750C9;
+  --yellow-soft: rgba(91, 101, 220, 0.12);
+
+  /* Teal becomes navy */
+  --teal: #122056;
+  --teal-soft: rgba(18, 32, 86, 0.08);
+
+  /* Plum / Sage (used for tags) → tonal navys */
+  --plum: #3D4775;
+  --plum-soft: rgba(61, 71, 117, 0.1);
+  --sage: #7A82A8;
+  --sage-soft: rgba(122, 130, 168, 0.12);
+
+  /* Greens (cast/confirmed) — keep semantic green but cooler */
+  --green: #2F7A6F;           /* Teal-green so it reads "complete" but stays in cool family */
+  --green-soft: rgba(47, 122, 111, 0.1);
+
+  /* Red (urgent / late / errors) — deep coral-red for legibility on white */
+  --red: #D65B5B;
+  --red-soft: rgba(214, 91, 91, 0.08);
+
+  /* ===== OPTIONAL PASTEL BLOCKS (legacy support) ===== */
+  --pastel-sage: #C8CFEA;
+  --pastel-mustard: #9CA4E8;
+  --pastel-lavender: #B0B5E5;
+  --pastel-rose: #C9A8E0;
+
+  /* Brand color used in logo */
+  --brand-dblue: #122056;
 }
 
 * { box-sizing: border-box; }
@@ -72,13 +93,16 @@ em { font-style: normal; font-weight: 700; color: var(--coral); }
   padding: 4px 12px 28px;
   color: var(--brand-dblue);
 }
-.sb-brand img,
-.sb-brand .brand-logo {
-  height: 26px;
-  width: auto;
+.encore-logo {
   display: block;
+  height: 26px;
+  width: 127px; /* aspect ratio 427:87 ≈ 4.9:1 */
+  -webkit-mask: url(encore-logo-current.svg) no-repeat center / contain;
+          mask: url(encore-logo-current.svg) no-repeat center / contain;
+  background-color: currentColor;
+  flex-shrink: 0;
 }
-/* Legacy: hide any leftover ENCORE wordmark text or star */
+/* Legacy: hide any leftover wordmark span */
 .sb-brand .star { display: none; }
 .sb-nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: auto; }
 .sb-link {
@@ -252,7 +276,7 @@ em { font-style: normal; font-weight: 700; color: var(--coral); }
 .btn-secondary { background: var(--white-soft); color: var(--ink); border-color: var(--line); }
 .btn-secondary:hover { border-color: var(--ink-soft); }
 .btn-coral { background: var(--coral); color: white; }
-.btn-coral:hover { background: #C95736; }
+.btn-coral:hover { background: #4750C9; }
 .btn-block { width: 100%; }
 .btn-lg { padding: 14px 20px; font-size: 15px; border-radius: 12px; }
 
@@ -288,12 +312,12 @@ em { font-style: normal; font-weight: 700; color: var(--coral); }
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
-.show-banner.coral { background: linear-gradient(135deg, #F08A6E, var(--coral)); }
-.show-banner.teal { background: linear-gradient(135deg, #4F9498, var(--teal)); }
-.show-banner.yellow { background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark)); }
-.show-banner.plum { background: linear-gradient(135deg, #9968A0, var(--plum)); }
-.show-banner.sage { background: linear-gradient(135deg, #8AAA7B, var(--sage)); }
-.show-banner.ink { background: linear-gradient(135deg, #3A3A36, var(--ink)); }
+.show-banner.coral { background: linear-gradient(135deg, #9CA4E8, var(--coral)); }
+.show-banner.teal { background: linear-gradient(135deg, #3D4775, var(--teal)); }
+.show-banner.yellow { background: linear-gradient(135deg, #9CA4E8, var(--yellow-dark)); }
+.show-banner.plum { background: linear-gradient(135deg, #7A82A8, var(--plum)); }
+.show-banner.sage { background: linear-gradient(135deg, #9CA4E8, var(--sage)); }
+.show-banner.ink { background: linear-gradient(135deg, #22305C, var(--ink)); }
 .show-banner.tall { height: 220px; }
 .show-banner-icon {
   font-family: 'Inter', sans-serif;
@@ -309,7 +333,7 @@ em { font-style: normal; font-weight: 700; color: var(--coral); }
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 5px 10px; border-radius: 999px;
-  background: rgba(26,26,24,0.85);
+  background: rgba(18, 32, 86,0.85);
   color: white; line-height: 1.4;
   backdrop-filter: blur(4px);
 }
