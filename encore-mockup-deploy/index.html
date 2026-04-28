@@ -52,6 +52,19 @@
     margin: 0 auto;
     line-height: 1.5;
   }
+  .landing-logo {
+    display: inline-block;
+    margin-bottom: 32px;
+    color: var(--brand-dblue);
+  }
+  .landing-logo-img {
+    height: 56px;
+    width: auto;
+    display: block;
+  }
+  @media (max-width: 760px) {
+    .landing-logo-img { height: 44px; }
+  }
   .star-decoration {
     color: var(--yellow-dark);
     font-size: 38px;
@@ -184,8 +197,10 @@
 <div class="landing">
 
   <div class="landing-hero">
-    <div class="star-decoration">★</div>
-    <span class="landing-eyebrow">Encore · Mockup preview</span>
+    <div class="landing-logo">
+      <img src="encore-logo-current.svg" alt="Encore" class="landing-logo-img">
+    </div>
+    <span class="landing-eyebrow">Audition platform · Mockup preview</span>
     <h1>Audition platform <em>preview</em></h1>
     <p>A clickable mockup of the new audition system. Pick a view below to explore.</p>
   </div>

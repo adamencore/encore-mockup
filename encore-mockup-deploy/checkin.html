@@ -28,14 +28,34 @@
     flex-wrap: wrap;
   }
   .topbar-brand {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: 18px;
-    letter-spacing: 0.06em;
     text-decoration: none;
-    color: inherit;
+    color: var(--brand-dblue);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
   }
-  .topbar-brand .star { color: var(--yellow-dark); }
+  .topbar-brand .back-arrow {
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1;
+  }
+  .topbar-logo {
+    height: 22px;
+    width: auto;
+    display: block;
+  }
+  .topbar-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 4px 10px;
+    background: var(--cream-shell);
+    border-radius: 999px;
+    margin-left: 4px;
+  }
   .topbar-show {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -721,7 +741,7 @@
 <div class="checkin-shell">
 
   <div class="topbar">
-    <a href="admin-show-editor.html" class="topbar-brand">← ENCORE<span class="star">★</span> · CHECK-IN</a>
+    <a href="admin-show-editor.html" class="topbar-brand"><span class="back-arrow">←</span><img src="encore-logo-current.svg" alt="Encore" class="topbar-logo"><span class="topbar-tag">Check-in</span></a>
     <div class="topbar-show">Disney's <em>Lion King</em> JR · Day 1 of 2</div>
     <div class="topbar-time" id="currentTime">—</div>
     <a href="director-running-order.html" class="reset-btn" style="text-decoration: none; color: var(--teal); border-color: var(--teal);">Director view →</a>

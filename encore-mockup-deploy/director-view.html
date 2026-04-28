@@ -63,12 +63,15 @@
     gap: 16px;
   }
   .app-brand {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: 18px;
-    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    color: var(--brand-dblue);
   }
-  .app-brand .star { color: var(--yellow-dark); }
+  .app-brand img {
+    height: 26px;
+    width: auto;
+    display: block;
+  }
   .app-user {
     display: flex;
     align-items: center;
@@ -768,6 +771,78 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ai-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+  }
+  .ai-action-btn {
+    background: transparent;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.1s ease;
+  }
+  .ai-action-btn:hover {
+    background: var(--cream-shell);
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+  .ai-action-btn i { font-size: 11px; }
+
+  /* AI summary editing */
+  .ai-edit-area {
+    width: 100%;
+    min-height: 180px;
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    background: var(--white-soft);
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.55;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .ai-edit-area:focus { outline: none; border-color: var(--coral); }
+  .ai-edit-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  .ai-content.regenerating {
+    position: relative;
+    pointer-events: none;
+  }
+  .ai-content.regenerating::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      rgba(244,203,58,0) 0%,
+      rgba(244,203,58,0.18) 50%,
+      rgba(244,203,58,0) 100%);
+    border-radius: 12px;
+    animation: aiShimmer 1.4s ease infinite;
+    z-index: 1;
+  }
+  @keyframes aiShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
   .ai-icon {
     display: inline-grid;
@@ -960,13 +1035,94 @@
 
   /* CLICKABLE DETAIL PHOTO */
   .detail-photo.clickable {
-    cursor: zoom-in;
+    cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
   }
   .detail-photo.clickable:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 28px -10px rgba(26, 26, 24, 0.35);
   }
+  .photo-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(0deg, rgba(20,19,17,0.85), rgba(20,19,17,0));
+    color: white;
+    padding: 14px 12px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .photo-overlay i { font-size: 14px; }
+  .detail-photo.clickable:hover .photo-overlay { opacity: 1; }
+
+  /* Editable heading (name) */
+  .detail-name.editable-h {
+    cursor: text;
+    border-radius: 6px;
+    padding: 0 6px;
+    margin-left: -6px;
+    transition: background 0.1s ease;
+    display: inline-block;
+    position: relative;
+  }
+  .detail-name.editable-h:hover {
+    background: var(--cream-shell);
+  }
+  .detail-name.editable-h:hover::after {
+    content: '\270E';
+    position: absolute;
+    right: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  /* Editable inline pieces in subtext */
+  .editable-piece {
+    cursor: text;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin: -2px -2px;
+    transition: background 0.1s ease;
+    display: inline-block;
+  }
+  .editable-piece:hover {
+    background: var(--cream-shell);
+    color: var(--ink);
+  }
+  .dot-sep {
+    color: var(--muted);
+    margin: 0 2px;
+    user-select: none;
+  }
+
+  /* Editable info pills (T-shirt, etc.) */
+  .info-pill.editable-pill {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.1s ease, transform 0.05s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .info-pill.editable-pill:hover {
+    background: var(--cream-dark);
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+  a.info-pill { text-decoration: none; }
 
   /* LIGHTBOX */
   .lightbox {
@@ -1171,6 +1327,72 @@
     font-variant-numeric: tabular-nums;
     font-size: 16px !important;
     text-align: center;
+  }
+
+  /* Modal — current item preview (for headshot replace) */
+  .current-preview {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--cream-shell);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+  }
+  .current-preview img {
+    width: 64px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .current-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .current-meta {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Reusable text link in modals */
+  .text-link-btn {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--teal);
+    cursor: pointer;
+    padding: 12px 0 0;
+    text-align: left;
+    text-decoration: none;
+    display: block;
+  }
+  .text-link-btn:hover { color: var(--ink); }
+
+  /* AI regen prompt in resume modal */
+  .re-summary-prompt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--yellow-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  .re-summary-prompt i {
+    color: var(--yellow-dark);
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
   }
 
   /* TAGS — Detail view */
@@ -1460,7 +1682,7 @@
 
 <header class="app-header">
   <div class="app-header-row">
-    <div class="app-brand">ENCORE<span class="star">★</span></div>
+    <div class="app-brand"><img src="encore-logo-current.svg" alt="Encore"></div>
     <div class="role-switcher" id="roleSwitcher">
       <button class="role-current" id="roleCurrent">
         <span class="role-text">Director</span>
@@ -1633,15 +1855,24 @@
     <button class="back-link" onclick="showList()">← All auditioners</button>
 
     <div class="detail-hero">
-      <div class="detail-photo clickable" onclick="openLightbox('https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede', 'Maya Chen')"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt="Maya Chen"></div>
+      <div class="detail-photo clickable" onclick="openHeadshotMenu(event)" title="Click to view or replace">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt="Maya Chen">
+        <div class="photo-overlay"><i class="ph-fill ph-camera"></i> Edit</div>
+      </div>
       <div>
         <button class="detail-number" id="detailNumber" data-action="assign-number-detail">No. 1</button>
-        <h1 class="detail-name">Maya Chen</h1>
-        <p class="detail-sub">Age 11 · She/her · Slot 9:00 AM</p>
+        <h1 class="detail-name editable-h" onclick="editInfo(this, 'Name', true)" title="Tap to edit">Maya Chen</h1>
+        <p class="detail-sub">
+          <span class="editable-piece" onclick="editInfo(this, 'Age')">Age 11</span>
+          <span class="dot-sep">·</span>
+          <span class="editable-piece" onclick="editInfo(this, 'Pronouns')">She/her</span>
+          <span class="dot-sep">·</span>
+          <span class="editable-piece" onclick="editInfo(this, 'Slot time')">Slot 9:00 AM</span>
+        </p>
         <div class="detail-tags">
-          <span class="info-pill">T-shirt: Youth Large</span>
-          <span class="info-pill warn">3 conflicts</span>
-          <span class="info-pill">📄 Resume.pdf</span>
+          <button class="info-pill editable-pill" onclick="editInfo(this, 'T-shirt size', false, 'T-shirt: ')"><span class="pill-label">T-shirt: Youth Large</span></button>
+          <a href="#conflicts-section" class="info-pill warn">3 conflicts</a>
+          <button class="info-pill editable-pill" onclick="openResumeReplace()" title="View or replace resume"><i class="ph-fill ph-file-text"></i> Resume.pdf</button>
         </div>
       </div>
     </div>
@@ -1650,8 +1881,12 @@
       <h3>
         <span class="ai-icon">✦</span> Resume summary
         <span class="ai-tag">AI generated</span>
+        <span class="ai-actions">
+          <button class="ai-action-btn" onclick="editAiSummary()" title="Edit summary"><i class="ph-fill ph-pencil-simple"></i> Edit</button>
+          <button class="ai-action-btn" onclick="regenerateAiSummary()" title="Regenerate from resume"><i class="ph-fill ph-arrows-clockwise"></i> Regenerate</button>
+        </span>
       </h3>
-      <div class="ai-content">
+      <div class="ai-content" id="aiSummaryContent">
         <ul>
           <li><strong>3 years</strong> of stage experience with Encore + community theater</li>
           <li>Notable: Jane in <em>Mary Poppins JR</em> (2025), Ensemble in <em>Annie JR</em> (2024), Young Cosette in <em>Les Misérables School Edition</em> (2024)</li>
@@ -1661,7 +1896,7 @@
         </ul>
         <div class="ai-footer">
           <span>Generated from uploaded resume · verify against original</span>
-          <a href="#" class="resume-link">View full resume PDF →</a>
+          <button class="resume-link" onclick="openResumeReplace()" style="background:none;border:none;font-family:inherit;cursor:pointer;color:var(--teal);font-weight:600;">View full resume PDF →</button>
         </div>
       </div>
     </div>
@@ -1923,6 +2158,71 @@
   </div>
 
 </main>
+
+<!-- HEADSHOT REPLACE MODAL -->
+<div class="edit-modal" id="headshotEditModal">
+  <div class="edit-modal-card">
+    <div class="edit-modal-head">
+      <h2>Update headshot</h2>
+      <button class="edit-modal-close" onclick="closeHeadshotEdit()" aria-label="Close">×</button>
+    </div>
+    <div class="edit-modal-body">
+      <p class="edit-modal-note">Replace this auditioner's headshot. Square or 4:5 portrait works best.</p>
+
+      <div class="current-preview">
+        <img id="currentHeadshot" src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt="Current headshot">
+        <div>
+          <div class="current-label">Current</div>
+          <div class="current-meta">Uploaded by parent · headshot.jpg</div>
+        </div>
+      </div>
+
+      <label class="upload-zone">
+        <input type="file" accept="image/*" hidden>
+        <div class="upload-zone-icon"><i class="ph-fill ph-camera-plus"></i></div>
+        <div class="upload-zone-text"><strong>Tap to upload</strong> a new headshot</div>
+        <div class="upload-zone-hint">JPG or PNG · Max 8 MB · Recommended 800×1000px</div>
+      </label>
+
+      <button class="text-link-btn" onclick="openLightbox('https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede', 'Maya Chen'); closeHeadshotEdit();">View current headshot full size →</button>
+    </div>
+    <div class="edit-modal-foot">
+      <button class="btn btn-secondary" onclick="closeHeadshotEdit()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveHeadshotEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESUME REPLACE MODAL -->
+<div class="edit-modal" id="resumeEditModal">
+  <div class="edit-modal-card">
+    <div class="edit-modal-head">
+      <h2>Update resume</h2>
+      <button class="edit-modal-close" onclick="closeResumeReplace()" aria-label="Close">×</button>
+    </div>
+    <div class="edit-modal-body">
+      <p class="edit-modal-note">Currently: <strong>Resume.pdf</strong> · 246 KB · uploaded by parent</p>
+
+      <label class="upload-zone">
+        <input type="file" accept="application/pdf,.pdf,.doc,.docx" hidden>
+        <div class="upload-zone-icon"><i class="ph-fill ph-file-text"></i></div>
+        <div class="upload-zone-text"><strong>Tap to upload</strong> a new resume</div>
+        <div class="upload-zone-hint">PDF preferred · Max 10 MB</div>
+      </label>
+
+      <a href="#" class="text-link-btn" target="_blank">View / download current resume →</a>
+
+      <div class="re-summary-prompt">
+        <i class="ph-fill ph-sparkle"></i>
+        <span>The AI-generated resume summary will be regenerated automatically when you upload a new file.</span>
+      </div>
+    </div>
+    <div class="edit-modal-foot">
+      <button class="btn btn-secondary" onclick="closeResumeReplace()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveResumeEdit()">Save &amp; regenerate summary</button>
+    </div>
+  </div>
+</div>
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
@@ -2212,15 +2512,23 @@
   }
 
   // ===== INLINE EDIT for registration info fields =====
-  function editInfo(el, label) {
+  function editInfo(el, label, isHeading, prefix) {
     if (el.dataset.editing === '1') return;
-    const currentVal = el.classList.contains('empty') ? '' : el.textContent.trim();
+    let currentVal = el.classList.contains('empty') ? '' : el.textContent.trim();
+    // Strip prefix (e.g. "T-shirt: " from "T-shirt: Youth Large") so user just edits the value
+    if (prefix && currentVal.startsWith(prefix)) {
+      currentVal = currentVal.substring(prefix.length);
+    }
     const newVal = prompt('Edit ' + label + ':', currentVal);
     if (newVal == null) return;
     const trimmed = newVal.trim();
     if (trimmed) {
-      el.textContent = trimmed;
+      el.textContent = (prefix ? prefix : '') + trimmed;
       el.classList.remove('empty');
+      // If editing the auditioner's name, update the page title too
+      if (label === 'Name') {
+        document.title = trimmed + ' — Encore Auditions';
+      }
     } else {
       // Restore an "empty state" look
       el.textContent = (label === 'Performer email' ? 'Not provided' :
@@ -2231,6 +2539,77 @@
     showSimpleToast(label + ' updated');
   }
 
+
+  // ===== HEADSHOT REPLACE =====
+  function openHeadshotMenu(event) {
+    event.stopPropagation();
+    document.getElementById('headshotEditModal').classList.add('show');
+  }
+  function closeHeadshotEdit() {
+    document.getElementById('headshotEditModal').classList.remove('show');
+  }
+  function saveHeadshotEdit() {
+    closeHeadshotEdit();
+    showSimpleToast('Headshot updated');
+  }
+
+  // ===== RESUME REPLACE =====
+  function openResumeReplace() {
+    document.getElementById('resumeEditModal').classList.add('show');
+  }
+  function closeResumeReplace() {
+    document.getElementById('resumeEditModal').classList.remove('show');
+  }
+  function saveResumeEdit() {
+    closeResumeReplace();
+    showSimpleToast('Resume updated · regenerating summary…');
+    setTimeout(() => regenerateAiSummary(true), 600);
+  }
+
+  // ===== AI SUMMARY EDIT / REGENERATE =====
+  function editAiSummary() {
+    const content = document.getElementById('aiSummaryContent');
+    if (content.dataset.editing === '1') return;
+    content.dataset.editing = '1';
+    const ul = content.querySelector('ul');
+    const lines = Array.from(ul.querySelectorAll('li')).map(li => '• ' + li.innerText.trim()).join('\n');
+    const footerEl = content.querySelector('.ai-footer');
+    const footerHtml = footerEl ? footerEl.outerHTML : '';
+    content.innerHTML =
+      '<textarea class="ai-edit-area" id="aiEditArea">' + lines + '</textarea>' +
+      '<div class="ai-edit-actions">' +
+        '<button class="btn btn-secondary" onclick="cancelEditAiSummary()">Cancel</button>' +
+        '<button class="btn btn-primary" onclick="saveEditAiSummary()">Save</button>' +
+      '</div>' +
+      footerHtml;
+    setTimeout(() => document.getElementById('aiEditArea').focus(), 0);
+  }
+  function cancelEditAiSummary() {
+    location.reload();
+  }
+  function saveEditAiSummary() {
+    const content = document.getElementById('aiSummaryContent');
+    const text = document.getElementById('aiEditArea').value;
+    const lines = text.split('\n').map(l => l.replace(/^[•·\-*]\s*/, '').trim()).filter(Boolean);
+    const ul = '<ul>' + lines.map(l => '<li>' + l.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</li>').join('') + '</ul>';
+    const footerEl = content.querySelector('.ai-footer');
+    const footerHtml = footerEl ? footerEl.outerHTML : '';
+    content.innerHTML = ul + footerHtml;
+    content.dataset.editing = '';
+    showSimpleToast('Summary updated');
+  }
+  function regenerateAiSummary(skipConfirm) {
+    if (!skipConfirm) {
+      if (!confirm('Regenerate the resume summary from the original PDF? This will overwrite any manual edits.')) return;
+    }
+    const content = document.getElementById('aiSummaryContent');
+    content.classList.add('regenerating');
+    showSimpleToast('Regenerating summary…');
+    setTimeout(() => {
+      content.classList.remove('regenerating');
+      showSimpleToast('Summary regenerated');
+    }, 1400);
+  }
 
   function openMusicEdit() {
     document.getElementById('musicEditModal').classList.add('show');

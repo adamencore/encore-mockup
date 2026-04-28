@@ -29,6 +29,9 @@
   --pastel-mustard: #EFCB5C;
   --pastel-lavender: #A8A4D6;
   --pastel-rose: #E8B5A8;
+
+  /* Brand */
+  --brand-dblue: #35444d;
 }
 
 * { box-sizing: border-box; }
@@ -64,13 +67,19 @@ em { font-style: normal; font-weight: 700; color: var(--coral); }
   height: 100vh;
 }
 .sb-brand {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900; font-size: 20px;
-  letter-spacing: 0.04em;
-  color: var(--ink);
+  display: flex;
+  align-items: center;
   padding: 4px 12px 28px;
+  color: var(--brand-dblue);
 }
-.sb-brand .star { color: var(--yellow-dark); margin-left: 4px; }
+.sb-brand img,
+.sb-brand .brand-logo {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+/* Legacy: hide any leftover ENCORE wordmark text or star */
+.sb-brand .star { display: none; }
 .sb-nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: auto; }
 .sb-link {
   display: flex; align-items: center; gap: 12px;
