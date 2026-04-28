@@ -7,7 +7,485 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app.css">
+<style>
+:root {
+  --cream: #FBF6EC;
+  --cream-dark: #F2EAD6;
+  --cream-shell: #F6EFDC;
+  --ink: #1A1A18;
+  --ink-soft: #4B4943;
+  --muted: #8E887C;
+  --line: #E5DCC7;
+  --line-soft: #EFE7D4;
+  --yellow: #F4CB3A;
+  --yellow-dark: #E0B423;
+  --yellow-soft: rgba(244, 203, 58, 0.15);
+  --teal: #2A6F73;
+  --teal-soft: rgba(42, 111, 115, 0.1);
+  --coral: #E26B4A;
+  --coral-soft: rgba(226, 107, 74, 0.08);
+  --plum: #7B4F7B;
+  --plum-soft: rgba(123, 79, 123, 0.1);
+  --sage: #6B8C5E;
+  --sage-soft: rgba(107, 140, 94, 0.12);
+  --white-soft: #FFFDF7;
+  --green: #4F8A4A;
+  --green-soft: rgba(79, 138, 74, 0.1);
+  --red: #C04A3D;
+  --red-soft: rgba(192, 74, 61, 0.08);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--cream-shell);
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--yellow); color: var(--ink); }
+a { color: inherit; text-decoration: none; }
+em { font-style: italic; color: var(--coral); }
+
+/* APP SHELL */
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--white-soft);
+  border-right: 1px solid var(--line);
+  padding: 26px 18px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0;
+  height: 100vh;
+}
+.sb-brand {
+  font-family: 'Fraunces', serif;
+  font-weight: 700; font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  padding: 4px 12px 28px;
+}
+.sb-brand .star { color: var(--yellow-dark); margin-left: 4px; }
+.sb-nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: auto; }
+.sb-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 10px;
+  color: var(--ink-soft);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.sb-link:hover { background: var(--cream-shell); color: var(--ink); }
+.sb-link.active { background: var(--ink); color: var(--cream); }
+.sb-icon { width: 18px; text-align: center; font-size: 15px; line-height: 1; }
+.sb-link.active .sb-icon { color: var(--yellow); }
+.sb-link .badge {
+  margin-left: auto;
+  background: var(--coral); color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 999px;
+  line-height: 1.4;
+}
+.sb-section-label {
+  padding: 16px 14px 6px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.sb-foot { border-top: 1px solid var(--line); padding-top: 14px; }
+
+/* MAIN */
+.main { display: grid; grid-template-columns: 1fr 320px; }
+.main.no-rail { grid-template-columns: 1fr; }
+.content { padding: 24px 28px 60px; min-width: 0; }
+.right-rail {
+  border-left: 1px solid var(--line);
+  background: var(--cream);
+  padding: 24px 22px 60px;
+}
+
+/* HEADER ROW */
+.header-row {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 22px;
+}
+.search { flex: 1; max-width: 380px; position: relative; }
+.search input {
+  width: 100%;
+  background: var(--white-soft);
+  border: 1.5px solid var(--line);
+  padding: 11px 14px 11px 38px;
+  border-radius: 10px;
+  font-family: inherit; font-size: 14px;
+  color: var(--ink);
+}
+.search input:focus {
+  outline: none; border-color: var(--ink);
+  box-shadow: 0 0 0 4px var(--yellow-soft);
+}
+.search::before {
+  content: "⌕";
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted); font-size: 16px;
+  pointer-events: none;
+}
+.header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.icon-btn {
+  background: var(--white-soft);
+  border: 1.5px solid var(--line);
+  width: 40px; height: 40px;
+  border-radius: 10px; cursor: pointer;
+  color: var(--ink-soft); font-size: 16px;
+  line-height: 1; position: relative;
+  transition: border-color 0.15s ease;
+}
+.icon-btn:hover { border-color: var(--ink-soft); }
+.icon-btn .dot {
+  position: absolute; top: 9px; right: 9px;
+  width: 8px; height: 8px;
+  background: var(--coral);
+  border-radius: 50%;
+  border: 2px solid var(--white-soft);
+}
+.header-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px 12px 5px 5px;
+  background: var(--white-soft);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.header-user:hover { border-color: var(--ink-soft); }
+.header-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--teal); color: white;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 11px;
+}
+.hu-info { display: flex; flex-direction: column; gap: 1px; }
+.hu-name { font-size: 13px; font-weight: 600; line-height: 1.1; }
+.hu-sub { font-size: 11px; color: var(--muted); line-height: 1.1; }
+
+/* PAGE HEADER */
+.page-head { margin-bottom: 24px; }
+.page-eyebrow {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 6px;
+}
+.page-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: clamp(26px, 4vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+.page-sub {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  color: var(--teal);
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+.back-link:hover { color: var(--ink); }
+
+/* SECTION */
+.section { margin-bottom: 32px; }
+.section-header {
+  display: flex; justify-content: space-between;
+  align-items: baseline; margin-bottom: 14px;
+  gap: 12px;
+}
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 600; font-size: 19px;
+  margin: 0; letter-spacing: -0.005em;
+}
+.section-action {
+  font-size: 12px; font-weight: 600;
+  color: var(--teal);
+  background: none; border: none;
+  padding: 0; cursor: pointer;
+  font-family: inherit;
+}
+.section-action:hover { color: var(--ink); }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 14px; border-radius: 10px;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  line-height: 1;
+}
+.btn-primary { background: var(--ink); color: var(--cream); }
+.btn-primary:hover { background: var(--teal); }
+.btn-yellow { background: var(--yellow); color: var(--ink); }
+.btn-yellow:hover { background: var(--yellow-dark); }
+.btn-secondary { background: var(--white-soft); color: var(--ink); border-color: var(--line); }
+.btn-secondary:hover { border-color: var(--ink-soft); }
+.btn-coral { background: var(--coral); color: white; }
+.btn-coral:hover { background: #C95736; }
+.btn-block { width: 100%; }
+.btn-lg { padding: 14px 20px; font-size: 15px; border-radius: 12px; }
+
+/* CARDS */
+.card {
+  background: var(--white-soft);
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 22px 24px;
+}
+.card.tight { padding: 16px 18px; }
+
+/* SHOW CARDS (used in dashboard, list pages) */
+.show-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.show-card {
+  background: var(--white-soft);
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+  display: flex; flex-direction: column;
+}
+.show-card:hover { border-color: var(--ink-soft); transform: translateY(-1px); }
+.show-card.feature { border-color: var(--yellow-dark); border-width: 2px; }
+.show-banner {
+  height: 76px;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.show-banner.coral { background: linear-gradient(135deg, #F08A6E, var(--coral)); }
+.show-banner.teal { background: linear-gradient(135deg, #4F9498, var(--teal)); }
+.show-banner.yellow { background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark)); }
+.show-banner.plum { background: linear-gradient(135deg, #9968A0, var(--plum)); }
+.show-banner.sage { background: linear-gradient(135deg, #8AAA7B, var(--sage)); }
+.show-banner.ink { background: linear-gradient(135deg, #3A3A36, var(--ink)); }
+.show-banner.tall { height: 220px; }
+.show-banner-icon {
+  font-family: 'Fraunces', serif;
+  font-size: 40px;
+  color: rgba(255,255,255,0.28);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.show-banner.tall .show-banner-icon { font-size: 90px; }
+.show-status {
+  position: absolute; top: 10px; left: 10px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 9px; border-radius: 999px;
+  background: rgba(26,26,24,0.78);
+  color: white; line-height: 1.4;
+  backdrop-filter: blur(4px);
+}
+.show-status.cast { background: var(--green); }
+.show-status.callback { background: var(--yellow); color: var(--ink); }
+.show-body {
+  padding: 16px 18px;
+  flex: 1; display: flex; flex-direction: column; gap: 8px;
+}
+.show-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 600; font-size: 17px;
+  line-height: 1.2; margin: 0;
+  letter-spacing: -0.005em;
+}
+.show-meta { font-size: 12px; color: var(--muted); margin: 0; }
+.show-detail {
+  font-size: 13px; color: var(--ink-soft);
+  margin: 4px 0 0; line-height: 1.45;
+}
+.show-foot { margin-top: auto; padding-top: 12px; }
+
+/* PROGRESS */
+.progress {
+  height: 6px;
+  background: var(--cream-shell);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress > span {
+  display: block; height: 100%;
+  background: var(--teal);
+  border-radius: 999px;
+}
+.progress-meta {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--muted);
+  margin-top: 6px; font-weight: 500;
+}
+
+/* PERFORMER STRIP */
+.performer-strip {
+  display: flex; gap: 8px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.ps-tab {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 14px 7px 7px;
+  background: var(--white-soft);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer; font-family: inherit;
+  font-size: 13px; font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.ps-tab:hover { border-color: var(--ink-soft); }
+.ps-tab.active {
+  background: var(--ink); color: var(--cream);
+  border-color: var(--ink);
+}
+.ps-avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--cream-dark);
+  overflow: hidden;
+}
+.ps-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ps-tab.add { border-style: dashed; padding-left: 14px; color: var(--muted); }
+
+/* PILLS / TAGS */
+.pill {
+  display: inline-block;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+  line-height: 1.4;
+  background: var(--cream-dark); color: var(--ink-soft);
+}
+.pill.coral { background: var(--coral); color: white; }
+.pill.teal { background: var(--teal-soft); color: var(--teal); }
+.pill.yellow { background: var(--yellow); color: var(--ink); }
+.pill.green { background: var(--green-soft); color: var(--green); }
+.pill.muted { background: var(--cream-dark); color: var(--muted); }
+.pill.red { background: var(--red-soft); color: var(--red); }
+
+/* FORM */
+label.field-label {
+  display: block;
+  font-size: 13px; font-weight: 600;
+  color: var(--ink); margin-bottom: 6px;
+}
+.field-help {
+  font-size: 12px; color: var(--muted);
+  margin: 6px 0 0;
+}
+.input, select.input {
+  width: 100%;
+  background: var(--white-soft);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: inherit; font-size: 14.5px;
+  color: var(--ink);
+}
+.input:focus {
+  outline: none; border-color: var(--ink);
+  box-shadow: 0 0 0 4px var(--yellow-soft);
+}
+.field { margin-bottom: 18px; }
+
+/* INFO ROW (used in detail pages) */
+.info-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line-soft);
+  font-size: 14px;
+}
+.info-row:first-child { border-top: none; }
+.info-row .info-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.info-row .info-val { color: var(--ink); }
+
+/* MOBILE TABS */
+.mobile-tabs { display: none; }
+
+@media (max-width: 1100px) {
+  .main { grid-template-columns: 1fr; }
+  .right-rail {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .content { padding: 18px 16px 100px; }
+  .right-rail { padding: 18px 16px 100px; }
+  .hu-info { display: none; }
+  .show-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .info-row { grid-template-columns: 1fr; gap: 4px; padding: 10px 0; }
+  .info-row .info-label { font-size: 11px; }
+
+  .mobile-tabs {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--white-soft);
+    border-top: 1px solid var(--line);
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    z-index: 100;
+    justify-content: space-around;
+  }
+  .mt-link {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    padding: 8px;
+    color: var(--muted);
+    font-size: 10px; font-weight: 600;
+    cursor: pointer;
+    background: none; border: none;
+    font-family: inherit;
+  }
+  .mt-link.active { color: var(--ink); }
+  .mt-link.active .mt-icon { color: var(--coral); }
+  .mt-icon { font-size: 19px; line-height: 1; }
+}
+
+</style>
 <style>
   .sidebar.admin { background: var(--ink); border-right: 1px solid #2C2C28; }
   .sidebar.admin .sb-brand { color: var(--cream); }
@@ -96,6 +574,129 @@
     margin-bottom: 8px;
   }
   .empty-row a { color: var(--teal); font-weight: 600; }
+
+  /* MODAL */
+  .modal {
+    position: fixed; inset: 0;
+    background: rgba(20, 19, 17, 0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 20px;
+    z-index: 200;
+    overflow-y: auto;
+  }
+  .modal.show { display: flex; }
+  .modal-card {
+    background: var(--white-soft);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 540px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  }
+  .modal-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1.5px solid var(--line);
+  }
+  .modal-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 19px;
+    margin: 0; letter-spacing: -0.005em;
+  }
+  .modal-close {
+    background: none; border: none;
+    color: var(--muted); font-size: 22px;
+    cursor: pointer; line-height: 1;
+    padding: 4px 8px;
+  }
+  .modal-close:hover { color: var(--ink); }
+  .modal-body { padding: 22px 24px; }
+  .modal-foot {
+    padding: 16px 24px;
+    background: var(--cream-shell);
+    border-top: 1.5px solid var(--line);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .form-section-modal { margin-bottom: 18px; }
+  .form-section-modal:last-child { margin-bottom: 0; }
+  .form-section-modal label.field-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .form-grid-modal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .form-grid-modal .full { grid-column: 1 / -1; }
+
+  /* Template chips */
+  .template-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 600px) { .template-row { grid-template-columns: 1fr 1fr; } }
+  .template-chip {
+    padding: 12px;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-family: inherit;
+    transition: border-color 0.15s ease;
+  }
+  .template-chip:hover { border-color: var(--ink-soft); }
+  .template-chip.active {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+  .template-chip .tc-icon {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .template-chip .tc-name {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .template-chip .tc-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.2;
+  }
+  .template-chip.active .tc-sub { color: rgba(251,246,236,0.7); }
+
+  .helper-note {
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: var(--cream-shell);
+    padding: 12px 14px;
+    border-radius: 10px;
+    line-height: 1.5;
+  }
+  .helper-note strong { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -103,20 +704,20 @@
 <div class="app">
 
   <aside class="sidebar admin">
-    <a href="admin-dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <a href="#" class="sb-brand">ENCORE<span class="star">★</span></a>
     <nav class="sb-nav">
-      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
-      <a class="sb-link active" href="admin-shows.html"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
-      <a class="sb-link" href="admin-show-editor.html"><span class="sb-icon">✎</span> Show editor</a>
+      <a class="sb-link" href="#"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link active" href="#"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
+      <a class="sb-link" href="#"><span class="sb-icon">✎</span> Show editor</a>
       <a class="sb-link" href="#"><span class="sb-icon">★</span> Auditioners</a>
       <a class="sb-link" href="#"><span class="sb-icon">♟</span> Families</a>
       <div class="sb-section-label">Super admin</div>
-      <a class="sb-link" href="admin-invoices.html"><span class="sb-icon">$</span> Invoices</a>
-      <a class="sb-link" href="admin-content.html"><span class="sb-icon">📰</span> Content</a>
+      <a class="sb-link" href="#"><span class="sb-icon">$</span> Invoices</a>
+      <a class="sb-link" href="#"><span class="sb-icon">📰</span> Content</a>
       <a class="sb-link" href="#"><span class="sb-icon">📊</span> Reports</a>
     </nav>
     <div class="sb-foot">
-      <a class="sb-link" href="dashboard.html"><span class="sb-icon">↗</span> View as parent</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↗</span> View as parent</a>
       <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
       <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
     </div>
@@ -143,7 +744,7 @@
           <h1 class="page-title">All Encore productions</h1>
           <p class="page-sub">Active, upcoming, and archived. Tap any to manage.</p>
         </div>
-        <a href="admin-show-editor.html" class="btn btn-primary btn-lg">+ New show</a>
+        <button onclick="document.getElementById('newShowModal').classList.add('show')" class="btn btn-primary btn-lg" style="border: none;">+ New show</button>
       </div>
 
       <div class="filter-bar">
@@ -156,7 +757,7 @@
 
       <h3 style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px;">Active</h3>
 
-      <a href="admin-show-editor.html" class="show-row">
+      <a href="#" class="show-row">
         <div class="show-row-icon yellow">L</div>
         <div class="show-row-info">
           <h4>Disney's <em>Lion King</em> JR</h4>
@@ -168,7 +769,7 @@
         <span><span class="pill green">Cast posted</span></span>
       </a>
 
-      <a href="admin-show-editor.html" class="show-row">
+      <a href="#" class="show-row">
         <div class="show-row-icon coral">A</div>
         <div class="show-row-info">
           <h4><em>Annie</em> KIDS</h4>
@@ -180,7 +781,7 @@
         <span><span class="pill yellow">Auditions today</span></span>
       </a>
 
-      <a href="admin-show-editor.html" class="show-row">
+      <a href="#" class="show-row">
         <div class="show-row-icon plum">M</div>
         <div class="show-row-info">
           <h4><em>Mary Poppins</em> JR</h4>
@@ -192,7 +793,7 @@
         <span><span class="pill coral">Closes May 5</span></span>
       </a>
 
-      <a href="admin-show-editor.html" class="show-row">
+      <a href="#" class="show-row">
         <div class="show-row-icon teal">F</div>
         <div class="show-row-info">
           <h4><em>Frozen</em> JR</h4>
@@ -204,7 +805,7 @@
         <span><span class="pill">Setup needed</span></span>
       </a>
 
-      <a href="admin-show-editor.html" class="show-row">
+      <a href="#" class="show-row">
         <div class="show-row-icon sage">S</div>
         <div class="show-row-info">
           <h4><em>Seussical</em> JR</h4>
@@ -218,7 +819,7 @@
 
       <h3 style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 24px 0 12px;">Coming up</h3>
 
-      <a href="admin-show-editor.html" class="show-row">
+      <a href="#" class="show-row">
         <div class="show-row-icon coral">M</div>
         <div class="show-row-info">
           <h4><em>Matilda</em> JR</h4>
@@ -231,12 +832,12 @@
       </a>
 
       <div class="empty-row">
-        <a>+ New show for next season</a>
+        <a onclick="document.getElementById('newShowModal').classList.add('show')" style="cursor: pointer;">+ New show for next season</a>
       </div>
 
       <h3 style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 24px 0 12px;">Recently closed</h3>
 
-      <a href="admin-show-editor.html" class="show-row" style="opacity: 0.7;">
+      <a href="#" class="show-row" style="opacity: 0.7;">
         <div class="show-row-icon sage">M</div>
         <div class="show-row-info">
           <h4><em>Mary Poppins</em> JR</h4>
@@ -252,6 +853,89 @@
   </div>
 </div>
 
+<!-- NEW SHOW MODAL -->
+<div class="modal" id="newShowModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>New show</h2>
+      <button class="modal-close" onclick="document.getElementById('newShowModal').classList.remove('show')">×</button>
+    </div>
+
+    <div class="modal-body">
+
+      <p style="font-size: 13px; color: var(--ink-soft); margin: 0 0 16px;">Start with the basics. You can fill in the rehearsal schedule, role list, and audition slots after.</p>
+
+      <div class="form-section-modal">
+        <label class="field-label">Start from a template</label>
+        <div class="template-row">
+          <button class="template-chip active">
+            <span class="tc-icon">+</span>
+            <div class="tc-name">Blank</div>
+            <div class="tc-sub">Custom show</div>
+          </button>
+          <button class="template-chip">
+            <span class="tc-icon">L</span>
+            <div class="tc-name">Lion King JR</div>
+            <div class="tc-sub">Last used Sum '26</div>
+          </button>
+          <button class="template-chip">
+            <span class="tc-icon">M</span>
+            <div class="tc-name">Mary Poppins JR</div>
+            <div class="tc-sub">Last used Fall '25</div>
+          </button>
+        </div>
+        <p class="helper-note">Templates copy roles, schedule pattern, and tuition from a previous production. Saves a lot of typing if you've done the show before.</p>
+      </div>
+
+      <div class="form-section-modal">
+        <label class="field-label">Show title</label>
+        <input class="input" placeholder="e.g. Disney's Frozen JR" autofocus>
+      </div>
+
+      <div class="form-section-modal">
+        <div class="form-grid-modal">
+          <div>
+            <label class="field-label">Season</label>
+            <select class="input">
+              <option>Fall 2026</option>
+              <option>Winter 2026</option>
+              <option>Spring 2027</option>
+              <option>Summer 2027</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Director</label>
+            <select class="input">
+              <option>— Assign later —</option>
+              <option>Linda Cruz</option>
+              <option>Marcus Lee</option>
+              <option>Jess Park</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Age min</label>
+            <input class="input" type="number" placeholder="8">
+          </div>
+          <div>
+            <label class="field-label">Age max</label>
+            <input class="input" type="number" placeholder="13">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section-modal">
+        <p class="helper-note">After you create this show, you'll go to the show editor where you can add roles, rehearsal dates, audition slots, fees, and the show poster. Nothing is visible to parents until you click <strong>Publish</strong>.</p>
+      </div>
+
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="document.getElementById('newShowModal').classList.remove('show')">Cancel</button>
+      <a href="#" class="btn btn-primary">Create show →</a>
+    </div>
+  </div>
+</div>
+
 <script src="app.js"></script>
 <script>
   document.querySelectorAll('.filter-tab').forEach(t => {
@@ -259,6 +943,22 @@
       document.querySelectorAll('.filter-tab').forEach(x => x.classList.remove('active'));
       t.classList.add('active');
     });
+  });
+  document.querySelectorAll('.template-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.template-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+  document.getElementById('newShowModal').addEventListener('click', (e) => {
+    if (e.target.id === 'newShowModal') {
+      e.target.classList.remove('show');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+    }
   });
 </script>
 </body>
