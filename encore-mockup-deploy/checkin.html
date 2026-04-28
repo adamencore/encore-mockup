@@ -486,6 +486,36 @@
     gap: 2px;
     align-items: flex-start;
   }
+  .audr-name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+  .profile-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--cream-shell);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+  }
+  .profile-link:hover {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+    transform: translate(2px, -2px);
+  }
+  .profile-link:active { transform: translate(0, 0); }
+  .profile-link i { font-size: 13px; }
   .audr-name {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -1307,6 +1337,10 @@ function filledNumBadge(a) {
   return '<button class="audr-num filled-btn" onclick="promptNumber(' + a.id + ')" title="Tap to edit number">' + a.number + '</button>';
 }
 
+function profileLink(a) {
+  return '<a class="profile-link" href="director-view.html" target="_blank" title="View full profile" onclick="event.stopPropagation()"><i class="ph-fill ph-arrow-square-out"></i></a>';
+}
+
 function rowExpected(a) {
   const walkInTag = a.isWalkin ? '<span class="walkin-tag">Walk-in</span> · ' : '';
   const editingClass = pendingNumberFor === a.id ? ' editing' : '';
@@ -1314,7 +1348,10 @@ function rowExpected(a) {
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
     emptyNumBadge(a) +
     '<div class="audr-info">' +
-      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<div class="audr-name-row">' +
+        '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+        profileLink(a) +
+      '</div>' +
       '<div class="audr-meta">' + walkInTag + 'Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + '</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> Expected</div>' +
@@ -1334,7 +1371,10 @@ function rowLate(a) {
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
     emptyNumBadge(a) +
     '<div class="audr-info">' +
-      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<div class="audr-name-row">' +
+        '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+        profileLink(a) +
+      '</div>' +
       '<div class="audr-meta"><span class="late-tag">' + minsLate + ' min late</span> · Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + '</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> No show?</div>' +
@@ -1355,7 +1395,10 @@ function rowCheckedIn(a) {
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
     filledNumBadge(a) +
     '<div class="audr-info">' +
-      '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
+      '<div class="audr-name-row">' +
+        '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
+        profileLink(a) +
+      '</div>' +
       '<div class="audr-meta">' + walkInTag + 'Age ' + a.age + ' · Checked in ' + escapeHtml(a.checkedInAt || '') + '</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> Waiting</div>' +
@@ -1374,7 +1417,10 @@ function rowInRoom(a) {
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
     filledNumBadge(a) +
     '<div class="audr-info">' +
-      '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
+      '<div class="audr-name-row">' +
+        '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
+        profileLink(a) +
+      '</div>' +
       '<div class="audr-meta">Age ' + a.age + ' · Auditioning now</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> In room</div>' +
@@ -1393,7 +1439,10 @@ function rowDone(a) {
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
     filledNumBadge(a) +
     '<div class="audr-info">' +
-      '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
+      '<div class="audr-name-row">' +
+        '<button class="audr-name editable-name" onclick="promptName(' + a.id + ')" title="Tap to edit name">' + escapeHtml(a.name) + ' <i class="ph-fill ph-pencil-simple edit-pencil"></i></button>' +
+        profileLink(a) +
+      '</div>' +
       '<div class="audr-meta">Age ' + a.age + ' · Auditioned ' + escapeHtml(a.checkedInAt || '') + '</div>' +
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> Done</div>' +
