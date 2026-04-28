@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Check-in — Encore Auditions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  body {
+    background: var(--cream);
+  }
+  .checkin-shell {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 18px 18px 100px;
+  }
+
+  /* Top bar — stripped down for kiosk feel */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 4px;
+    margin-bottom: 18px;
+    border-bottom: 1.5px solid var(--line);
+  }
+  .topbar-brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.06em;
+  }
+  .topbar-brand .star { color: var(--yellow-dark); }
+  .topbar-show {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .topbar-show em { font-style: italic; color: var(--coral); }
+  .topbar-time {
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Stats */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 700px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+  .stat {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .stat.urgent { background: var(--coral); color: white; border-color: var(--coral); }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-lbl {
+    font-size: 11px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+
+  /* Big search */
+  .checkin-search {
+    background: var(--white-soft);
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 0 var(--cream-dark);
+  }
+  .checkin-search input {
+    flex: 1;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    padding: 6px 0;
+  }
+  .checkin-search input:focus { outline: none; }
+  .checkin-search input::placeholder { color: var(--muted); }
+  .checkin-search-icon {
+    font-size: 22px;
+    color: var(--muted);
+  }
+  .walkin-btn {
+    background: var(--coral);
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Filter chips */
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-chip {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+  .filter-chip.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  /* Auditioner row */
+  .audr-list { display: flex; flex-direction: column; gap: 10px; }
+  .audr {
+    display: grid;
+    grid-template-columns: 60px 50px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 18px;
+    transition: border-color 0.15s ease;
+  }
+  .audr.checked-in { background: rgba(79, 138, 74, 0.04); border-color: var(--green); }
+  .audr.late { background: rgba(192, 74, 61, 0.04); border-color: var(--red); }
+  .audr.in-room { background: var(--yellow-soft); border-color: var(--yellow-dark); }
+  .audr.done { opacity: 0.5; }
+
+  .audr-slot {
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+  .audr-num {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: grid; place-items: center;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .audr-num.empty {
+    background: var(--cream-shell);
+    border: 1.5px dashed var(--line);
+    color: var(--muted);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+  }
+  .audr.checked-in .audr-num { background: var(--green); }
+  .audr.in-room .audr-num { background: var(--yellow-dark); color: var(--ink); }
+  .audr.late .audr-num.empty { border-color: var(--red); color: var(--red); }
+
+  .audr-info { min-width: 0; }
+  .audr-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.2;
+  }
+  .audr-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .audr-meta .late-tag {
+    color: var(--red);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .audr-status {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .audr.checked-in .audr-status { color: var(--green); }
+  .audr.in-room .audr-status { color: var(--yellow-dark); }
+  .audr.late .audr-status { color: var(--red); }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .audr-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .check-btn {
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.1s ease;
+    line-height: 1;
+  }
+  .check-btn:hover { background: var(--teal); }
+  .check-btn:active { transform: scale(0.97); }
+  .check-btn.green { background: var(--green); }
+  .check-btn.green:hover { background: #3F6F3B; }
+  .check-btn.coral { background: var(--coral); }
+  .check-btn.coral:hover { background: #C95736; }
+  .check-btn.outline {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1.5px solid var(--line);
+  }
+  .check-btn.outline:hover { border-color: var(--ink-soft); color: var(--ink); }
+  .check-btn.icon-only {
+    padding: 12px 14px;
+  }
+
+  @media (max-width: 700px) {
+    .audr {
+      grid-template-columns: 50px 50px 1fr;
+      gap: 10px;
+    }
+    .audr > .audr-status { display: none; }
+    .audr > .audr-actions { grid-column: 1 / -1; margin-top: 4px; }
+    .audr-actions { width: 100%; }
+    .audr-actions .check-btn { flex: 1; }
+  }
+
+  /* Group headers */
+  .group-head {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 22px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .group-head:first-of-type { margin-top: 6px; }
+  .group-head .group-line { flex: 1; height: 1px; background: var(--line-soft); }
+  .group-head .group-count {
+    background: var(--cream-shell);
+    color: var(--ink-soft);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* Walk-in modal */
+  .modal {
+    position: fixed; inset: 0;
+    background: rgba(20, 19, 17, 0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 20px;
+    z-index: 200;
+    overflow-y: auto;
+  }
+  .modal.show { display: flex; }
+  .modal-card {
+    background: var(--white-soft);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+  }
+  .modal-head {
+    padding: 20px 24px;
+    border-bottom: 1.5px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 19px;
+    margin: 0;
+  }
+  .modal-close {
+    background: none; border: none;
+    color: var(--muted); font-size: 22px;
+    cursor: pointer; padding: 4px 8px;
+  }
+  .modal-body { padding: 22px 24px; }
+  .modal-foot {
+    padding: 16px 24px;
+    background: var(--cream-shell);
+    border-top: 1.5px solid var(--line);
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+  .field-block { margin-bottom: 14px; }
+  .field-block:last-child { margin-bottom: 0; }
+  .field-block label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="checkin-shell">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">ENCORE<span class="star">★</span> · CHECK-IN</div>
+    <div class="topbar-show">Disney's <em>Lion King</em> JR · Day 1 of 2</div>
+    <div class="topbar-time">9:23 AM</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat active">
+      <div class="stat-num">14</div>
+      <div class="stat-lbl">Checked in</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">8</div>
+      <div class="stat-lbl">Expected</div>
+    </div>
+    <div class="stat urgent">
+      <div class="stat-num">2</div>
+      <div class="stat-lbl">Late</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1</div>
+      <div class="stat-lbl">In room</div>
+    </div>
+  </div>
+
+  <!-- SEARCH + WALK-IN -->
+  <div class="checkin-search">
+    <span class="checkin-search-icon">⌕</span>
+    <input type="text" placeholder="Search by name…" autofocus>
+    <button class="walkin-btn" onclick="document.getElementById('walkinModal').classList.add('show')">+ Walk-in</button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-row">
+    <button class="filter-chip active">All <span style="color: var(--muted); font-weight: 500;">· 23</span></button>
+    <button class="filter-chip">Expected · 8</button>
+    <button class="filter-chip">Late · 2</button>
+    <button class="filter-chip">Checked in · 14</button>
+    <button class="filter-chip">Done · 5</button>
+  </div>
+
+  <!-- IN ROOM NOW -->
+  <div class="group-head">
+    <span>In room now</span>
+    <span class="group-count">1</span>
+    <span class="group-line"></span>
+  </div>
+
+  <div class="audr-list">
+    <div class="audr in-room">
+      <div class="audr-slot">9:30</div>
+      <div class="audr-num">12</div>
+      <div class="audr-info">
+        <div class="audr-name">Olivia Rodriguez</div>
+        <div class="audr-meta">Age 13 · Auditioning now</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> In room</div>
+      <div class="audr-actions">
+        <button class="check-btn outline">✓ Mark done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LATE -->
+  <div class="group-head">
+    <span style="color: var(--red);">Late · need attention</span>
+    <span class="group-count" style="background: var(--red); color: white;">2</span>
+    <span class="group-line"></span>
+  </div>
+
+  <div class="audr-list">
+    <div class="audr late">
+      <div class="audr-slot">9:00</div>
+      <div class="audr-num empty">+</div>
+      <div class="audr-info">
+        <div class="audr-name">Maya Chen</div>
+        <div class="audr-meta"><span class="late-tag">23 min late</span> · Age 11 · Mom: Sarah Chen</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> No show?</div>
+      <div class="audr-actions">
+        <button class="check-btn outline icon-only" title="Call parent">📞</button>
+        <button class="check-btn green">+ Check in</button>
+      </div>
+    </div>
+
+    <div class="audr late">
+      <div class="audr-slot">9:15</div>
+      <div class="audr-num empty">+</div>
+      <div class="audr-info">
+        <div class="audr-name">Jackson Park</div>
+        <div class="audr-meta"><span class="late-tag">8 min late</span> · Age 9 · Dad: Mike Park</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> No show?</div>
+      <div class="audr-actions">
+        <button class="check-btn outline icon-only" title="Call parent">📞</button>
+        <button class="check-btn green">+ Check in</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPECTED -->
+  <div class="group-head">
+    <span>Expected next</span>
+    <span class="group-count">3</span>
+    <span class="group-line"></span>
+  </div>
+
+  <div class="audr-list">
+    <div class="audr">
+      <div class="audr-slot">9:45</div>
+      <div class="audr-num empty">+</div>
+      <div class="audr-info">
+        <div class="audr-name">Eli Patel</div>
+        <div class="audr-meta">Age 10 · Mom: Jen Patel</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> Expected</div>
+      <div class="audr-actions">
+        <button class="check-btn green">+ Check in</button>
+      </div>
+    </div>
+    <div class="audr">
+      <div class="audr-slot">10:00</div>
+      <div class="audr-num empty">+</div>
+      <div class="audr-info">
+        <div class="audr-name">Sofia Martinez</div>
+        <div class="audr-meta">Age 12 · Mom: Elena Martinez</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> Expected</div>
+      <div class="audr-actions">
+        <button class="check-btn green">+ Check in</button>
+      </div>
+    </div>
+    <div class="audr">
+      <div class="audr-slot">10:15</div>
+      <div class="audr-num empty">+</div>
+      <div class="audr-info">
+        <div class="audr-name">Liam O'Brien</div>
+        <div class="audr-meta">Age 8 · Dad: Ryan O'Brien</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> Expected</div>
+      <div class="audr-actions">
+        <button class="check-btn green">+ Check in</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKED IN, WAITING -->
+  <div class="group-head">
+    <span style="color: var(--green);">Checked in · waiting</span>
+    <span class="group-count" style="background: var(--green-soft); color: var(--green);">13</span>
+    <span class="group-line"></span>
+  </div>
+
+  <div class="audr-list">
+    <div class="audr checked-in">
+      <div class="audr-slot">9:30</div>
+      <div class="audr-num">11</div>
+      <div class="audr-info">
+        <div class="audr-name">Ava Johnson</div>
+        <div class="audr-meta">Age 11 · Checked in 9:18 AM</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> Waiting</div>
+      <div class="audr-actions">
+        <button class="check-btn outline">Undo</button>
+      </div>
+    </div>
+    <div class="audr checked-in">
+      <div class="audr-slot">9:45</div>
+      <div class="audr-num">13</div>
+      <div class="audr-info">
+        <div class="audr-name">Brooklyn Park</div>
+        <div class="audr-meta">Age 12 · Checked in 9:21 AM</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> Waiting</div>
+      <div class="audr-actions">
+        <button class="check-btn outline">Undo</button>
+      </div>
+    </div>
+    <div class="audr checked-in">
+      <div class="audr-slot">10:00</div>
+      <div class="audr-num">14</div>
+      <div class="audr-info">
+        <div class="audr-name">Carter Brooks</div>
+        <div class="audr-meta">Age 10 · Checked in 9:22 AM</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> Waiting</div>
+      <div class="audr-actions">
+        <button class="check-btn outline">Undo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div class="group-head">
+    <span>Done</span>
+    <span class="group-count">5</span>
+    <span class="group-line"></span>
+  </div>
+
+  <div class="audr-list">
+    <div class="audr done">
+      <div class="audr-slot">8:30</div>
+      <div class="audr-num">1</div>
+      <div class="audr-info">
+        <div class="audr-name">Mason Hill</div>
+        <div class="audr-meta">Age 12 · Auditioned 8:33 AM</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> Done</div>
+      <div class="audr-actions"></div>
+    </div>
+    <div class="audr done">
+      <div class="audr-slot">8:45</div>
+      <div class="audr-num">2</div>
+      <div class="audr-info">
+        <div class="audr-name">Milo Stevens</div>
+        <div class="audr-meta">Age 10 · Auditioned 8:46 AM</div>
+      </div>
+      <div class="audr-status"><span class="status-dot"></span> Done</div>
+      <div class="audr-actions"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- WALK-IN MODAL -->
+<div class="modal" id="walkinModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Add walk-in auditioner</h2>
+      <button class="modal-close" onclick="document.getElementById('walkinModal').classList.remove('show')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size: 13px; color: var(--ink-soft); margin: 0 0 18px;">For someone who didn't pre-register but showed up. We'll add them to today's list and they'll get the next available number.</p>
+
+      <div class="field-block">
+        <label>Performer name</label>
+        <input class="input" placeholder="First and last name">
+      </div>
+
+      <div class="form-grid-2">
+        <div class="field-block">
+          <label>Age</label>
+          <input class="input" type="number" placeholder="11">
+        </div>
+        <div class="field-block">
+          <label>T-shirt size</label>
+          <select class="input">
+            <option>Youth Small</option>
+            <option>Youth Medium</option>
+            <option selected>Youth Large</option>
+            <option>Adult Small</option>
+            <option>Adult Medium</option>
+            <option>Adult Large</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <label>Parent name</label>
+        <input class="input" placeholder="Parent or guardian">
+      </div>
+
+      <div class="form-grid-2">
+        <div class="field-block">
+          <label>Parent phone</label>
+          <input class="input" type="tel" placeholder="(435) 555-0142">
+        </div>
+        <div class="field-block">
+          <label>Parent email</label>
+          <input class="input" type="email" placeholder="parent@email.com">
+        </div>
+      </div>
+
+      <div style="background: var(--cream-shell); border-radius: 10px; padding: 12px 14px; font-size: 12px; color: var(--ink-soft); line-height: 1.55; margin-top: 6px;">
+        Headshot, resume, and music can be added later. Audition fee invoice will be sent automatically once submitted.
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="document.getElementById('walkinModal').classList.remove('show')">Cancel</button>
+      <button class="btn btn-primary">Add &amp; check in →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+  document.getElementById('walkinModal').addEventListener('click', (e) => {
+    if (e.target.id === 'walkinModal') e.target.classList.remove('show');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+    }
+  });
+</script>
+
+</body>
+</html>
