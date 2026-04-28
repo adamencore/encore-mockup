@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shows — Encore Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .sidebar.admin { background: var(--ink); border-right: 1px solid #2C2C28; }
+  .sidebar.admin .sb-brand { color: var(--cream); }
+  .sidebar.admin .sb-brand .star { color: var(--yellow); }
+  .sidebar.admin .sb-section-label { color: rgba(251,246,236,0.4); }
+  .sidebar.admin .sb-link { color: rgba(251,246,236,0.65); }
+  .sidebar.admin .sb-link:hover { background: rgba(255,255,255,0.07); color: var(--cream); }
+  .sidebar.admin .sb-link.active { background: var(--yellow); color: var(--ink); }
+  .sidebar.admin .sb-link.active .sb-icon { color: var(--ink); }
+  .sidebar.admin .sb-foot { border-top: 1px solid #2C2C28; }
+  .admin-mode-badge { background: var(--yellow); color: var(--ink); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; margin-right: 8px; }
+
+  .show-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 100px 100px 100px 130px;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 22px;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 8px;
+    transition: border-color 0.15s ease;
+    cursor: pointer;
+  }
+  .show-row:hover { border-color: var(--ink-soft); }
+  .show-row-icon {
+    width: 48px; height: 48px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: white;
+    font-weight: 700;
+  }
+  .show-row-icon.yellow { background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark)); }
+  .show-row-icon.coral { background: linear-gradient(135deg, #F08A6E, var(--coral)); }
+  .show-row-icon.teal { background: linear-gradient(135deg, #4F9498, var(--teal)); }
+  .show-row-icon.plum { background: linear-gradient(135deg, #9968A0, var(--plum)); }
+  .show-row-icon.sage { background: linear-gradient(135deg, #8AAA7B, var(--sage)); }
+  .show-row-info h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 0 2px;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+  }
+  .show-row-info h4 em { font-style: italic; color: var(--coral); }
+  .show-row-info p { font-size: 12px; color: var(--muted); margin: 0; }
+  .show-row-stat {
+    text-align: center;
+  }
+  .show-row-stat .num { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; line-height: 1; }
+  .show-row-stat .lbl { font-size: 10px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+
+  @media (max-width: 800px) {
+    .show-row { grid-template-columns: 60px 1fr; gap: 12px; }
+    .show-row > .show-row-stat { display: none; }
+  }
+
+  .filter-bar {
+    display: flex; gap: 8px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-tab {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; line-height: 1.2;
+  }
+  .filter-tab.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .empty-row {
+    background: var(--cream-shell);
+    border: 1.5px dashed var(--line);
+    border-radius: 14px;
+    padding: 32px;
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .empty-row a { color: var(--teal); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar admin">
+    <a href="admin-dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link active" href="admin-shows.html"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
+      <a class="sb-link" href="admin-show-editor.html"><span class="sb-icon">✎</span> Show editor</a>
+      <a class="sb-link" href="#"><span class="sb-icon">★</span> Auditioners</a>
+      <a class="sb-link" href="#"><span class="sb-icon">♟</span> Families</a>
+      <div class="sb-section-label">Super admin</div>
+      <a class="sb-link" href="admin-invoices.html"><span class="sb-icon">$</span> Invoices</a>
+      <a class="sb-link" href="admin-content.html"><span class="sb-icon">📰</span> Content</a>
+      <a class="sb-link" href="#"><span class="sb-icon">📊</span> Reports</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">↗</span> View as parent</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search shows…"></div>
+        <div class="header-actions">
+          <span class="admin-mode-badge">★ Super Admin</span>
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar" style="background: var(--ink);">AR</div>
+            <div class="hu-info"><span class="hu-name">Adam Record</span><span class="hu-sub">Owner</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <p class="page-eyebrow">Shows</p>
+          <h1 class="page-title">All Encore productions</h1>
+          <p class="page-sub">Active, upcoming, and archived. Tap any to manage.</p>
+        </div>
+        <a href="admin-show-editor.html" class="btn btn-primary btn-lg">+ New show</a>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-tab active">All <span style="color: var(--muted); font-weight: 500;">· 12</span></button>
+        <button class="filter-tab">Open auditions · 4</button>
+        <button class="filter-tab">Casting · 1</button>
+        <button class="filter-tab">In rehearsal · 2</button>
+        <button class="filter-tab">Past · 5</button>
+      </div>
+
+      <h3 style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px;">Active</h3>
+
+      <a href="admin-show-editor.html" class="show-row">
+        <div class="show-row-icon yellow">L</div>
+        <div class="show-row-info">
+          <h4>Disney's <em>Lion King</em> JR</h4>
+          <p>Summer 2026 · In rehearsal · Linda Cruz</p>
+        </div>
+        <div class="show-row-stat"><div class="num">28</div><div class="lbl">Cast</div></div>
+        <div class="show-row-stat"><div class="num">4</div><div class="lbl">Conflicts</div></div>
+        <div class="show-row-stat"><div class="num">22</div><div class="lbl">Dates</div></div>
+        <span><span class="pill green">Cast posted</span></span>
+      </a>
+
+      <a href="admin-show-editor.html" class="show-row">
+        <div class="show-row-icon coral">A</div>
+        <div class="show-row-info">
+          <h4><em>Annie</em> KIDS</h4>
+          <p>Spring 2026 · Casting · Marcus Lee</p>
+        </div>
+        <div class="show-row-stat"><div class="num">42</div><div class="lbl">Subs</div></div>
+        <div class="show-row-stat"><div class="num">12</div><div class="lbl">Callbacks</div></div>
+        <div class="show-row-stat"><div class="num">3</div><div class="lbl">Days</div></div>
+        <span><span class="pill yellow">Auditions today</span></span>
+      </a>
+
+      <a href="admin-show-editor.html" class="show-row">
+        <div class="show-row-icon plum">M</div>
+        <div class="show-row-info">
+          <h4><em>Mary Poppins</em> JR</h4>
+          <p>Fall 2026 · Open auditions · Jess Park</p>
+        </div>
+        <div class="show-row-stat"><div class="num">38</div><div class="lbl">Subs</div></div>
+        <div class="show-row-stat"><div class="num">9</div><div class="lbl">Days left</div></div>
+        <div class="show-row-stat"><div class="num">12</div><div class="lbl">Slots</div></div>
+        <span><span class="pill coral">Closes May 5</span></span>
+      </a>
+
+      <a href="admin-show-editor.html" class="show-row">
+        <div class="show-row-icon teal">F</div>
+        <div class="show-row-info">
+          <h4><em>Frozen</em> JR</h4>
+          <p>Winter 2026 · Open auditions · Linda Cruz</p>
+        </div>
+        <div class="show-row-stat"><div class="num">19</div><div class="lbl">Subs</div></div>
+        <div class="show-row-stat"><div class="num">16</div><div class="lbl">Days left</div></div>
+        <div class="show-row-stat"><div class="num">—</div><div class="lbl">Slots TBD</div></div>
+        <span><span class="pill">Setup needed</span></span>
+      </a>
+
+      <a href="admin-show-editor.html" class="show-row">
+        <div class="show-row-icon sage">S</div>
+        <div class="show-row-info">
+          <h4><em>Seussical</em> JR</h4>
+          <p>Fall 2026 · Open auditions · Marcus Lee</p>
+        </div>
+        <div class="show-row-stat"><div class="num">15</div><div class="lbl">Subs</div></div>
+        <div class="show-row-stat"><div class="num">24</div><div class="lbl">Days left</div></div>
+        <div class="show-row-stat"><div class="num">14</div><div class="lbl">Slots</div></div>
+        <span><span class="pill coral">Closes May 20</span></span>
+      </a>
+
+      <h3 style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 24px 0 12px;">Coming up</h3>
+
+      <a href="admin-show-editor.html" class="show-row">
+        <div class="show-row-icon coral">M</div>
+        <div class="show-row-info">
+          <h4><em>Matilda</em> JR</h4>
+          <p>Winter 2027 · Auditions open Jun 1 · TBD</p>
+        </div>
+        <div class="show-row-stat"><div class="num">—</div><div class="lbl">Subs</div></div>
+        <div class="show-row-stat"><div class="num">36</div><div class="lbl">Days</div></div>
+        <div class="show-row-stat"><div class="num">—</div><div class="lbl">Slots</div></div>
+        <span><span class="pill">Draft</span></span>
+      </a>
+
+      <div class="empty-row">
+        <a>+ New show for next season</a>
+      </div>
+
+      <h3 style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 24px 0 12px;">Recently closed</h3>
+
+      <a href="admin-show-editor.html" class="show-row" style="opacity: 0.7;">
+        <div class="show-row-icon sage">M</div>
+        <div class="show-row-info">
+          <h4><em>Mary Poppins</em> JR</h4>
+          <p>Fall 2025 · Closed · Linda Cruz</p>
+        </div>
+        <div class="show-row-stat"><div class="num">31</div><div class="lbl">Cast</div></div>
+        <div class="show-row-stat"><div class="num">8</div><div class="lbl">Shows</div></div>
+        <div class="show-row-stat"><div class="num">$3.2k</div><div class="lbl">Tuition</div></div>
+        <span><span class="pill muted">Archived</span></span>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  document.querySelectorAll('.filter-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

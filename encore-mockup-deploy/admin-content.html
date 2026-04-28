@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Content — Encore Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .sidebar.admin { background: var(--ink); border-right: 1px solid #2C2C28; }
+  .sidebar.admin .sb-brand { color: var(--cream); }
+  .sidebar.admin .sb-brand .star { color: var(--yellow); }
+  .sidebar.admin .sb-section-label { color: rgba(251,246,236,0.4); }
+  .sidebar.admin .sb-link { color: rgba(251,246,236,0.65); }
+  .sidebar.admin .sb-link:hover { background: rgba(255,255,255,0.07); color: var(--cream); }
+  .sidebar.admin .sb-link.active { background: var(--yellow); color: var(--ink); }
+  .sidebar.admin .sb-link.active .sb-icon { color: var(--ink); }
+  .sidebar.admin .sb-foot { border-top: 1px solid #2C2C28; }
+  .admin-mode-badge { background: var(--yellow); color: var(--ink); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; margin-right: 8px; }
+
+  .editor-tabs {
+    display: flex; gap: 4px;
+    border-bottom: 1.5px solid var(--line);
+    margin-bottom: 28px;
+    overflow-x: auto;
+  }
+  .ed-tab {
+    background: none; border: none;
+    padding: 12px 18px;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+    line-height: 1;
+  }
+  .ed-tab:hover { color: var(--ink); }
+  .ed-tab.active { color: var(--ink); border-bottom-color: var(--coral); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .news-row {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+  .news-row.feature { border-color: var(--coral); border-width: 2px; }
+  .news-tag {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px;
+    background: var(--cream-dark); color: var(--ink-soft);
+  }
+  .news-tag.event { background: var(--yellow-soft); color: var(--yellow-dark); }
+  .news-tag.opp { background: var(--teal-soft); color: var(--teal); }
+  .news-row-info { flex: 1; min-width: 0; }
+  .news-row-info h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 15px;
+    margin: 4px 0 2px;
+  }
+  .news-row-info p { font-size: 12px; color: var(--muted); margin: 0; }
+  .news-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .faq-edit-row {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 8px;
+  }
+  .faq-edit-row .q {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px;
+  }
+  .faq-edit-row .q-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .faq-edit-row .a {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .form-section {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .form-section h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 17px;
+    margin: 0 0 18px;
+    letter-spacing: -0.005em;
+  }
+  textarea.input {
+    min-height: 90px; resize: vertical;
+    font-family: inherit; line-height: 1.5;
+  }
+  .video-preview {
+    aspect-ratio: 16 / 9;
+    background: var(--ink);
+    border-radius: 12px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+  .video-preview iframe {
+    width: 100%; height: 100%; border: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar admin">
+    <a href="admin-dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link" href="admin-shows.html"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
+      <a class="sb-link" href="admin-show-editor.html"><span class="sb-icon">✎</span> Show editor</a>
+      <a class="sb-link" href="#"><span class="sb-icon">★</span> Auditioners</a>
+      <a class="sb-link" href="#"><span class="sb-icon">♟</span> Families</a>
+      <div class="sb-section-label">Super admin</div>
+      <a class="sb-link" href="admin-invoices.html"><span class="sb-icon">$</span> Invoices</a>
+      <a class="sb-link active" href="admin-content.html"><span class="sb-icon">📰</span> Content</a>
+      <a class="sb-link" href="#"><span class="sb-icon">📊</span> Reports</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">↗</span> View as parent</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search content…"></div>
+        <div class="header-actions">
+          <span class="admin-mode-badge">★ Super Admin</span>
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar" style="background: var(--ink);">AR</div>
+            <div class="hu-info"><span class="hu-name">Adam Record</span><span class="hu-sub">Owner</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-head">
+        <p class="page-eyebrow">Content</p>
+        <h1 class="page-title">Manage what families see</h1>
+        <p class="page-sub">News, FAQs, training videos, and policies that show up across the dashboard.</p>
+      </div>
+
+      <div class="editor-tabs">
+        <button class="ed-tab active" data-tab="news">News &amp; updates</button>
+        <button class="ed-tab" data-tab="faq">FAQ</button>
+        <button class="ed-tab" data-tab="video">Audition 101 video</button>
+        <button class="ed-tab" data-tab="policies">Policies</button>
+      </div>
+
+      <!-- ========== NEWS ========== -->
+      <div class="panel active" data-panel="news">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <p style="font-size: 13px; color: var(--ink-soft); margin: 0;">News appears in the right rail of every parent dashboard.</p>
+          <button class="btn btn-primary">+ New post</button>
+        </div>
+
+        <div class="news-row feature">
+          <div>
+            <span class="news-tag event">★ Save the date</span>
+          </div>
+          <div class="news-row-info">
+            <h4>Spring Showcase — May 24</h4>
+            <p>Featured · Visible to all · Posted Apr 22</p>
+          </div>
+          <div class="news-row-actions">
+            <button class="btn btn-secondary">Edit</button>
+            <button class="btn btn-secondary">Unpublish</button>
+          </div>
+        </div>
+
+        <div class="news-row">
+          <div><span class="news-tag opp">Opportunity</span></div>
+          <div class="news-row-info">
+            <h4>Tuacahn summer intensive</h4>
+            <p>Visible to all · Posted Apr 18 · Auto-archives May 15</p>
+          </div>
+          <div class="news-row-actions">
+            <button class="btn btn-secondary">Edit</button>
+            <button class="btn btn-secondary">Unpublish</button>
+          </div>
+        </div>
+
+        <div class="news-row">
+          <div><span class="news-tag">Update</span></div>
+          <div class="news-row-info">
+            <h4>Studio closed Memorial Day</h4>
+            <p>Visible to all · Posted Apr 15 · Auto-archives May 26</p>
+          </div>
+          <div class="news-row-actions">
+            <button class="btn btn-secondary">Edit</button>
+            <button class="btn btn-secondary">Unpublish</button>
+          </div>
+        </div>
+
+        <h3 style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 24px 0 12px;">Drafts &amp; archived</h3>
+
+        <div class="news-row" style="opacity: 0.7;">
+          <div><span class="news-tag">Update</span></div>
+          <div class="news-row-info">
+            <h4>2026 season announcement</h4>
+            <p>Draft · Last edited Apr 10</p>
+          </div>
+          <div class="news-row-actions">
+            <button class="btn btn-secondary">Edit</button>
+            <button class="btn btn-primary">Publish</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== FAQ ========== -->
+      <div class="panel" data-panel="faq">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <p style="font-size: 13px; color: var(--ink-soft); margin: 0;">FAQs appear under the Audition 101 video on the parent dashboard.</p>
+          <button class="btn btn-primary">+ Add FAQ</button>
+        </div>
+
+        <div class="faq-edit-row">
+          <div class="q">
+            <span>What should kids wear to their audition?</span>
+            <div class="q-actions"><button class="btn btn-secondary">Edit</button></div>
+          </div>
+          <div class="a">Comfortable clothes they can move in — leggings or shorts, a fitted t-shirt, athletic shoes (no sandals or boots). Hair pulled back so directors can see their face.</div>
+        </div>
+
+        <div class="faq-edit-row">
+          <div class="q">
+            <span>How long will the audition take?</span>
+            <div class="q-actions"><button class="btn btn-secondary">Edit</button></div>
+          </div>
+          <div class="a">Plan for 90 minutes. The individual slot is 5 minutes, but the dance call runs in groups so they'll need to stay until everyone in their age group has gone.</div>
+        </div>
+
+        <div class="faq-edit-row">
+          <div class="q">
+            <span>What if my child is nervous?</span>
+            <div class="q-actions"><button class="btn btn-secondary">Edit</button></div>
+          </div>
+          <div class="a">Totally normal! Three things help: practice the cut at home until they feel solid, arrive 15 minutes early to settle in, and remember that we want them to do well.</div>
+        </div>
+
+        <div class="faq-edit-row">
+          <div class="q">
+            <span>When will we hear about casting?</span>
+            <div class="q-actions"><button class="btn btn-secondary">Edit</button></div>
+          </div>
+          <div class="a">Cast lists are usually posted 5–7 days after auditions close. You'll get a notification here and an email. Callbacks (if needed) happen within 48 hours of the audition.</div>
+        </div>
+
+        <div class="faq-edit-row">
+          <div class="q">
+            <span>Can my child audition for multiple shows?</span>
+            <div class="q-actions"><button class="btn btn-secondary">Edit</button></div>
+          </div>
+          <div class="a">Yes! Many kids audition for two or more shows per season. Just be honest about conflicts so directors can plan around them.</div>
+        </div>
+      </div>
+
+      <!-- ========== VIDEO ========== -->
+      <div class="panel" data-panel="video">
+        <div class="form-section">
+          <h3>Audition 101 video</h3>
+          <p style="font-size: 13px; color: var(--ink-soft); margin: -10px 0 14px;">Embedded on every parent dashboard.</p>
+
+          <div class="field">
+            <label class="field-label">YouTube URL</label>
+            <input class="input" value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+          </div>
+          <div class="field">
+            <label class="field-label">Title</label>
+            <input class="input" value="★ Audition 101 — Encore's audition guide">
+          </div>
+          <div class="field">
+            <label class="field-label">Subtitle</label>
+            <input class="input" value="Ms. Linda · 8 min watch · For ages 8–13">
+          </div>
+
+          <div style="margin-top: 6px;">
+            <label class="field-label">Preview</label>
+            <div class="video-preview">
+              <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Audition 101" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== POLICIES ========== -->
+      <div class="panel" data-panel="policies">
+        <div class="form-section">
+          <h3>Audition policies</h3>
+          <p style="font-size: 13px; color: var(--ink-soft); margin: -10px 0 14px;">Linked from the audition submit screen.</p>
+          <textarea class="input" style="min-height: 200px;">Encore Performing Arts auditions follow industry-standard practices to ensure every performer has a fair, supportive experience.
+
+By submitting an audition, parents agree to:
+• Provide accurate availability and conflict information
+• Pay the audition fee within 7 days of submission (invoiced separately)
+• Commit to all rehearsals and performances if cast
+• Communicate any changes promptly via the parent dashboard or BAND
+
+Casting decisions are final. Director feedback is provided as a coaching tool and not a basis for casting disputes.
+
+Encore reserves the right to remove a performer from a production for repeated absence, behavioral issues, or unpaid tuition.</textarea>
+        </div>
+
+        <div class="form-section">
+          <h3>Media release</h3>
+          <p style="font-size: 13px; color: var(--ink-soft); margin: -10px 0 14px;">Signed once per family per year. Auto-prompt 30 days before next show begins.</p>
+          <textarea class="input" style="min-height: 140px;">I grant Encore Performing Arts permission to use photos and video of my child taken during rehearsals, performances, and Encore events for promotional purposes including social media, the website, marketing materials, and press releases.
+
+Names will not be published alongside images without separate written consent. I understand I can revoke this permission at any time by contacting the Encore office.</textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  document.querySelectorAll('.ed-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      const target = t.dataset.tab;
+      document.querySelectorAll('.ed-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelector('.panel[data-panel="' + target + '"]').classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

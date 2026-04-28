@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoices — Encore Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .sidebar.admin { background: var(--ink); border-right: 1px solid #2C2C28; }
+  .sidebar.admin .sb-brand { color: var(--cream); }
+  .sidebar.admin .sb-brand .star { color: var(--yellow); }
+  .sidebar.admin .sb-section-label { color: rgba(251,246,236,0.4); }
+  .sidebar.admin .sb-link { color: rgba(251,246,236,0.65); }
+  .sidebar.admin .sb-link:hover { background: rgba(255,255,255,0.07); color: var(--cream); }
+  .sidebar.admin .sb-link.active { background: var(--yellow); color: var(--ink); }
+  .sidebar.admin .sb-link.active .sb-icon { color: var(--ink); }
+  .sidebar.admin .sb-foot { border-top: 1px solid #2C2C28; }
+  .admin-mode-badge { background: var(--yellow); color: var(--ink); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; margin-right: 8px; }
+
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 800px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+  .stat-tile {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .stat-tile.warn { background: var(--coral); color: white; border-color: var(--coral); }
+  .stat-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .stat-tile.warn .stat-label { color: rgba(255,255,255,0.85); }
+  .stat-num { font-family: 'Fraunces', serif; font-weight: 700; font-size: 26px; line-height: 1; margin: 0; font-variant-numeric: tabular-nums; }
+  .stat-sub { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+  .stat-tile.warn .stat-sub { color: rgba(255,255,255,0.85); }
+
+  .invoice-table {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .inv-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr 100px 90px 110px;
+    gap: 16px;
+    padding: 14px 22px;
+    align-items: center;
+    border-top: 1px solid var(--line-soft);
+    font-size: 14px;
+  }
+  .inv-row:first-child { border-top: none; }
+  .inv-row.head {
+    background: var(--cream-shell);
+    font-size: 11px; font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 12px 22px;
+  }
+  .inv-num { font-family: 'Fraunces', serif; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .inv-name { font-weight: 600; }
+  .inv-name em { font-style: italic; color: var(--coral); }
+  .inv-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .inv-amt { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; text-align: right; font-variant-numeric: tabular-nums; }
+  .inv-action { display: flex; gap: 6px; justify-content: flex-end; }
+
+  @media (max-width: 800px) {
+    .inv-row { grid-template-columns: 1fr auto; gap: 8px; }
+    .inv-row.head { display: none; }
+    .inv-num, .inv-row > *:nth-child(3), .inv-row > *:nth-child(5) { display: none; }
+  }
+
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; align-items: center; }
+  .filter-tab {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; line-height: 1.2;
+  }
+  .filter-tab.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  /* MODAL */
+  .modal {
+    position: fixed; inset: 0;
+    background: rgba(20, 19, 17, 0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 20px;
+    z-index: 200;
+    overflow-y: auto;
+  }
+  .modal.show { display: flex; }
+  .modal-card {
+    background: var(--white-soft);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 560px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  }
+  .modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1.5px solid var(--line);
+  }
+  .modal-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 19px;
+    margin: 0; letter-spacing: -0.005em;
+  }
+  .modal-close {
+    background: none; border: none;
+    color: var(--muted); font-size: 22px;
+    cursor: pointer; line-height: 1;
+    padding: 4px 8px;
+  }
+  .modal-close:hover { color: var(--ink); }
+  .modal-body { padding: 22px 24px; }
+  .modal-foot {
+    padding: 16px 24px;
+    background: var(--cream-shell);
+    border-top: 1.5px solid var(--line);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .form-section-modal { margin-bottom: 18px; }
+  .form-section-modal:last-child { margin-bottom: 0; }
+  .form-section-modal label.field-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .recipient-pick {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--cream-shell);
+    border-radius: 10px;
+    margin-top: 6px;
+    font-size: 13px;
+  }
+  .recipient-pick .photo {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .recipient-pick .photo img { width: 100%; height: 100%; object-fit: cover; }
+
+  .preset-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .preset-chip {
+    background: var(--cream-shell);
+    border: 1.5px solid transparent;
+    color: var(--ink-soft);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    line-height: 1.2;
+  }
+  .preset-chip:hover { border-color: var(--ink-soft); }
+  .preset-chip.active {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+
+  .amount-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .send-options {
+    background: var(--cream-shell);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-top: 10px;
+  }
+  .send-options strong { color: var(--ink); }
+
+  .toggle-row-mini {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+    font-size: 13px;
+  }
+  .toggle-row-mini:first-child { border-top: none; }
+  .toggle {
+    width: 38px; height: 22px;
+    background: var(--line);
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: "";
+    position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle.on { background: var(--coral); }
+  .toggle.on::after { transform: translateX(16px); }
+
+  .total-line {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 12px 14px;
+    background: var(--cream-shell);
+    border-radius: 10px;
+    margin-top: 14px;
+  }
+  .total-lbl { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .total-amt {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .total-amt-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar admin">
+    <a href="admin-dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link" href="admin-shows.html"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
+      <a class="sb-link" href="admin-show-editor.html"><span class="sb-icon">✎</span> Show editor</a>
+      <a class="sb-link" href="#"><span class="sb-icon">★</span> Auditioners</a>
+      <a class="sb-link" href="#"><span class="sb-icon">♟</span> Families</a>
+      <div class="sb-section-label">Super admin</div>
+      <a class="sb-link active" href="admin-invoices.html"><span class="sb-icon">$</span> Invoices</a>
+      <a class="sb-link" href="admin-content.html"><span class="sb-icon">📰</span> Content</a>
+      <a class="sb-link" href="#"><span class="sb-icon">📊</span> Reports</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">↗</span> View as parent</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search invoices, families…"></div>
+        <div class="header-actions">
+          <span class="admin-mode-badge">★ Super Admin</span>
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar" style="background: var(--ink);">AR</div>
+            <div class="hu-info"><span class="hu-name">Adam Record</span><span class="hu-sub">Owner</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <p class="page-eyebrow">Billing</p>
+          <h1 class="page-title">Invoices &amp; payments</h1>
+          <p class="page-sub">Encore's billing across all families.</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary">📥 Export</button>
+          <button class="btn btn-primary" onclick="document.getElementById('newInvoiceModal').classList.add('show')">+ New invoice</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-tile warn">
+          <div class="stat-label">Outstanding</div>
+          <p class="stat-num">$1,485</p>
+          <p class="stat-sub">8 invoices · 3 overdue</p>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">This month</div>
+          <p class="stat-num">$4,225</p>
+          <p class="stat-sub">28 invoices paid</p>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Year to date</div>
+          <p class="stat-num">$28,650</p>
+          <p class="stat-sub">142 invoices · 2026</p>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Avg per family</div>
+          <p class="stat-num">$131</p>
+          <p class="stat-sub">218 active families</p>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-tab active">All</button>
+        <button class="filter-tab">Outstanding · 8</button>
+        <button class="filter-tab">Overdue · 3</button>
+        <button class="filter-tab">Paid · 142</button>
+        <button class="filter-tab">By show</button>
+      </div>
+
+      <div class="invoice-table">
+        <div class="inv-row head">
+          <span>Number</span>
+          <span>Family</span>
+          <span>Description</span>
+          <span style="text-align: right;">Amount</span>
+          <span style="text-align: center;">Status</span>
+          <span></span>
+        </div>
+
+        <div class="inv-row">
+          <span class="inv-num">#1042</span>
+          <div>
+            <div class="inv-name">Sarah Chen</div>
+            <div class="inv-sub">Maya · 11</div>
+          </div>
+          <div>
+            <div><em>Lion King</em> JR · Tuition</div>
+            <div class="inv-sub">Sent Apr 20 · Due May 1</div>
+          </div>
+          <span class="inv-amt">$145.00</span>
+          <span style="text-align: center;"><span class="pill coral">Due</span></span>
+          <div class="inv-action"><a href="#" class="btn btn-secondary">Send reminder</a></div>
+        </div>
+
+        <div class="inv-row">
+          <span class="inv-num">#1041</span>
+          <div>
+            <div class="inv-name">Sarah Chen</div>
+            <div class="inv-sub">Sam · 15</div>
+          </div>
+          <div>
+            <div><em>Mainstage</em> · Spring tuition</div>
+            <div class="inv-sub">Sent Apr 19 · Due May 1</div>
+          </div>
+          <span class="inv-amt">$220.00</span>
+          <span style="text-align: center;"><span class="pill coral">Due</span></span>
+          <div class="inv-action"><a href="#" class="btn btn-secondary">Send reminder</a></div>
+        </div>
+
+        <div class="inv-row" style="background: var(--red-soft);">
+          <span class="inv-num">#1037</span>
+          <div>
+            <div class="inv-name">Mike Park</div>
+            <div class="inv-sub">Jackson · 9</div>
+          </div>
+          <div>
+            <div><em>Lion King</em> JR · Tuition</div>
+            <div class="inv-sub">Sent Apr 12 · <span style="color: var(--red); font-weight: 600;">7 days overdue</span></div>
+          </div>
+          <span class="inv-amt">$145.00</span>
+          <span style="text-align: center;"><span class="pill red">Overdue</span></span>
+          <div class="inv-action"><a href="#" class="btn btn-coral">Follow up</a></div>
+        </div>
+
+        <div class="inv-row">
+          <span class="inv-num">#1029</span>
+          <div>
+            <div class="inv-name">Sarah Chen</div>
+            <div class="inv-sub">Maya · 11</div>
+          </div>
+          <div>
+            <div><em>Annie</em> KIDS · Audition fee</div>
+            <div class="inv-sub">Apr 4 · Paid Apr 5</div>
+          </div>
+          <span class="inv-amt">$25.00</span>
+          <span style="text-align: center;"><span class="pill green">Paid</span></span>
+          <div class="inv-action"><a href="#" class="section-action">View</a></div>
+        </div>
+
+        <div class="inv-row">
+          <span class="inv-num">#1027</span>
+          <div>
+            <div class="inv-name">Jen Patel</div>
+            <div class="inv-sub">Eli · 10</div>
+          </div>
+          <div>
+            <div><em>Lion King</em> JR · Tuition</div>
+            <div class="inv-sub">Apr 2 · Paid Apr 3</div>
+          </div>
+          <span class="inv-amt">$145.00</span>
+          <span style="text-align: center;"><span class="pill green">Paid</span></span>
+          <div class="inv-action"><a href="#" class="section-action">View</a></div>
+        </div>
+
+        <div class="inv-row">
+          <span class="inv-num">#1018</span>
+          <div>
+            <div class="inv-name">Sarah Chen</div>
+            <div class="inv-sub">Sam · 15</div>
+          </div>
+          <div>
+            <div><em>Mainstage</em> · Spring tuition</div>
+            <div class="inv-sub">Mar 15 · Paid Mar 18</div>
+          </div>
+          <span class="inv-amt">$220.00</span>
+          <span style="text-align: center;"><span class="pill green">Paid</span></span>
+          <div class="inv-action"><a href="#" class="section-action">View</a></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- NEW INVOICE MODAL -->
+<div class="modal" id="newInvoiceModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>New invoice</h2>
+      <button class="modal-close" onclick="document.getElementById('newInvoiceModal').classList.remove('show')">×</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-section-modal">
+        <label class="field-label">Recipient</label>
+        <input class="input" placeholder="Search families…" value="Sarah Chen">
+        <div class="recipient-pick">
+          <div class="photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SarahChen&backgroundColor=ffd5dc" alt=""></div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600;">Sarah Chen</div>
+            <div style="font-size: 11px; color: var(--muted);">sarah.chen@email.com · 2 performers</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section-modal">
+        <label class="field-label">For</label>
+        <div class="preset-row">
+          <button class="preset-chip active">Tuition</button>
+          <button class="preset-chip">Audition fee</button>
+          <button class="preset-chip">Costume</button>
+          <button class="preset-chip">Workshop</button>
+          <button class="preset-chip">Other</button>
+        </div>
+        <div class="amount-row">
+          <select class="input">
+            <option>Maya Chen</option>
+            <option>Sam Chen</option>
+          </select>
+          <select class="input">
+            <option>Lion King JR (Summer 2026)</option>
+            <option>Annie KIDS (Spring 2026)</option>
+            <option>Mary Poppins JR (Fall 2026)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-modal">
+        <label class="field-label">Description</label>
+        <input class="input" value="Lion King JR · Tuition">
+      </div>
+
+      <div class="form-section-modal">
+        <div class="amount-row">
+          <div>
+            <label class="field-label">Amount</label>
+            <input class="input" value="$145.00">
+          </div>
+          <div>
+            <label class="field-label">Due date</label>
+            <input class="input" type="date" value="2026-05-15">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section-modal">
+        <label class="field-label">Send options</label>
+        <div class="toggle-row-mini">
+          <div>
+            <div style="font-weight: 600;">Email payment link to parent</div>
+            <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">Stripe link · parent pays in 1 click</div>
+          </div>
+          <div class="toggle on"></div>
+        </div>
+        <div class="toggle-row-mini">
+          <div>
+            <div style="font-weight: 600;">Show in parent dashboard</div>
+            <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">"1 unpaid · $145" appears with Pay Now button</div>
+          </div>
+          <div class="toggle on"></div>
+        </div>
+        <div class="toggle-row-mini">
+          <div>
+            <div style="font-weight: 600;">Auto-remind if unpaid</div>
+            <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">Email reminder 7 days after due date</div>
+          </div>
+          <div class="toggle on"></div>
+        </div>
+      </div>
+
+      <div class="total-line">
+        <div>
+          <div class="total-lbl">Parent pays</div>
+          <div class="total-amt-sub">Stripe fee: $4.51 (2.9% + 30¢)</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="total-amt">$145.00</div>
+          <div class="total-amt-sub">Encore receives $140.49</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="document.getElementById('newInvoiceModal').classList.remove('show')">Cancel</button>
+      <button class="btn btn-secondary">Save as draft</button>
+      <button class="btn btn-primary">Send invoice →</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  document.querySelectorAll('.filter-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.preset-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.preset-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.toggle').forEach(t => {
+    t.addEventListener('click', () => t.classList.toggle('on'));
+  });
+  document.getElementById('newInvoiceModal').addEventListener('click', (e) => {
+    if (e.target.id === 'newInvoiceModal') {
+      e.target.classList.remove('show');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+    }
+  });
+</script>
+</body>
+</html>

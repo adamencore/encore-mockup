@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maya Chen — Encore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .profile-hero {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  @media (max-width: 700px) {
+    .profile-hero { grid-template-columns: 1fr; text-align: center; }
+    .ph-photo { margin: 0 auto; }
+  }
+
+  .ph-photo {
+    width: 180px; height: 220px;
+    border-radius: 16px;
+    background: var(--cream-dark);
+    overflow: hidden;
+    box-shadow: 0 12px 32px -16px rgba(26,26,24,0.3);
+  }
+  .ph-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ph-info h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 44px);
+    margin: 0 0 6px;
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+  .ph-info .ph-meta {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin: 0 0 16px;
+  }
+  .ph-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 700px) { .ph-stats { justify-content: center; } }
+  .ph-stat-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1;
+  }
+  .ph-stat-lbl {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .ph-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  @media (max-width: 700px) { .ph-actions { justify-content: center; } }
+
+  .stale-warn-row {
+    background: var(--coral-soft);
+    border: 1.5px solid var(--coral);
+    color: var(--coral);
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 800px) { .profile-grid { grid-template-columns: 1fr; } }
+
+  .credit-list { list-style: none; padding: 0; margin: 0; }
+  .credit-list li {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line-soft);
+    font-size: 14px;
+  }
+  .credit-list li:first-child { border-top: none; }
+  .credit-year {
+    font-weight: 600;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .credit-show em { font-style: italic; color: var(--coral); }
+  .credit-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .file-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--cream-shell);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .file-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--cream-dark);
+    display: grid; place-items: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .file-info { flex: 1; }
+  .file-info .file-name { font-weight: 600; color: var(--ink); }
+  .file-info .file-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link" href="auditions.html"><span class="sb-icon">★</span> Open auditions <span class="badge">4</span></a>
+      <a class="sb-link" href="shows.html"><span class="sb-icon">▼</span> My shows</a>
+      <a class="sb-link" href="feedback.html"><span class="sb-icon">♪</span> Feedback</a>
+      <a class="sb-link" href="invoices.html"><span class="sb-icon">$</span> Invoices <span class="badge">1</span></a>
+      <div class="sb-section-label">Family</div>
+      <a class="sb-link active" href="performer.html"><span class="sb-icon">♟</span> Performers</a>
+      <a class="sb-link" href="#"><span class="sb-icon">✎</span> Profile</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">★</span> Admin</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search…"></div>
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar">SC</div>
+            <div class="hu-info"><span class="hu-name">Sarah Chen</span><span class="hu-sub">Parent</span></div>
+          </div>
+        </div>
+      </div>
+
+      <a class="back-link" href="dashboard.html">← Back to dashboard</a>
+
+      <div class="performer-strip">
+        <button class="ps-tab active">
+          <div class="ps-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt=""></div>
+          Maya · 11
+        </button>
+        <button class="ps-tab">
+          <div class="ps-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SamChen&backgroundColor=b6e3f4,c0aede" alt=""></div>
+          Sam · 15
+        </button>
+        <button class="ps-tab add">+ Add performer</button>
+      </div>
+
+      <!-- HERO -->
+      <div class="profile-hero">
+        <div class="ph-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt="Maya Chen"></div>
+        <div class="ph-info">
+          <h1>Maya Chen</h1>
+          <p class="ph-meta">11 years old · She/her · Youth Large · 4'8"</p>
+          <div class="ph-stats">
+            <div><div class="ph-stat-num">5</div><div class="ph-stat-lbl">Shows</div></div>
+            <div><div class="ph-stat-num">2</div><div class="ph-stat-lbl">Cast</div></div>
+            <div><div class="ph-stat-num">1</div><div class="ph-stat-lbl">Callback</div></div>
+            <div><div class="ph-stat-num">3</div><div class="ph-stat-lbl">Years</div></div>
+          </div>
+          <div class="ph-actions">
+            <a href="#" class="btn btn-primary">📷 Update headshot</a>
+            <a href="#" class="btn btn-secondary">✎ Edit profile</a>
+            <a href="#" class="btn btn-secondary">📄 Download resume</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="stale-warn-row">
+        ⚠ Maya's headshot was uploaded in July 2024. Kids change a lot — consider taking a fresh one before her next audition.
+      </div>
+
+      <div class="profile-grid">
+
+        <div class="card">
+          <h3 style="font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; margin: 0 0 14px;">Files on record</h3>
+          <div class="file-row">
+            <div class="file-icon">📷</div>
+            <div class="file-info">
+              <div class="file-name">Maya_Headshot.jpg</div>
+              <div class="file-sub">Uploaded Jul 2024 · 2.1 MB</div>
+            </div>
+            <a href="#" class="section-action">Replace</a>
+          </div>
+          <div class="file-row">
+            <div class="file-icon">📄</div>
+            <div class="file-info">
+              <div class="file-name">Maya_Chen_Resume_2026.pdf</div>
+              <div class="file-sub">Updated Mar 2026 · 142 KB · auto-built</div>
+            </div>
+            <a href="#" class="section-action">Replace</a>
+          </div>
+          <p style="font-size: 12px; color: var(--muted); margin: 14px 0 0;">These files are used for every audition unless you upload a different one for a specific show.</p>
+        </div>
+
+        <div class="card">
+          <h3 style="font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; margin: 0 0 14px;">Show history</h3>
+          <ul class="credit-list">
+            <li>
+              <span class="credit-year">2026</span>
+              <div>
+                <div class="credit-show"><em>Lion King</em> JR</div>
+                <div class="credit-role">Callback · pending</div>
+              </div>
+            </li>
+            <li>
+              <span class="credit-year">2025</span>
+              <div>
+                <div class="credit-show"><em>Mary Poppins</em> JR</div>
+                <div class="credit-role">Jane Banks · in rehearsal</div>
+              </div>
+            </li>
+            <li>
+              <span class="credit-year">2025</span>
+              <div>
+                <div class="credit-show"><em>Annie</em> JR</div>
+                <div class="credit-role">Ensemble</div>
+              </div>
+            </li>
+            <li>
+              <span class="credit-year">2024</span>
+              <div>
+                <div class="credit-show"><em>Les Misérables</em> SE</div>
+                <div class="credit-role">Young Cosette</div>
+              </div>
+            </li>
+            <li>
+              <span class="credit-year">2024</span>
+              <div>
+                <div class="credit-show"><em>Frozen</em> KIDS</div>
+                <div class="credit-role">Young Anna</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="profile-grid">
+
+        <div class="card">
+          <h3 style="font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; margin: 0 0 14px;">Training</h3>
+          <div class="info-row"><span class="info-label">Voice</span><span class="info-val">Private lessons (2 yrs) · Range A3–E5</span></div>
+          <div class="info-row"><span class="info-label">Dance</span><span class="info-val">Ballet 4yrs, Tap 2yrs, Jazz</span></div>
+          <div class="info-row"><span class="info-label">Acting</span><span class="info-val">Encore workshops</span></div>
+          <div class="info-row"><span class="info-label">Special skills</span><span class="info-val">Mandarin, piano (5yrs), tumbling</span></div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; margin: 0 0 14px;">Family contact</h3>
+          <div class="info-row"><span class="info-label">Parent</span><span class="info-val">Sarah Chen</span></div>
+          <div class="info-row"><span class="info-label">Phone</span><span class="info-val">(435) 555-0142</span></div>
+          <div class="info-row"><span class="info-label">Email</span><span class="info-val">sarah.chen@email.com</span></div>
+          <div class="info-row"><span class="info-label">Address</span><span class="info-val">1247 Red Mountain Dr, St. George, UT</span></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<nav class="mobile-tabs">
+  <a class="mt-link" href="dashboard.html"><span class="mt-icon">▦</span><span>Home</span></a>
+  <a class="mt-link" href="auditions.html"><span class="mt-icon">★</span><span>Auditions</span></a>
+  <a class="mt-link" href="shows.html"><span class="mt-icon">▼</span><span>Shows</span></a>
+  <a class="mt-link active" href="performer.html"><span class="mt-icon">♟</span><span>Family</span></a>
+  <a class="mt-link" href="invoices.html"><span class="mt-icon">⚙</span><span>More</span></a>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>

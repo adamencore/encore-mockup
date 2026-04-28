@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Shows — Encore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .filter-tabs { display: flex; gap: 6px; margin-bottom: 22px; flex-wrap: wrap; }
+  .filter-tab {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1.2;
+  }
+  .filter-tab:hover { border-color: var(--ink-soft); }
+  .filter-tab.active {
+    background: var(--ink); color: var(--cream); border-color: var(--ink);
+  }
+  .filter-tab .ct {
+    margin-left: 4px;
+    background: rgba(255,255,255,0.18);
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 11px;
+  }
+  .filter-tab:not(.active) .ct {
+    background: var(--cream-shell);
+    color: var(--ink-soft);
+  }
+
+  .year-label {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+    margin: 24px 0 12px;
+  }
+  .year-label:first-of-type { margin-top: 0; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link" href="auditions.html"><span class="sb-icon">★</span> Open auditions <span class="badge">4</span></a>
+      <a class="sb-link active" href="shows.html"><span class="sb-icon">▼</span> My shows</a>
+      <a class="sb-link" href="feedback.html"><span class="sb-icon">♪</span> Feedback</a>
+      <a class="sb-link" href="invoices.html"><span class="sb-icon">$</span> Invoices <span class="badge">1</span></a>
+      <div class="sb-section-label">Family</div>
+      <a class="sb-link" href="performer.html"><span class="sb-icon">♟</span> Performers</a>
+      <a class="sb-link" href="#"><span class="sb-icon">✎</span> Profile</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">★</span> Admin</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search shows…"></div>
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar">SC</div>
+            <div class="hu-info"><span class="hu-name">Sarah Chen</span><span class="hu-sub">Parent</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-head">
+        <p class="page-eyebrow">My shows</p>
+        <h1 class="page-title">Every show, in one place</h1>
+        <p class="page-sub">Maya and Sam's full Encore history.</p>
+      </div>
+
+      <div class="performer-strip">
+        <button class="ps-tab active">
+          <div class="ps-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt=""></div>
+          Maya · 11
+        </button>
+        <button class="ps-tab">
+          <div class="ps-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SamChen&backgroundColor=b6e3f4,c0aede" alt=""></div>
+          Sam · 15
+        </button>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active">All <span class="ct">5</span></button>
+        <button class="filter-tab">In progress <span class="ct">3</span></button>
+        <button class="filter-tab">Cast <span class="ct">2</span></button>
+        <button class="filter-tab">Submitted <span class="ct">1</span></button>
+        <button class="filter-tab">Past <span class="ct">2</span></button>
+      </div>
+
+      <div class="year-label">2026</div>
+      <div class="show-grid">
+
+        <a href="show-detail.html" class="show-card">
+          <div class="show-banner yellow">
+            <span class="show-status callback">⭐ Callback</span>
+            <span class="show-banner-icon">L</span>
+          </div>
+          <div class="show-body">
+            <h3 class="show-name">Disney's <em>Lion King</em> JR</h3>
+            <p class="show-meta">Summer 2026</p>
+            <p class="show-detail">Callback Sat May 2 at 10am.</p>
+          </div>
+        </a>
+
+        <a href="show-detail.html" class="show-card">
+          <div class="show-banner coral">
+            <span class="show-status">Submitted</span>
+            <span class="show-banner-icon">A</span>
+          </div>
+          <div class="show-body">
+            <h3 class="show-name"><em>Annie</em> KIDS</h3>
+            <p class="show-meta">Spring 2026</p>
+            <p class="show-detail">Casting decisions by May 10.</p>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="year-label">2025</div>
+      <div class="show-grid">
+
+        <a href="show-detail.html" class="show-card">
+          <div class="show-banner sage">
+            <span class="show-status cast">✓ Cast</span>
+            <span class="show-banner-icon">M</span>
+          </div>
+          <div class="show-body">
+            <h3 class="show-name"><em>Mary Poppins</em> JR</h3>
+            <p class="show-meta">Fall 2025 · Cast as Jane</p>
+            <div class="show-foot">
+              <div class="progress"><span style="width: 72%"></span></div>
+              <div class="progress-meta"><span>Week 6 of 8</span><span>72%</span></div>
+            </div>
+          </div>
+        </a>
+
+        <a href="show-detail.html" class="show-card">
+          <div class="show-banner teal">
+            <span class="show-status" style="background: rgba(26,26,24,0.5);">Closed</span>
+            <span class="show-banner-icon">A</span>
+          </div>
+          <div class="show-body">
+            <h3 class="show-name"><em>Annie</em> JR</h3>
+            <p class="show-meta">Spring 2025 · Ensemble</p>
+            <p class="show-detail">8 performances · 850 audience</p>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="year-label">2024</div>
+      <div class="show-grid">
+
+        <a href="show-detail.html" class="show-card">
+          <div class="show-banner plum">
+            <span class="show-status" style="background: rgba(26,26,24,0.5);">Closed</span>
+            <span class="show-banner-icon">L</span>
+          </div>
+          <div class="show-body">
+            <h3 class="show-name"><em>Les Misérables</em> SE</h3>
+            <p class="show-meta">Fall 2024 · Young Cosette</p>
+            <p class="show-detail">12 performances · 1,400 audience</p>
+          </div>
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<nav class="mobile-tabs">
+  <a class="mt-link" href="dashboard.html"><span class="mt-icon">▦</span><span>Home</span></a>
+  <a class="mt-link" href="auditions.html"><span class="mt-icon">★</span><span>Auditions</span></a>
+  <a class="mt-link active" href="shows.html"><span class="mt-icon">▼</span><span>Shows</span></a>
+  <a class="mt-link" href="performer.html"><span class="mt-icon">♟</span><span>Family</span></a>
+  <a class="mt-link" href="invoices.html"><span class="mt-icon">⚙</span><span>More</span></a>
+</nav>
+
+<script src="app.js"></script>
+<script>
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoices — Encore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 700px) { .summary-grid { grid-template-columns: 1fr; } }
+
+  .stat-card {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .stat-card.due {
+    background: var(--coral);
+    color: white;
+    border-color: var(--coral);
+  }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .stat-card.due .stat-label { color: rgba(255,255,255,0.85); }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1;
+    margin: 0;
+  }
+  .stat-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 6px 0 0;
+  }
+  .stat-card.due .stat-sub { color: rgba(255,255,255,0.85); }
+
+  .invoice-table {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .invoice-row {
+    display: grid;
+    grid-template-columns: 90px 1fr auto auto auto;
+    gap: 16px;
+    padding: 16px 22px;
+    align-items: center;
+    border-top: 1px solid var(--line-soft);
+  }
+  .invoice-row:first-child { border-top: none; }
+  .invoice-row.head {
+    background: var(--cream-shell);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 12px 22px;
+  }
+  .inv-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .inv-name { font-weight: 600; font-size: 14px; }
+  .inv-name em { font-style: italic; color: var(--coral); }
+  .inv-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .inv-amount {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .inv-status {
+    text-align: center;
+  }
+  .inv-action {
+    text-align: right;
+  }
+
+  @media (max-width: 700px) {
+    .invoice-row { grid-template-columns: 1fr auto; gap: 8px; }
+    .invoice-row.head { display: none; }
+    .inv-num, .inv-status { display: none; }
+    .inv-amount { text-align: left; }
+    .inv-action { grid-column: 1 / -1; margin-top: 8px; }
+    .inv-action .btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link" href="auditions.html"><span class="sb-icon">★</span> Open auditions <span class="badge">4</span></a>
+      <a class="sb-link" href="shows.html"><span class="sb-icon">▼</span> My shows</a>
+      <a class="sb-link" href="feedback.html"><span class="sb-icon">♪</span> Feedback</a>
+      <a class="sb-link active" href="invoices.html"><span class="sb-icon">$</span> Invoices <span class="badge">1</span></a>
+      <div class="sb-section-label">Family</div>
+      <a class="sb-link" href="performer.html"><span class="sb-icon">♟</span> Performers</a>
+      <a class="sb-link" href="#"><span class="sb-icon">✎</span> Profile</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">★</span> Admin</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search invoices…"></div>
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar">SC</div>
+            <div class="hu-info"><span class="hu-name">Sarah Chen</span><span class="hu-sub">Parent</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-head">
+        <p class="page-eyebrow">Invoices &amp; payments</p>
+        <h1 class="page-title">Your Encore billing</h1>
+        <p class="page-sub">All invoices Encore has sent, in one place.</p>
+      </div>
+
+      <div class="summary-grid">
+        <div class="stat-card due">
+          <div class="stat-label">Due now</div>
+          <p class="stat-num">$145.00</p>
+          <p class="stat-sub">1 invoice · Due Fri May 1</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Year to date</div>
+          <p class="stat-num">$565.00</p>
+          <p class="stat-sub">5 invoices · 2026</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Lifetime</div>
+          <p class="stat-num">$2,310.00</p>
+          <p class="stat-sub">21 invoices since 2023</p>
+        </div>
+      </div>
+
+      <div class="invoice-table">
+        <div class="invoice-row head">
+          <span>Number</span>
+          <span>Description</span>
+          <span style="text-align: right;">Amount</span>
+          <span style="text-align: center;">Status</span>
+          <span></span>
+        </div>
+
+        <div class="invoice-row">
+          <span class="inv-num">#1042</span>
+          <div>
+            <div class="inv-name">Maya · <em>Lion King</em> JR tuition</div>
+            <div class="inv-sub">Sent Apr 20 · Due May 1</div>
+          </div>
+          <span class="inv-amount">$145.00</span>
+          <span class="inv-status"><span class="pill coral">Due</span></span>
+          <span class="inv-action"><a href="#" class="btn btn-coral">Pay now</a></span>
+        </div>
+
+        <div class="invoice-row">
+          <span class="inv-num">#1029</span>
+          <div>
+            <div class="inv-name">Maya · <em>Annie</em> KIDS audition fee</div>
+            <div class="inv-sub">Apr 4 · Paid Apr 5</div>
+          </div>
+          <span class="inv-amount">$25.00</span>
+          <span class="inv-status"><span class="pill green">Paid</span></span>
+          <span class="inv-action"><a href="#" class="section-action">View</a></span>
+        </div>
+
+        <div class="invoice-row">
+          <span class="inv-num">#1018</span>
+          <div>
+            <div class="inv-name">Sam · <em>Mainstage</em> spring tuition</div>
+            <div class="inv-sub">Mar 15 · Paid Mar 18</div>
+          </div>
+          <span class="inv-amount">$220.00</span>
+          <span class="inv-status"><span class="pill green">Paid</span></span>
+          <span class="inv-action"><a href="#" class="section-action">View</a></span>
+        </div>
+
+        <div class="invoice-row">
+          <span class="inv-num">#1004</span>
+          <div>
+            <div class="inv-name">Maya · <em>Mary Poppins</em> JR tuition</div>
+            <div class="inv-sub">Jan 22 · Paid Jan 25</div>
+          </div>
+          <span class="inv-amount">$145.00</span>
+          <span class="inv-status"><span class="pill green">Paid</span></span>
+          <span class="inv-action"><a href="#" class="section-action">View</a></span>
+        </div>
+
+        <div class="invoice-row">
+          <span class="inv-num">#0987</span>
+          <div>
+            <div class="inv-name">Maya · <em>Mary Poppins</em> JR audition fee</div>
+            <div class="inv-sub">Dec 12 · Paid Dec 14</div>
+          </div>
+          <span class="inv-amount">$30.00</span>
+          <span class="inv-status"><span class="pill green">Paid</span></span>
+          <span class="inv-action"><a href="#" class="section-action">View</a></span>
+        </div>
+      </div>
+
+      <p style="font-size: 12px; color: var(--muted); margin-top: 16px;">Need help with an invoice? <a href="#" style="color: var(--teal); font-weight: 600;">Contact Encore →</a></p>
+
+    </div>
+  </div>
+</div>
+
+<nav class="mobile-tabs">
+  <a class="mt-link" href="dashboard.html"><span class="mt-icon">▦</span><span>Home</span></a>
+  <a class="mt-link" href="auditions.html"><span class="mt-icon">★</span><span>Auditions</span></a>
+  <a class="mt-link" href="shows.html"><span class="mt-icon">▼</span><span>Shows</span></a>
+  <a class="mt-link" href="performer.html"><span class="mt-icon">♟</span><span>Family</span></a>
+  <a class="mt-link active" href="invoices.html"><span class="mt-icon">⚙</span><span>More</span></a>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>

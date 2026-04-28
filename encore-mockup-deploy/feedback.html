@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback — Encore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .feedback-card {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .feedback-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .feedback-show {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 20px;
+    margin: 0 0 4px;
+    letter-spacing: -0.005em;
+  }
+  .feedback-show em { font-style: italic; color: var(--coral); }
+  .feedback-meta {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 0;
+  }
+  .feedback-result {
+    text-align: right;
+  }
+  .feedback-result .pill { font-size: 10px; }
+
+  .stars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: var(--cream-shell);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 600px) { .stars-grid { grid-template-columns: 1fr 1fr; } }
+
+  .stars-cell {
+    text-align: center;
+  }
+  .stars-cell .lbl {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .stars-cell .stars {
+    color: var(--yellow-dark);
+    font-size: 18px;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .stars-cell .stars .e { color: #C9BE9F; }
+
+  .quote {
+    background: var(--cream-shell);
+    border-left: 3px solid var(--coral);
+    padding: 16px 20px;
+    border-radius: 0 12px 12px 0;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .quote-author {
+    margin-top: 10px;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .filter-tab {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    line-height: 1.2;
+  }
+  .filter-tab.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link" href="auditions.html"><span class="sb-icon">★</span> Open auditions <span class="badge">4</span></a>
+      <a class="sb-link" href="shows.html"><span class="sb-icon">▼</span> My shows</a>
+      <a class="sb-link active" href="feedback.html"><span class="sb-icon">♪</span> Feedback</a>
+      <a class="sb-link" href="invoices.html"><span class="sb-icon">$</span> Invoices <span class="badge">1</span></a>
+      <div class="sb-section-label">Family</div>
+      <a class="sb-link" href="performer.html"><span class="sb-icon">♟</span> Performers</a>
+      <a class="sb-link" href="#"><span class="sb-icon">✎</span> Profile</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">★</span> Admin</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search feedback…"></div>
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar">SC</div>
+            <div class="hu-info"><span class="hu-name">Sarah Chen</span><span class="hu-sub">Parent</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-head">
+        <p class="page-eyebrow">Director feedback</p>
+        <h1 class="page-title">Notes from Encore's directors</h1>
+        <p class="page-sub">Released after each show's casting decisions are announced. Save the kind ones for tough days.</p>
+      </div>
+
+      <div class="performer-strip">
+        <button class="ps-tab active">
+          <div class="ps-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt=""></div>
+          Maya · 11
+        </button>
+        <button class="ps-tab">
+          <div class="ps-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SamChen&backgroundColor=b6e3f4,c0aede" alt=""></div>
+          Sam · 15
+        </button>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-tab active">All shows</button>
+        <button class="filter-tab">2026</button>
+        <button class="filter-tab">2025</button>
+        <button class="filter-tab">2024</button>
+      </div>
+
+      <div class="feedback-card">
+        <div class="feedback-head">
+          <div>
+            <h3 class="feedback-show">Disney's <em>Mary Poppins</em> JR</h3>
+            <p class="feedback-meta">Released Mar 12, 2026 · Director: Linda Cruz</p>
+          </div>
+          <div class="feedback-result"><span class="pill green">✓ Cast as Jane</span></div>
+        </div>
+
+        <div class="stars-grid">
+          <div class="stars-cell"><div class="lbl">Vocal</div><div class="stars">★★★★★</div></div>
+          <div class="stars-cell"><div class="lbl">Dance</div><div class="stars">★★★★<span class="e">★</span></div></div>
+          <div class="stars-cell"><div class="lbl">Acting</div><div class="stars">★★★★★</div></div>
+          <div class="stars-cell"><div class="lbl">Stage presence</div><div class="stars">★★★★<span class="e">★</span></div></div>
+        </div>
+
+        <div class="quote">
+          Lovely audition, Maya! Beautiful tone in your vocal cut and great instincts in the dance combo. Keep working on projecting your speaking voice — you have a wonderful natural sound that deserves to fill the room.
+          <div class="quote-author">— Linda Cruz, Director</div>
+        </div>
+      </div>
+
+      <div class="feedback-card">
+        <div class="feedback-head">
+          <div>
+            <h3 class="feedback-show"><em>Annie</em> JR</h3>
+            <p class="feedback-meta">Released Jan 8, 2025 · Director: Marcus Lee</p>
+          </div>
+          <div class="feedback-result"><span class="pill green">✓ Cast as Ensemble</span></div>
+        </div>
+
+        <div class="stars-grid">
+          <div class="stars-cell"><div class="lbl">Vocal</div><div class="stars">★★★★<span class="e">★</span></div></div>
+          <div class="stars-cell"><div class="lbl">Dance</div><div class="stars">★★★<span class="e">★★</span></div></div>
+          <div class="stars-cell"><div class="lbl">Acting</div><div class="stars">★★★★<span class="e">★</span></div></div>
+          <div class="stars-cell"><div class="lbl">Stage presence</div><div class="stars">★★★★<span class="e">★</span></div></div>
+        </div>
+
+        <div class="quote">
+          Maya brought such a sweet, grounded energy to her audition. Her belt is developing nicely, and she has a real gift for making us care about whoever she's playing. Strong dance work too — keep at the technique classes!
+          <div class="quote-author">— Marcus Lee, Director</div>
+        </div>
+      </div>
+
+      <div class="feedback-card">
+        <div class="feedback-head">
+          <div>
+            <h3 class="feedback-show"><em>Les Misérables</em> School Edition</h3>
+            <p class="feedback-meta">Released Sep 4, 2024 · Director: Linda Cruz</p>
+          </div>
+          <div class="feedback-result"><span class="pill green">✓ Cast as Young Cosette</span></div>
+        </div>
+
+        <div class="stars-grid">
+          <div class="stars-cell"><div class="lbl">Vocal</div><div class="stars">★★★★★</div></div>
+          <div class="stars-cell"><div class="lbl">Dance</div><div class="stars">★★★<span class="e">★★</span></div></div>
+          <div class="stars-cell"><div class="lbl">Acting</div><div class="stars">★★★★★</div></div>
+          <div class="stars-cell"><div class="lbl">Stage presence</div><div class="stars">★★★★★</div></div>
+        </div>
+
+        <div class="quote">
+          What a beautiful "Castle on a Cloud." Maya, you understood the emotional weight of that song without losing the innocence of the character — that's a hard balance, and you nailed it. Looking forward to working with you.
+          <div class="quote-author">— Linda Cruz, Director</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<nav class="mobile-tabs">
+  <a class="mt-link" href="dashboard.html"><span class="mt-icon">▦</span><span>Home</span></a>
+  <a class="mt-link" href="auditions.html"><span class="mt-icon">★</span><span>Auditions</span></a>
+  <a class="mt-link" href="shows.html"><span class="mt-icon">▼</span><span>Shows</span></a>
+  <a class="mt-link" href="performer.html"><span class="mt-icon">♟</span><span>Family</span></a>
+  <a class="mt-link" href="invoices.html"><span class="mt-icon">⚙</span><span>More</span></a>
+</nav>
+
+<script src="app.js"></script>
+<script>
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

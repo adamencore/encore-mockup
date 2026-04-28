@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit Lion King JR — Encore Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .sidebar.admin {
+    background: var(--ink);
+    border-right: 1px solid #2C2C28;
+  }
+  .sidebar.admin .sb-brand { color: var(--cream); }
+  .sidebar.admin .sb-brand .star { color: var(--yellow); }
+  .sidebar.admin .sb-section-label { color: rgba(251,246,236,0.4); }
+  .sidebar.admin .sb-link { color: rgba(251,246,236,0.65); }
+  .sidebar.admin .sb-link:hover { background: rgba(255,255,255,0.07); color: var(--cream); }
+  .sidebar.admin .sb-link.active { background: var(--yellow); color: var(--ink); }
+  .sidebar.admin .sb-link.active .sb-icon { color: var(--ink); }
+  .sidebar.admin .sb-foot { border-top: 1px solid #2C2C28; }
+  .admin-mode-badge { background: var(--yellow); color: var(--ink); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; margin-right: 8px; }
+
+  /* Show editor header */
+  .editor-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 24px;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    margin-bottom: 18px;
+  }
+  .editor-icon {
+    width: 56px; height: 56px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark));
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: white;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .editor-info { flex: 1; min-width: 0; }
+  .editor-info h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 24px;
+    margin: 0 0 3px;
+    letter-spacing: -0.005em;
+  }
+  .editor-info h1 em { font-style: italic; color: var(--coral); }
+  .editor-info p { font-size: 12px; color: var(--muted); margin: 0; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .editor-head-actions { display: flex; gap: 8px; }
+
+  /* Tabs */
+  .editor-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1.5px solid var(--line);
+    margin-bottom: 28px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ed-tab {
+    background: none;
+    border: none;
+    padding: 12px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1;
+  }
+  .ed-tab:hover { color: var(--ink); }
+  .ed-tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--coral);
+  }
+  .ed-tab .count {
+    background: var(--cream-shell);
+    color: var(--ink-soft);
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .ed-tab.active .count { background: var(--coral); color: white; }
+
+  /* Tab panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Form layout */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .form-section {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .form-section h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0 0 18px;
+    letter-spacing: -0.005em;
+  }
+  textarea.input {
+    min-height: 90px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+
+  /* Toggle */
+  .toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .toggle-row:first-child { border-top: none; padding-top: 0; }
+  .toggle-row:last-child { padding-bottom: 0; }
+  .toggle-label .lbl { font-size: 14px; font-weight: 600; }
+  .toggle-label .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .toggle {
+    width: 42px; height: 24px;
+    background: var(--line);
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: "";
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle.on { background: var(--coral); }
+  .toggle.on::after { transform: translateX(18px); }
+
+  /* Roles list */
+  .role-list { list-style: none; margin: 0; padding: 0; }
+  .role-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--cream-shell);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .role-list .role-grip { color: var(--muted); cursor: grab; }
+  .role-list .role-name { flex: 1; font-weight: 500; }
+  .role-list .role-cast { font-size: 12px; color: var(--muted); }
+  .role-list .role-remove {
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 18px; padding: 4px;
+  }
+  .role-list .role-remove:hover { color: var(--coral); }
+  .add-role-row {
+    display: flex; gap: 8px; margin-top: 10px;
+  }
+  .add-role-row .input { flex: 1; }
+
+  /* Schedule editor */
+  .schedule-editor {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .sched-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 110px 100px auto;
+    gap: 12px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--line-soft);
+    align-items: center;
+    font-size: 14px;
+  }
+  .sched-row:first-child { border-top: none; }
+  .sched-row.head {
+    background: var(--cream-shell);
+    font-size: 11px; font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 12px 18px;
+  }
+  .sched-row.perf-row { background: var(--yellow-soft); font-weight: 600; }
+  .sched-input {
+    background: white;
+    border: 1.5px solid var(--line);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .sched-input:focus { outline: none; border-color: var(--ink); }
+  .sched-tag-select {
+    font-family: inherit; font-size: 12px;
+    padding: 6px 10px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+  }
+  .sched-remove {
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 16px; line-height: 1;
+  }
+  .sched-remove:hover { color: var(--coral); }
+  .add-row {
+    padding: 14px 18px;
+    border-top: 1px solid var(--line-soft);
+    text-align: center;
+  }
+  .add-row a { color: var(--teal); font-weight: 600; cursor: pointer; font-size: 13px; }
+
+  @media (max-width: 700px) {
+    .sched-row { grid-template-columns: 1fr 1fr; }
+    .sched-row.head { display: none; }
+  }
+
+  /* Submissions table */
+  .sub-table {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .sub-row {
+    display: grid;
+    grid-template-columns: 50px 60px 1fr 90px 90px 80px 100px;
+    gap: 14px;
+    padding: 14px 20px;
+    align-items: center;
+    border-top: 1px solid var(--line-soft);
+    font-size: 14px;
+  }
+  .sub-row:first-child { border-top: none; }
+  .sub-row.head {
+    background: var(--cream-shell);
+    font-size: 11px; font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 12px 20px;
+  }
+  .sub-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    text-align: center;
+    color: var(--ink);
+  }
+  .sub-num.empty { color: var(--muted); font-weight: 400; font-size: 16px; }
+  .sub-photo {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+    overflow: hidden;
+  }
+  .sub-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .sub-name { font-weight: 600; font-size: 14px; }
+  .sub-name-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .sub-stars { color: var(--yellow-dark); font-size: 12px; letter-spacing: 1px; }
+  .sub-stars .e { color: #C9BE9F; }
+  .sub-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .sub-tags .pill { font-size: 9px; padding: 3px 7px; }
+
+  @media (max-width: 900px) {
+    .sub-row { grid-template-columns: 50px 60px 1fr 100px; gap: 10px; }
+    .sub-row.head { display: none; }
+    .sub-row > *:nth-child(n+5):not(:last-child) { display: none; }
+  }
+
+  /* Cast assignment */
+  .cast-assign {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 800px) { .cast-assign { grid-template-columns: 1fr; } }
+
+  .cast-col {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .cast-col h3 {
+    margin: 0;
+    padding: 14px 18px;
+    border-bottom: 1.5px solid var(--line);
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .cast-col h3 .ct {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .role-slot {
+    border-top: 1px solid var(--line-soft);
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .role-slot:first-of-type { border-top: none; }
+  .role-slot .rs-name { font-size: 13px; font-weight: 600; }
+  .role-slot .rs-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rs-cast {
+    background: var(--cream-shell);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rs-cast.empty {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px dashed var(--line);
+    cursor: pointer;
+  }
+  .rs-cast.empty:hover {
+    border-color: var(--ink-soft);
+    color: var(--ink);
+  }
+  .rs-cast img {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .rs-clear {
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 14px;
+  }
+  .rs-clear:hover { color: var(--coral); }
+
+  .pool-row {
+    border-top: 1px solid var(--line-soft);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: grab;
+  }
+  .pool-row:first-of-type { border-top: none; }
+  .pool-row:hover { background: var(--cream-shell); }
+  .pool-photo {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .pool-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .pool-name { flex: 1; font-size: 13px; font-weight: 600; }
+  .pool-grip { color: var(--muted); font-size: 14px; }
+  .pool-tag { font-size: 10px; color: var(--teal); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .publish-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--cream-shell);
+    padding: 16px 0;
+    border-top: 1.5px solid var(--line);
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .publish-info {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .publish-info strong {
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar admin">
+    <a href="admin-dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link" href="admin-shows.html"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
+      <a class="sb-link active" href="admin-show-editor.html"><span class="sb-icon">✎</span> Show editor</a>
+      <a class="sb-link" href="#"><span class="sb-icon">★</span> Auditioners</a>
+      <a class="sb-link" href="#"><span class="sb-icon">♟</span> Families</a>
+      <div class="sb-section-label">Super admin</div>
+      <a class="sb-link" href="admin-invoices.html"><span class="sb-icon">$</span> Invoices</a>
+      <a class="sb-link" href="admin-content.html"><span class="sb-icon">📰</span> Content</a>
+      <a class="sb-link" href="#"><span class="sb-icon">📊</span> Reports</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">↗</span> View as parent</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search…"></div>
+        <div class="header-actions">
+          <span class="admin-mode-badge">★ Super Admin</span>
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar" style="background: var(--ink);">AR</div>
+            <div class="hu-info"><span class="hu-name">Adam Record</span><span class="hu-sub">Owner</span></div>
+          </div>
+        </div>
+      </div>
+
+      <a class="back-link" href="admin-shows.html">← Back to all shows</a>
+
+      <!-- Editor head -->
+      <div class="editor-head">
+        <div class="editor-icon">L</div>
+        <div class="editor-info">
+          <h1>Disney's <em>Lion King</em> JR</h1>
+          <p>Summer 2026 · In rehearsal · Cast posted Apr 24</p>
+        </div>
+        <div class="editor-head-actions">
+          <a href="show-detail.html" class="btn btn-secondary">Preview as parent</a>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="editor-tabs">
+        <button class="ed-tab" data-tab="setup">Setup</button>
+        <button class="ed-tab" data-tab="schedule">Schedule <span class="count">22</span></button>
+        <button class="ed-tab" data-tab="submissions">Submissions <span class="count">42</span></button>
+        <button class="ed-tab active" data-tab="cast">Cast <span class="count">28</span></button>
+        <button class="ed-tab" data-tab="settings">Settings</button>
+      </div>
+
+      <!-- ========== SETUP ========== -->
+      <div class="panel" data-panel="setup">
+
+        <div class="form-section">
+          <h3>Basics</h3>
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Show title</label>
+              <input class="input" value="Disney's Lion King JR">
+            </div>
+            <div class="field">
+              <label class="field-label">Season</label>
+              <input class="input" value="Summer 2026">
+            </div>
+            <div class="field">
+              <label class="field-label">Age min</label>
+              <input class="input" type="number" value="8">
+            </div>
+            <div class="field">
+              <label class="field-label">Age max</label>
+              <input class="input" type="number" value="13">
+            </div>
+            <div class="field full">
+              <label class="field-label">Description (parents see this)</label>
+              <textarea class="input">Disney's Lion King JR brings the African savanna to life with iconic music by Elton John and Tim Rice. A must-see for our youngest performers.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Audition window</h3>
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Registration opens</label>
+              <input class="input" type="date" value="2026-03-15">
+            </div>
+            <div class="field">
+              <label class="field-label">Registration closes</label>
+              <input class="input" type="date" value="2026-04-20">
+            </div>
+            <div class="field">
+              <label class="field-label">Audition fee</label>
+              <input class="input" value="$25">
+            </div>
+            <div class="field">
+              <label class="field-label">Tuition (if cast)</label>
+              <input class="input" value="$145">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Roles</h3>
+          <p style="font-size: 12px; color: var(--muted); margin: -10px 0 14px;">These power role-tagging in the director view and the cast assignment screen.</p>
+          <ul class="role-list">
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Simba</span><span class="role-cast">cast: Olivia R.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Young Simba</span><span class="role-cast">cast: Eli P.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Nala</span><span class="role-cast">cast: Lucia G.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Young Nala</span><span class="role-cast">cast: Maya C.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Mufasa</span><span class="role-cast">cast: Jackson P.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Scar</span><span class="role-cast">cast: Mason H.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Shenzi</span><span class="role-cast">cast: Ava J.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Banzai</span><span class="role-cast">cast: Carter B.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Ed</span><span class="role-cast">cast: Ethan W.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Rafiki</span><span class="role-cast">cast: Jade T.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Zazu</span><span class="role-cast">cast: Milo S.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Timon</span><span class="role-cast">cast: Sofia M.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Pumbaa</span><span class="role-cast">cast: Owen F.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Sarafina</span><span class="role-cast">cast: Brooklyn P.</span><button class="role-remove">×</button></li>
+            <li><span class="role-grip">⋮⋮</span><span class="role-name">Ensemble</span><span class="role-cast">cast: 14 performers</span><button class="role-remove">×</button></li>
+          </ul>
+          <div class="add-role-row">
+            <input class="input" placeholder="Add a role…">
+            <button class="btn btn-secondary">+ Add</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Show poster</h3>
+          <p style="font-size: 13px; color: var(--ink-soft); margin: -10px 0 14px;">Used as the card banner everywhere parents see this show.</p>
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <div style="width: 120px; height: 120px; border-radius: 12px; background: linear-gradient(135deg, #F8DA5F, var(--yellow-dark)); display: grid; place-items: center; font-family: 'Fraunces', serif; font-size: 56px; color: rgba(255,255,255,0.5); font-weight: 700;">L</div>
+            <div>
+              <button class="btn btn-secondary">📷 Upload poster</button>
+              <p style="font-size: 12px; color: var(--muted); margin: 8px 0 0;">Recommended 600 × 900 px · JPG or PNG</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========== SCHEDULE ========== -->
+      <div class="panel" data-panel="schedule">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px;">
+          <p style="font-size: 13px; color: var(--ink-soft); margin: 0;">These dates auto-populate the conflict checkboxes in the audition form, plus the parent's show schedule.</p>
+          <button class="btn btn-secondary">📋 Bulk import</button>
+        </div>
+        <div class="schedule-editor">
+          <div class="sched-row head">
+            <span>Date</span><span>Description</span><span>Time</span><span>Type</span><span></span>
+          </div>
+          <div class="sched-row">
+            <input class="sched-input" type="date" value="2026-06-01">
+            <input class="sched-input" value="Read-through">
+            <input class="sched-input" value="6:30–9pm">
+            <select class="sched-tag-select"><option>Rehearsal</option><option>Tech</option><option>Performance</option></select>
+            <button class="sched-remove">×</button>
+          </div>
+          <div class="sched-row">
+            <input class="sched-input" type="date" value="2026-06-02">
+            <input class="sched-input" value="Music rehearsal">
+            <input class="sched-input" value="6:30–9pm">
+            <select class="sched-tag-select"><option>Rehearsal</option></select>
+            <button class="sched-remove">×</button>
+          </div>
+          <div class="sched-row">
+            <input class="sched-input" type="date" value="2026-06-03">
+            <input class="sched-input" value="Choreography">
+            <input class="sched-input" value="6:30–9pm">
+            <select class="sched-tag-select"><option>Rehearsal</option></select>
+            <button class="sched-remove">×</button>
+          </div>
+          <div class="sched-row">
+            <input class="sched-input" type="date" value="2026-06-22">
+            <input class="sched-input" value="Tech rehearsal">
+            <input class="sched-input" value="5–9:30pm">
+            <select class="sched-tag-select"><option selected>Tech</option><option>Rehearsal</option></select>
+            <button class="sched-remove">×</button>
+          </div>
+          <div class="sched-row perf-row">
+            <input class="sched-input" type="date" value="2026-06-26">
+            <input class="sched-input" value="Opening night">
+            <input class="sched-input" value="7pm call">
+            <select class="sched-tag-select"><option selected>Performance</option><option>Rehearsal</option></select>
+            <button class="sched-remove">×</button>
+          </div>
+          <div class="sched-row perf-row">
+            <input class="sched-input" type="date" value="2026-06-27">
+            <input class="sched-input" value="Matinee + Evening">
+            <input class="sched-input" value="1pm/6pm">
+            <select class="sched-tag-select"><option selected>Performance</option></select>
+            <button class="sched-remove">×</button>
+          </div>
+          <div class="add-row"><a>+ Add another date</a></div>
+        </div>
+      </div>
+
+      <!-- ========== SUBMISSIONS ========== -->
+      <div class="panel" data-panel="submissions">
+        <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+          <button class="btn btn-secondary">All 42</button>
+          <button class="btn btn-secondary">Noted 28</button>
+          <button class="btn btn-secondary">Callbacks 12</button>
+          <div style="flex: 1;"></div>
+          <button class="btn btn-secondary">📥 Export CSV</button>
+          <a href="director-view-mockup.html" class="btn btn-primary">Open director view →</a>
+        </div>
+        <p style="font-size: 12px; color: var(--muted); margin: 0 0 14px;">Tap any auditioner to open the full director view (notes, ratings, tags).</p>
+        <div class="sub-table">
+          <div class="sub-row head">
+            <span>#</span><span></span><span>Auditioner</span><span>Slot</span><span>Rating</span><span>Status</span><span>Tags</span>
+          </div>
+          <div class="sub-row">
+            <span class="sub-num">1</span>
+            <div class="sub-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt=""></div>
+            <div><div class="sub-name">Maya Chen</div><div class="sub-name-sub">Age 11</div></div>
+            <span style="font-size: 12px; color: var(--ink-soft);">9:00a</span>
+            <span class="sub-stars">★★★★<span class="e">★</span></span>
+            <span><span class="pill yellow">Callback</span></span>
+            <div class="sub-tags"><span class="pill teal">Young Nala</span></div>
+          </div>
+          <div class="sub-row">
+            <span class="sub-num">2</span>
+            <div class="sub-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=JacksonPark&backgroundColor=b6e3f4,c0aede,d1d4f9" alt=""></div>
+            <div><div class="sub-name">Jackson Park</div><div class="sub-name-sub">Age 9</div></div>
+            <span style="font-size: 12px; color: var(--ink-soft);">9:15a</span>
+            <span class="sub-stars">★★★<span class="e">★★</span></span>
+            <span><span class="pill">Noted</span></span>
+            <div class="sub-tags"><span class="pill teal">Young Simba</span></div>
+          </div>
+          <div class="sub-row">
+            <span class="sub-num">3</span>
+            <div class="sub-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=EliPatel&backgroundColor=ffdfbf,c0aede" alt=""></div>
+            <div><div class="sub-name">Eli Patel</div><div class="sub-name-sub">Age 10</div></div>
+            <span style="font-size: 12px; color: var(--ink-soft);">9:45a</span>
+            <span class="sub-stars">★★★★★</span>
+            <span><span class="pill yellow">Callback</span></span>
+            <div class="sub-tags"><span class="pill teal">Young Simba</span></div>
+          </div>
+          <div class="sub-row">
+            <span class="sub-num empty">+</span>
+            <div class="sub-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AvaJohnson&backgroundColor=ffd5dc,c0aede" alt=""></div>
+            <div><div class="sub-name">Ava Johnson</div><div class="sub-name-sub">Age 11</div></div>
+            <span style="font-size: 12px; color: var(--ink-soft);">10:30a</span>
+            <span class="sub-stars">★★★★<span class="e">★</span></span>
+            <span><span class="pill">Noted</span></span>
+            <div class="sub-tags"><span class="pill teal">Shenzi</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CAST ========== -->
+      <div class="panel active" data-panel="cast">
+        <p style="font-size: 13px; color: var(--ink-soft); margin: 0 0 18px;">Drag auditioners from the right column onto roles. Use callbacks to narrow the pool. Click <strong>Publish</strong> to release the cast list to all parents.</p>
+
+        <div class="cast-assign">
+
+          <!-- ROLES COL -->
+          <div class="cast-col">
+            <h3>Roles <span class="ct">14 of 15 cast</span></h3>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Simba</span>
+                <div class="rs-cast"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=OliviaRodriguez" alt=""> Olivia R. <button class="rs-clear">×</button></div>
+              </div>
+            </div>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Young Simba</span>
+                <div class="rs-cast"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=EliPatel" alt=""> Eli P. <button class="rs-clear">×</button></div>
+              </div>
+            </div>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Nala</span>
+                <div class="rs-cast"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=LuciaG" alt=""> Lucia G. <button class="rs-clear">×</button></div>
+              </div>
+            </div>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Young Nala</span>
+                <div class="rs-cast"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen" alt=""> Maya C. <button class="rs-clear">×</button></div>
+              </div>
+            </div>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Mufasa</span>
+                <div class="rs-cast"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=JacksonPark" alt=""> Jackson P. <button class="rs-clear">×</button></div>
+              </div>
+            </div>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Scar</span>
+                <div class="rs-cast empty">+ Drag auditioner here</div>
+              </div>
+            </div>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Shenzi</span>
+                <div class="rs-cast"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AvaJohnson" alt=""> Ava J. <button class="rs-clear">×</button></div>
+              </div>
+            </div>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Rafiki</span>
+                <div class="rs-cast"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=JadeT" alt=""> Jade T. <button class="rs-clear">×</button></div>
+              </div>
+            </div>
+            <div class="role-slot">
+              <div class="rs-info">
+                <span class="rs-name">Ensemble (14)</span>
+                <div class="rs-cast">14 cast · expand</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- POOL COL -->
+          <div class="cast-col">
+            <h3>Auditioner pool <span class="ct">42 total · 14 unassigned</span></h3>
+            <div style="padding: 10px 18px; border-bottom: 1.5px solid var(--line); background: var(--cream-shell);">
+              <input type="text" class="input" placeholder="Filter by name or tag…" style="background: white;">
+            </div>
+            <div class="pool-row">
+              <div class="pool-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MasonH"></div>
+              <div class="pool-name">Mason H. · 12</div>
+              <span class="pool-tag">Tag: Scar</span>
+              <span class="pool-grip">⋮⋮</span>
+            </div>
+            <div class="pool-row">
+              <div class="pool-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MiloS"></div>
+              <div class="pool-name">Milo S. · 10</div>
+              <span class="pool-tag">★★★★</span>
+              <span class="pool-grip">⋮⋮</span>
+            </div>
+            <div class="pool-row">
+              <div class="pool-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=NoraK"></div>
+              <div class="pool-name">Nora K. · 11</div>
+              <span class="pool-tag">★★★★★</span>
+              <span class="pool-grip">⋮⋮</span>
+            </div>
+            <div class="pool-row">
+              <div class="pool-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=ChloeM"></div>
+              <div class="pool-name">Chloe M. · 9</div>
+              <span class="pool-tag">★★★</span>
+              <span class="pool-grip">⋮⋮</span>
+            </div>
+            <div class="pool-row">
+              <div class="pool-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AidenK"></div>
+              <div class="pool-name">Aiden K. · 8</div>
+              <span class="pool-tag">★★★</span>
+              <span class="pool-grip">⋮⋮</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="publish-bar">
+          <div class="publish-info">Cast is <strong>posted</strong> · 28 cast members · Posted Apr 24 at 6pm</div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary">Unpublish</button>
+            <button class="btn btn-primary">Update &amp; notify cast</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== SETTINGS ========== -->
+      <div class="panel" data-panel="settings">
+        <div class="form-section">
+          <h3>Public-facing settings</h3>
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <div class="lbl">Public director feedback</div>
+              <div class="sub">Release written notes &amp; star ratings to auditioners after casting</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <div class="lbl">Show conflict checkboxes</div>
+              <div class="sub">Let parents mark dates they can't make during registration</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <div class="lbl">Show cast list to public</div>
+              <div class="sub">Currently visible only to families. Toggle on to add to public website too.</div>
+            </div>
+            <div class="toggle"></div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Team access</h3>
+          <p style="font-size: 12px; color: var(--muted); margin: -10px 0 14px;">Who can edit this show + see audition data.</p>
+          <ul class="role-list">
+            <li><span class="role-name">Linda Cruz</span><span class="role-cast">Director · full access</span><button class="role-remove">×</button></li>
+            <li><span class="role-name">Marcus Lee</span><span class="role-cast">Music director · view + notes</span><button class="role-remove">×</button></li>
+            <li><span class="role-name">Jess Park</span><span class="role-cast">Choreographer · view + notes</span><button class="role-remove">×</button></li>
+            <li><span class="role-name">Tom Wright</span><span class="role-cast">Stage manager · view + numbers</span><button class="role-remove">×</button></li>
+          </ul>
+          <div class="add-role-row">
+            <input class="input" placeholder="Email…">
+            <select class="input" style="max-width: 200px;"><option>Director</option><option>Music director</option><option>Choreographer</option><option>Stage manager</option><option>Asst</option></select>
+            <button class="btn btn-secondary">+ Invite</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Danger zone</h3>
+          <p style="font-size: 13px; color: var(--ink-soft); margin: -10px 0 14px;">These actions can't be undone.</p>
+          <button class="btn btn-secondary" style="color: var(--coral); border-color: var(--coral);">Archive this show</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  // Tab switching
+  document.querySelectorAll('.ed-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.ed-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelector('.panel[data-panel="' + target + '"]').classList.add('active');
+    });
+  });
+
+  // Toggles
+  document.querySelectorAll('.toggle').forEach(t => {
+    t.addEventListener('click', () => t.classList.toggle('on'));
+  });
+</script>
+</body>
+</html>

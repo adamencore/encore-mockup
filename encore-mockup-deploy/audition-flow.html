@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audition for Mary Poppins JR — Encore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .audition-shell {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .show-banner-strip {
+    background: linear-gradient(135deg, #9968A0, var(--plum));
+    border-radius: 16px;
+    padding: 22px 26px;
+    color: white;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .sbs-icon {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    color: rgba(255,255,255,0.32);
+    line-height: 1;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sbs-info h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0 0 3px;
+    letter-spacing: -0.005em;
+  }
+  .sbs-info h2 em { font-style: italic; color: var(--yellow); }
+  .sbs-info p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.78);
+    margin: 0;
+  }
+
+  /* Section card */
+  .review-card {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .review-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .review-head h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0;
+  }
+  .edit-link {
+    background: none;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .edit-link:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+  .review-body { padding: 16px 22px; }
+
+  .photo-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .photo-thumb {
+    width: 60px; height: 75px;
+    border-radius: 10px;
+    background: var(--cream-dark);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-info p { margin: 0; font-size: 13px; }
+  .photo-info .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+
+  .file-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--cream-shell);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .file-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--cream-dark);
+    color: var(--ink);
+    display: grid; place-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .file-info { flex: 1; }
+  .file-info .file-name { font-weight: 600; color: var(--ink); }
+  .file-info .file-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* MUSIC SECTION */
+  .source-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--cream-shell);
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .source-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .source-tab.active {
+    background: white;
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .source-panel { display: none; }
+  .source-panel.active { display: block; }
+
+  /* Audio file uploaded state */
+  .audio-file {
+    background: var(--cream-shell);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .audio-file-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .audio-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--coral-soft); color: var(--coral);
+    display: grid; place-items: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .audio-name { font-weight: 600; font-size: 13px; }
+  .audio-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* Waveform-style player */
+  .player {
+    background: var(--ink);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--cream);
+  }
+  .player-controls {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .play-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--yellow); color: var(--ink);
+    border: none; cursor: pointer;
+    display: grid; place-items: center;
+    font-size: 14px; font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .player-time {
+    font-family: 'Manrope', monospace;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: rgba(251,246,236,0.8);
+  }
+  .waveform {
+    position: relative;
+    height: 48px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 6px;
+    overflow: hidden;
+  }
+  .waveform-bar {
+    flex: 1;
+    background: rgba(255,255,255,0.3);
+    border-radius: 1px;
+    min-width: 2px;
+  }
+  .waveform-region {
+    position: absolute;
+    top: 0; bottom: 0;
+    background: rgba(244, 203, 58, 0.25);
+    border-left: 2px solid var(--yellow);
+    border-right: 2px solid var(--yellow);
+    pointer-events: none;
+  }
+
+  .timestamp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .ts-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .ts-input {
+    width: 100%;
+    background: white;
+    border: 1.5px solid var(--line);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-family: 'Manrope', monospace;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .ts-input:focus {
+    outline: none; border-color: var(--ink);
+    box-shadow: 0 0 0 4px var(--yellow-soft);
+  }
+  .ts-helper {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .youtube-preview {
+    background: var(--ink);
+    border-radius: 10px;
+    aspect-ratio: 16/9;
+    display: grid;
+    place-items: center;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    margin-bottom: 14px;
+    background-image: linear-gradient(135deg, #2C2C28 0%, #1A1A18 100%);
+  }
+  .youtube-preview .yt-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+
+  .upload-drop {
+    background: var(--cream-shell);
+    border: 1.5px dashed var(--line);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .upload-drop:hover { border-color: var(--ink-soft); color: var(--ink); }
+  .upload-drop strong { color: var(--coral); }
+
+  /* CONFLICTS — collapsed view */
+  .conflict-summary {
+    background: var(--cream-shell);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .conflict-summary strong { color: var(--ink); }
+  .conflict-list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    font-size: 13px;
+  }
+  .conflict-list li {
+    padding: 6px 0;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+  }
+  .conflict-list li:first-child { border-top: none; }
+  .conflict-list .perf {
+    color: var(--coral);
+    font-weight: 600;
+  }
+
+  /* Sticky submit */
+  .submit-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--cream-shell);
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .submit-cost {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .submit-cost strong {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    color: var(--ink);
+    margin-left: 6px;
+  }
+
+  .agreement {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 14px 18px;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .agreement input {
+    margin-top: 2px;
+    width: 18px; height: 18px;
+    accent-color: var(--coral);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .agreement a { color: var(--teal); font-weight: 600; }
+
+  /* Slot picker */
+  .slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .slot-btn {
+    background: var(--cream-shell);
+    border: 1.5px solid transparent;
+    padding: 10px 8px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+    line-height: 1.3;
+  }
+  .slot-btn:hover { border-color: var(--ink-soft); }
+  .slot-btn.selected {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+  .slot-btn.taken {
+    background: transparent;
+    color: var(--muted);
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+  .slot-day-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 14px 0 4px;
+  }
+  .slot-day-label:first-child { margin-top: 0; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link active" href="auditions.html"><span class="sb-icon">★</span> Open auditions <span class="badge">4</span></a>
+      <a class="sb-link" href="shows.html"><span class="sb-icon">▼</span> My shows</a>
+      <a class="sb-link" href="feedback.html"><span class="sb-icon">♪</span> Feedback</a>
+      <a class="sb-link" href="invoices.html"><span class="sb-icon">$</span> Invoices <span class="badge">1</span></a>
+      <div class="sb-section-label">Family</div>
+      <a class="sb-link" href="performer.html"><span class="sb-icon">♟</span> Performers</a>
+      <a class="sb-link" href="#"><span class="sb-icon">✎</span> Profile</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">★</span> Admin</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main no-rail">
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search…"></div>
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar">SC</div>
+            <div class="hu-info"><span class="hu-name">Sarah Chen</span><span class="hu-sub">Parent</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="audition-shell">
+
+        <a class="back-link" href="auditions.html">← Back to open auditions</a>
+
+        <div class="page-head">
+          <p class="page-eyebrow">Review &amp; submit</p>
+          <h1 class="page-title">Audition Maya for <em>Mary Poppins</em> JR</h1>
+          <p class="page-sub">We've pre-filled everything from Maya's profile. Just review, edit anything that's changed, pick a slot, and submit.</p>
+        </div>
+
+        <div class="show-banner-strip">
+          <div class="sbs-icon">M</div>
+          <div class="sbs-info">
+            <h2>Disney's <em>Mary Poppins</em> JR</h2>
+            <p>Fall 2026 · Ages 9–14 · Auditions May 8–10 · Closes May 5</p>
+          </div>
+        </div>
+
+        <!-- Performer card -->
+        <div class="review-card">
+          <div class="review-head">
+            <h3>Performer</h3>
+            <button class="edit-link">Edit</button>
+          </div>
+          <div class="review-body">
+            <div class="photo-row">
+              <div class="photo-thumb">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt="Maya">
+              </div>
+              <div class="photo-info">
+                <p class="label">Headshot</p>
+                <p style="font-weight: 600;">Maya Chen</p>
+                <p style="font-size: 12px; color: var(--muted); margin-top: 1px;">Uploaded Jul 2024 · 9 months old</p>
+              </div>
+            </div>
+            <div class="info-row"><span class="info-label">Age</span><span class="info-val">11</span></div>
+            <div class="info-row"><span class="info-label">Birthday</span><span class="info-val">Sep 14, 2014</span></div>
+            <div class="info-row"><span class="info-label">Gender</span><span class="info-val">She/her</span></div>
+            <div class="info-row"><span class="info-label">T-shirt size</span><span class="info-val">Youth Large</span></div>
+          </div>
+        </div>
+
+        <!-- Files -->
+        <div class="review-card">
+          <div class="review-head">
+            <h3>Resume</h3>
+            <button class="edit-link">Replace</button>
+          </div>
+          <div class="review-body">
+            <div class="file-row">
+              <div class="file-icon">📄</div>
+              <div class="file-info">
+                <div class="file-name">Maya_Chen_Resume_2026.pdf</div>
+                <div class="file-sub">Updated Mar 2026 · 142 KB</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Music -->
+        <div class="review-card">
+          <div class="review-head">
+            <h3>Audition music <span class="pill" style="font-size: 9px; margin-left: 6px;">Required</span></h3>
+            <button class="edit-link">Replace</button>
+          </div>
+          <div class="review-body">
+            <p style="font-size: 12px; color: var(--muted); margin: 0 0 14px;">Upload a track or paste a YouTube/Spotify link. Mark exactly where your 16-bar cut starts and ends.</p>
+
+            <div class="source-tabs">
+              <button class="source-tab active" data-source="upload">Upload audio</button>
+              <button class="source-tab" data-source="youtube">YouTube</button>
+              <button class="source-tab" data-source="spotify">Spotify</button>
+            </div>
+
+            <!-- Upload panel -->
+            <div class="source-panel active" data-panel="upload">
+              <div class="audio-file">
+                <div class="audio-file-head">
+                  <div class="audio-icon">♪</div>
+                  <div style="flex: 1;">
+                    <div class="audio-name">Castle_on_a_Cloud_Karaoke.mp3</div>
+                    <div class="audio-meta">3:42 · 4.2 MB · uploaded just now</div>
+                  </div>
+                  <button class="edit-link">Replace</button>
+                </div>
+
+                <div class="player">
+                  <div class="player-controls">
+                    <button class="play-btn" aria-label="Play">▶</button>
+                    <span class="player-time">0:48 / 3:42</span>
+                  </div>
+                  <div class="waveform">
+                    <!-- Waveform bars -->
+                    <div class="waveform-region" style="left: 22%; width: 18%;"></div>
+                    <div class="waveform-bar" style="height: 30%;"></div>
+                    <div class="waveform-bar" style="height: 45%;"></div>
+                    <div class="waveform-bar" style="height: 60%;"></div>
+                    <div class="waveform-bar" style="height: 35%;"></div>
+                    <div class="waveform-bar" style="height: 50%;"></div>
+                    <div class="waveform-bar" style="height: 70%;"></div>
+                    <div class="waveform-bar" style="height: 55%;"></div>
+                    <div class="waveform-bar" style="height: 80%;"></div>
+                    <div class="waveform-bar" style="height: 65%;"></div>
+                    <div class="waveform-bar" style="height: 45%;"></div>
+                    <div class="waveform-bar" style="height: 75%;"></div>
+                    <div class="waveform-bar" style="height: 60%;"></div>
+                    <div class="waveform-bar" style="height: 90%;"></div>
+                    <div class="waveform-bar" style="height: 70%;"></div>
+                    <div class="waveform-bar" style="height: 55%;"></div>
+                    <div class="waveform-bar" style="height: 80%;"></div>
+                    <div class="waveform-bar" style="height: 65%;"></div>
+                    <div class="waveform-bar" style="height: 50%;"></div>
+                    <div class="waveform-bar" style="height: 75%;"></div>
+                    <div class="waveform-bar" style="height: 85%;"></div>
+                    <div class="waveform-bar" style="height: 60%;"></div>
+                    <div class="waveform-bar" style="height: 70%;"></div>
+                    <div class="waveform-bar" style="height: 50%;"></div>
+                    <div class="waveform-bar" style="height: 65%;"></div>
+                    <div class="waveform-bar" style="height: 40%;"></div>
+                    <div class="waveform-bar" style="height: 55%;"></div>
+                    <div class="waveform-bar" style="height: 70%;"></div>
+                    <div class="waveform-bar" style="height: 45%;"></div>
+                    <div class="waveform-bar" style="height: 60%;"></div>
+                    <div class="waveform-bar" style="height: 35%;"></div>
+                    <div class="waveform-bar" style="height: 50%;"></div>
+                    <div class="waveform-bar" style="height: 65%;"></div>
+                    <div class="waveform-bar" style="height: 75%;"></div>
+                    <div class="waveform-bar" style="height: 55%;"></div>
+                    <div class="waveform-bar" style="height: 40%;"></div>
+                    <div class="waveform-bar" style="height: 50%;"></div>
+                    <div class="waveform-bar" style="height: 35%;"></div>
+                    <div class="waveform-bar" style="height: 25%;"></div>
+                    <div class="waveform-bar" style="height: 20%;"></div>
+                  </div>
+                </div>
+
+                <div class="timestamp-row">
+                  <div class="ts-field">
+                    <label>Start time</label>
+                    <input class="ts-input" value="0:48" type="text">
+                    <p class="ts-helper">Tap "Set from playhead" while playing</p>
+                  </div>
+                  <div class="ts-field">
+                    <label>End time</label>
+                    <input class="ts-input" value="1:24" type="text">
+                    <p class="ts-helper">36 seconds · approximately 16 bars</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="upload-drop">
+                <div style="font-size: 22px; margin-bottom: 6px;">↑</div>
+                <strong>Replace audio</strong> or drop a new file here<br>
+                <span style="font-size: 11px;">MP3, M4A, or WAV · max 20 MB</span>
+              </div>
+            </div>
+
+            <!-- YouTube panel -->
+            <div class="source-panel" data-panel="youtube">
+              <div class="field">
+                <label class="field-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;">YouTube URL</label>
+                <input class="input" placeholder="https://youtube.com/watch?v=…" value="https://youtube.com/watch?v=YqJI3eDUW7E">
+              </div>
+              <div class="youtube-preview">
+                <div style="text-align: center;">
+                  <div class="yt-icon">▶</div>
+                  <div>"Castle on a Cloud" — Les Misérables Karaoke</div>
+                </div>
+              </div>
+              <div class="timestamp-row">
+                <div class="ts-field">
+                  <label>Start at</label>
+                  <input class="ts-input" value="0:48">
+                </div>
+                <div class="ts-field">
+                  <label>End at</label>
+                  <input class="ts-input" value="1:24">
+                </div>
+              </div>
+            </div>
+
+            <!-- Spotify panel -->
+            <div class="source-panel" data-panel="spotify">
+              <div class="field">
+                <label class="field-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;">Spotify track URL</label>
+                <input class="input" placeholder="https://open.spotify.com/track/…">
+              </div>
+              <p style="font-size: 12px; color: var(--ink-soft); background: var(--coral-soft); padding: 12px 14px; border-radius: 10px; line-height: 1.5; margin: 0;">
+                <strong style="color: var(--coral);">Note:</strong> Spotify requires the director to have a Spotify account on the playing device. If you're not sure, upload the audio file instead.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Parent contact -->
+        <div class="review-card">
+          <div class="review-head">
+            <h3>Parent / primary contact</h3>
+            <button class="edit-link">Edit</button>
+          </div>
+          <div class="review-body">
+            <div class="info-row"><span class="info-label">Name</span><span class="info-val">Sarah Chen</span></div>
+            <div class="info-row"><span class="info-label">Phone</span><span class="info-val">(435) 555-0142</span></div>
+            <div class="info-row"><span class="info-label">Email</span><span class="info-val">sarah.chen@email.com</span></div>
+            <div class="info-row"><span class="info-label">Address</span><span class="info-val">1247 Red Mountain Dr, St. George, UT 84770</span></div>
+          </div>
+        </div>
+
+        <!-- Conflicts — show-specific -->
+        <div class="review-card">
+          <div class="review-head">
+            <h3>Schedule conflicts</h3>
+            <button class="edit-link">Add conflicts</button>
+          </div>
+          <div class="review-body">
+            <div class="conflict-summary">
+              <strong>3 conflicts marked</strong> from your saved family calendar
+              <ul class="conflict-list">
+                <li><span>Wed, Sep 16</span><span>Soccer practice</span></li>
+                <li><span>Mon, Sep 28</span><span>Family vacation</span></li>
+                <li class="perf"><span>Sat, Nov 14</span><span>⚠ Closing matinee</span></li>
+              </ul>
+            </div>
+            <p style="font-size: 12px; color: var(--muted); margin: 0;">Conflicts are pulled from your family calendar. Add show-specific conflicts above.</p>
+          </div>
+        </div>
+
+        <!-- Slot picker -->
+        <div class="review-card">
+          <div class="review-head">
+            <h3>Pick an audition slot</h3>
+          </div>
+          <div class="review-body">
+            <p style="font-size: 13px; color: var(--ink-soft); margin: 0 0 12px;">5-minute individual slot, then group dance call. Plan for 90 min total.</p>
+
+            <div class="slot-day-label">Friday, May 8</div>
+            <div class="slot-grid">
+              <button class="slot-btn taken">4:00 PM</button>
+              <button class="slot-btn">4:15 PM</button>
+              <button class="slot-btn">4:30 PM</button>
+              <button class="slot-btn taken">4:45 PM</button>
+              <button class="slot-btn">5:00 PM</button>
+              <button class="slot-btn">5:15 PM</button>
+            </div>
+
+            <div class="slot-day-label">Saturday, May 9</div>
+            <div class="slot-grid">
+              <button class="slot-btn">9:00 AM</button>
+              <button class="slot-btn">9:15 AM</button>
+              <button class="slot-btn selected">9:30 AM</button>
+              <button class="slot-btn">9:45 AM</button>
+              <button class="slot-btn taken">10:00 AM</button>
+              <button class="slot-btn">10:15 AM</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="agreement">
+          <input type="checkbox" id="agree" checked>
+          <label for="agree">I confirm Maya wants to audition for this show, and I've reviewed all the info above. <a href="#">Audition policies</a></label>
+        </div>
+
+        <div class="submit-bar">
+          <div class="submit-cost">Audition fee:<strong>$25</strong> <span style="color: var(--muted); font-size: 12px; font-weight: 500;">(invoiced after submit)</span></div>
+          <a href="dashboard.html" class="btn btn-primary btn-lg">Submit audition →</a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<nav class="mobile-tabs">
+  <a class="mt-link" href="dashboard.html"><span class="mt-icon">▦</span><span>Home</span></a>
+  <a class="mt-link active" href="auditions.html"><span class="mt-icon">★</span><span>Auditions</span></a>
+  <a class="mt-link" href="shows.html"><span class="mt-icon">▼</span><span>Shows</span></a>
+  <a class="mt-link" href="performer.html"><span class="mt-icon">♟</span><span>Family</span></a>
+  <a class="mt-link" href="invoices.html"><span class="mt-icon">⚙</span><span>More</span></a>
+</nav>
+
+<script src="app.js"></script>
+<script>
+  document.querySelectorAll('.slot-btn:not(.taken)').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.slot-btn').forEach(s => s.classList.remove('selected'));
+      b.classList.add('selected');
+    });
+  });
+  document.querySelectorAll('.source-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      const target = t.dataset.source;
+      document.querySelectorAll('.source-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.querySelectorAll('.source-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector('.source-panel[data-panel="' + target + '"]').classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+[build]
+  publish = "."
+
+# No build step needed — pure static HTML
+# Netlify just serves the files as-is

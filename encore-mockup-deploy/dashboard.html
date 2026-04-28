@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Encore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  /* Dashboard-specific */
+  .greeting {
+    background: linear-gradient(135deg, var(--ink) 0%, #2C2C28 100%);
+    color: var(--cream);
+    border-radius: 18px;
+    padding: 26px 28px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .greeting-date {
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 8px;
+  }
+  .greeting h1 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(24px, 3vw, 30px);
+    margin: 0 0 6px; letter-spacing: -0.005em;
+    line-height: 1.15;
+  }
+  .greeting h1 em { font-style: italic; color: var(--yellow); }
+  .greeting p {
+    margin: 0; color: rgba(251, 246, 236, 0.78);
+    font-size: 14px;
+  }
+  .greeting p em { font-style: italic; color: rgba(244, 203, 58, 0.85); }
+  .greeting-art {
+    position: absolute; right: 22px; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Fraunces', serif; font-size: 88px;
+    color: var(--yellow); opacity: 0.18;
+    line-height: 1; pointer-events: none;
+  }
+
+  .ready-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .ready-grid { grid-template-columns: 1fr; } }
+
+  .video-card {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .video-frame {
+    aspect-ratio: 16 / 9;
+    background: var(--ink); position: relative;
+  }
+  .video-frame iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; border: none;
+  }
+  .video-body { padding: 16px 18px; }
+  .video-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 17px;
+    margin: 0 0 4px; letter-spacing: -0.005em;
+  }
+  .video-meta { font-size: 12px; color: var(--muted); margin: 0; }
+
+  .faq-card {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 6px 4px;
+  }
+  .faq-item { border-bottom: 1px solid var(--line-soft); }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q {
+    width: 100%; background: none; border: none;
+    padding: 14px 16px; text-align: left;
+    font-family: inherit; font-size: 13.5px; font-weight: 600;
+    color: var(--ink); cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; line-height: 1.4;
+  }
+  .faq-q:hover { background: var(--cream-shell); border-radius: 8px; }
+  .faq-chevron {
+    color: var(--muted); font-size: 12px;
+    transition: transform 0.2s ease; flex-shrink: 0;
+  }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  .faq-a {
+    display: none;
+    padding: 0 16px 14px;
+    font-size: 13px; color: var(--ink-soft); line-height: 1.55;
+  }
+  .faq-item.open .faq-a { display: block; }
+
+  .portfolio-card {
+    background: linear-gradient(135deg, var(--plum), #5C3A5C);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 22px 24px;
+    display: flex; align-items: center; gap: 18px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+  .portfolio-card:hover { transform: translateY(-1px); }
+  .portfolio-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: rgba(244, 203, 58, 0.2);
+    color: var(--yellow);
+    display: grid; place-items: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .portfolio-info { flex: 1; min-width: 0; }
+  .portfolio-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 17px;
+    margin: 0 0 3px; letter-spacing: -0.005em;
+  }
+  .portfolio-sub {
+    font-size: 13px; margin: 0;
+    color: rgba(251, 246, 236, 0.82);
+    line-height: 1.45;
+  }
+  .portfolio-arrow { font-size: 22px; color: var(--yellow); flex-shrink: 0; }
+
+  .quick-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .quick-card {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: border-color 0.15s ease, transform 0.1s ease;
+    display: flex; align-items: center; gap: 12px;
+    position: relative;
+  }
+  .quick-card:hover { border-color: var(--ink-soft); transform: translateY(-1px); }
+  .quick-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .qi-coral { background: var(--coral-soft); color: var(--coral); }
+  .qi-sage { background: var(--sage-soft); color: var(--sage); }
+  .qi-teal { background: var(--teal-soft); color: var(--teal); }
+  .qi-yellow { background: var(--yellow-soft); color: var(--yellow-dark); }
+  .qi-plum { background: var(--plum-soft); color: var(--plum); }
+  .quick-info { flex: 1; min-width: 0; }
+  .quick-title { font-size: 13px; font-weight: 600; margin: 0 0 1px; line-height: 1.3; }
+  .quick-sub { font-size: 11px; color: var(--muted); margin: 0; line-height: 1.3; }
+  .quick-card .qd {
+    width: 7px; height: 7px;
+    background: var(--coral); border-radius: 50%;
+    position: absolute; top: 12px; right: 12px;
+  }
+  @media (max-width: 760px) { .quick-strip { grid-template-columns: 1fr 1fr; } .greeting { padding: 22px; } .greeting-art { font-size: 60px; right: 14px; } }
+
+  /* RIGHT RAIL CONTENT */
+  .rail-section { margin-bottom: 26px; }
+  .rail-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 16px;
+    margin: 0 0 14px; letter-spacing: -0.005em;
+  }
+
+  .profile-tile {
+    display: grid; grid-template-columns: 80px 1fr; gap: 14px;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .pt-photo { width: 80px; height: 96px; border-radius: 10px; background: var(--cream-dark); overflow: hidden; }
+  .pt-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pt-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin: 0 0 2px; }
+  .pt-meta { font-size: 12px; color: var(--muted); margin: 0 0 8px; }
+  .pt-stats { display: flex; gap: 8px; }
+  .pt-stat { flex: 1; text-align: center; background: var(--cream-shell); padding: 6px 4px; border-radius: 8px; }
+  .pt-stat-num { font-family: 'Fraunces', serif; font-weight: 700; font-size: 16px; line-height: 1; }
+  .pt-stat-lbl { font-size: 9px; color: var(--muted); margin-top: 3px; line-height: 1; letter-spacing: 0.04em; }
+  .stale-warn {
+    background: var(--coral-soft);
+    border: 1.5px solid var(--coral);
+    color: var(--coral);
+    padding: 10px 12px; border-radius: 10px;
+    font-size: 12px; font-weight: 500;
+  }
+
+  .cal { background: var(--white-soft); border: 1.5px solid var(--line); border-radius: 14px; padding: 16px; }
+  .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .cal-month { font-family: 'Fraunces', serif; font-weight: 600; font-size: 14px; }
+  .cal-nav { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 6px; }
+  .cal-nav:hover { background: var(--cream-shell); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-dow { text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); padding: 6px 0; }
+  .cal-day { aspect-ratio: 1; display: grid; place-items: center; font-size: 12px; font-weight: 500; color: var(--ink); border-radius: 8px; cursor: pointer; position: relative; font-variant-numeric: tabular-nums; transition: background 0.15s ease; }
+  .cal-day:hover { background: var(--cream-shell); }
+  .cal-day.muted { color: var(--muted); opacity: 0.4; }
+  .cal-day.today { background: var(--ink); color: var(--cream); font-weight: 700; }
+  .cal-day.has-event::after { content: ""; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: var(--coral); border-radius: 50%; }
+  .cal-day.today.has-event::after { background: var(--yellow); }
+  .cal-day.callback { background: var(--yellow-soft); color: var(--ink); font-weight: 700; }
+
+  .news-list { display: flex; flex-direction: column; gap: 10px; }
+  .news-item { background: var(--white-soft); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px; cursor: pointer; transition: border-color 0.15s ease; }
+  .news-item:hover { border-color: var(--ink-soft); }
+  .news-item.feature { background: linear-gradient(135deg, var(--coral) 0%, #C95736 100%); color: white; border-color: var(--coral); }
+  .news-tag { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--cream-dark); color: var(--ink-soft); margin-bottom: 8px; line-height: 1.4; }
+  .news-tag.event { background: var(--yellow-soft); color: var(--yellow-dark); }
+  .news-tag.opp { background: var(--teal-soft); color: var(--teal); }
+  .news-item.feature .news-tag { background: rgba(255,255,255,0.18); color: white; }
+  .news-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 14px; margin: 0 0 4px; line-height: 1.3; letter-spacing: -0.005em; }
+  .news-sub { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.4; }
+  .news-item.feature .news-sub { color: rgba(255,255,255,0.85); }
+
+  .upcoming-list { display: flex; flex-direction: column; gap: 8px; }
+  .upcoming-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--white-soft); border: 1.5px solid var(--line); border-radius: 12px; cursor: pointer; transition: border-color 0.15s ease; }
+  .upcoming-item:hover { border-color: var(--ink-soft); }
+  .upcoming-item.highlight { background: var(--yellow-soft); border-color: var(--yellow); }
+  .up-icon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-size: 15px; flex-shrink: 0; }
+  .up-icon.coral { background: var(--coral-soft); color: var(--coral); }
+  .up-icon.teal { background: var(--teal-soft); color: var(--teal); }
+  .up-icon.yellow { background: rgba(244, 203, 58, 0.25); color: var(--yellow-dark); }
+  .up-icon.sage { background: var(--sage-soft); color: var(--sage); }
+  .up-info { flex: 1; min-width: 0; }
+  .up-title { font-size: 13px; font-weight: 600; margin: 0; line-height: 1.3; }
+  .up-sub { font-size: 11px; color: var(--muted); margin: 1px 0 0; }
+  .up-time { font-size: 11px; font-weight: 600; color: var(--ink-soft); text-align: right; white-space: nowrap; line-height: 1.3; }
+  .day-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; }
+  .day-label:first-child { margin-top: 0; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
+    <nav class="sb-nav">
+      <a class="sb-link active" href="dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
+      <a class="sb-link" href="auditions.html"><span class="sb-icon">★</span> Open auditions <span class="badge">4</span></a>
+      <a class="sb-link" href="shows.html"><span class="sb-icon">▼</span> My shows</a>
+      <a class="sb-link" href="feedback.html"><span class="sb-icon">♪</span> Feedback</a>
+      <a class="sb-link" href="invoices.html"><span class="sb-icon">$</span> Invoices <span class="badge">1</span></a>
+      <div class="sb-section-label">Family</div>
+      <a class="sb-link" href="performer.html"><span class="sb-icon">♟</span> Performers</a>
+      <a class="sb-link" href="#"><span class="sb-icon">✎</span> Profile</a>
+    </nav>
+    <div class="sb-foot">
+      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">★</span> Admin</a>
+      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
+      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main">
+
+    <div class="content">
+
+      <div class="header-row">
+        <div class="search"><input type="text" placeholder="Search shows, auditions, invoices…"></div>
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <div class="header-user">
+            <div class="header-avatar">SC</div>
+            <div class="hu-info">
+              <span class="hu-name">Sarah Chen</span>
+              <span class="hu-sub">Parent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="greeting">
+        <div class="greeting-date">Sunday · April 26</div>
+        <h1>Welcome back, <em>Sarah</em></h1>
+        <p>Maya has a callback Saturday and Sam's <em>Mainstage</em> rehearsal starts at 6.</p>
+        <div class="greeting-art">★</div>
+      </div>
+
+      <div class="performer-strip">
+        <button class="ps-tab active">
+          <div class="ps-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt=""></div>
+          Maya · 11
+        </button>
+        <button class="ps-tab">
+          <div class="ps-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SamChen&backgroundColor=b6e3f4,c0aede" alt=""></div>
+          Sam · 15
+        </button>
+        <button class="ps-tab add">+ Add performer</button>
+      </div>
+
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Maya's shows</h2>
+          <a class="section-action" href="shows.html">View all →</a>
+        </div>
+        <div class="show-grid">
+
+          <a href="show-detail.html" class="show-card">
+            <div class="show-banner yellow">
+              <span class="show-status callback">⭐ Callback</span>
+              <span class="show-banner-icon">L</span>
+            </div>
+            <div class="show-body">
+              <h3 class="show-name">Disney's <em>Lion King</em> JR</h3>
+              <p class="show-meta">Summer 2026</p>
+              <p class="show-detail">Callback Saturday at 10:00 AM. Bring a contemporary cut.</p>
+              <div class="show-foot">
+                <span class="btn btn-primary btn-block">View details →</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="show-detail.html" class="show-card">
+            <div class="show-banner coral">
+              <span class="show-status">Submitted</span>
+              <span class="show-banner-icon">A</span>
+            </div>
+            <div class="show-body">
+              <h3 class="show-name"><em>Annie</em> KIDS</h3>
+              <p class="show-meta">Spring 2026 · Slot Apr 30</p>
+              <p class="show-detail">Casting decisions by May 10.</p>
+              <div class="show-foot">
+                <span class="btn btn-secondary btn-block">View submission</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="show-detail.html" class="show-card">
+            <div class="show-banner sage">
+              <span class="show-status cast">✓ Cast</span>
+              <span class="show-banner-icon">M</span>
+            </div>
+            <div class="show-body">
+              <h3 class="show-name"><em>Mary Poppins</em> JR</h3>
+              <p class="show-meta">Fall 2025 · Cast as Jane</p>
+              <div class="show-foot">
+                <div class="progress"><span style="width: 72%"></span></div>
+                <div class="progress-meta">
+                  <span>Rehearsal week 6 of 8</span>
+                  <span>72%</span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Auditions open now</h2>
+          <a class="section-action" href="auditions.html">See all 4 →</a>
+        </div>
+        <div class="show-grid">
+
+          <a href="audition-flow.html" class="show-card feature">
+            <div class="show-banner plum">
+              <span class="show-status">★ Closes May 5</span>
+              <span class="show-banner-icon">M</span>
+            </div>
+            <div class="show-body">
+              <h3 class="show-name"><em>Mary Poppins</em> JR</h3>
+              <p class="show-meta">Fall 2026 · Maya is eligible</p>
+              <p class="show-detail">Uses Maya's current headshot, resume, and contact info.</p>
+              <div class="show-foot">
+                <span class="btn btn-yellow btn-block">★ One-click audition</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="audition-flow.html" class="show-card">
+            <div class="show-banner teal">
+              <span class="show-status">Closes May 12</span>
+              <span class="show-banner-icon">F</span>
+            </div>
+            <div class="show-body">
+              <h3 class="show-name"><em>Frozen</em> JR</h3>
+              <p class="show-meta">Winter 2026 · Ages 8–13</p>
+              <div class="show-foot">
+                <span class="btn btn-secondary btn-block">Audition Maya →</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="audition-flow.html" class="show-card">
+            <div class="show-banner coral">
+              <span class="show-status">Closes May 20</span>
+              <span class="show-banner-icon">S</span>
+            </div>
+            <div class="show-body">
+              <h3 class="show-name"><em>Seussical</em> JR</h3>
+              <p class="show-meta">Fall 2026 · Ages 8–14</p>
+              <div class="show-foot">
+                <span class="btn btn-secondary btn-block">Audition Maya →</span>
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Get ready</h2>
+        </div>
+        <div class="ready-grid">
+          <div class="video-card">
+            <div class="video-frame">
+              <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Audition 101" allowfullscreen></iframe>
+            </div>
+            <div class="video-body">
+              <h4 class="video-title">★ Audition 101 — Encore's audition guide</h4>
+              <p class="video-meta">Ms. Linda · 8 min watch · For ages 8–13</p>
+            </div>
+          </div>
+          <div class="faq-card">
+            <div class="faq-item open">
+              <button class="faq-q">What should Maya wear to her audition? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">Comfortable clothes she can move in — leggings or shorts, a fitted t-shirt, athletic shoes. Hair pulled back so directors can see her face.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">How long will the audition take? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">Plan for 90 minutes total. Maya's individual slot is 5 minutes; the dance call runs in groups so she'll stay until everyone in her age group has gone.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">What if Maya is nervous? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">Totally normal! Practice the cut at home until she feels solid, arrive 15 minutes early to settle in, and remember that we want her to do well.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">When will we hear about casting? <span class="faq-chevron">▼</span></button>
+              <div class="faq-a">Cast lists are usually posted 5–7 days after auditions close. You'll get a notification here and an email.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <a href="#" class="portfolio-card">
+          <div class="portfolio-icon">✦</div>
+          <div class="portfolio-info">
+            <h3 class="portfolio-title">Build Maya's portfolio in Canva</h3>
+            <p class="portfolio-sub">Pick from Encore-designed templates. Edit in Canva, then upload back here.</p>
+          </div>
+          <span class="portfolio-arrow">→</span>
+        </a>
+      </section>
+
+      <section>
+        <div class="section-header"><h2 class="section-title">Quick access</h2></div>
+        <div class="quick-strip">
+          <a href="invoices.html" class="quick-card">
+            <div class="quick-icon qi-coral">$</div>
+            <div class="quick-info"><p class="quick-title">Invoices</p><p class="quick-sub">1 unpaid · $145</p></div>
+            <span class="qd"></span>
+          </a>
+          <a href="#" class="quick-card">
+            <div class="quick-icon qi-sage">💬</div>
+            <div class="quick-info"><p class="quick-title">BAND channels</p><p class="quick-sub">2 active casts</p></div>
+          </a>
+          <a href="performer.html" class="quick-card">
+            <div class="quick-icon qi-yellow">📄</div>
+            <div class="quick-info"><p class="quick-title">Maya's resume</p><p class="quick-sub">Auto-built · download PDF</p></div>
+          </a>
+          <a href="performer.html" class="quick-card">
+            <div class="quick-icon qi-teal">📷</div>
+            <div class="quick-info"><p class="quick-title">Update headshot</p><p class="quick-sub">From Jul 2024</p></div>
+          </a>
+          <a href="#" class="quick-card">
+            <div class="quick-icon qi-plum">✓</div>
+            <div class="quick-info"><p class="quick-title">Media release</p><p class="quick-sub">2026 ✓</p></div>
+          </a>
+        </div>
+      </section>
+
+    </div>
+
+    <aside class="right-rail">
+
+      <div class="rail-section">
+        <h3 class="rail-title">Maya's profile</h3>
+        <a href="performer.html" class="profile-tile" style="text-decoration: none;">
+          <div class="pt-photo"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MayaChen&backgroundColor=ffd5dc,ffdfbf,c0aede" alt=""></div>
+          <div>
+            <h4 class="pt-name">Maya Chen</h4>
+            <p class="pt-meta">11 · Youth Large</p>
+            <div class="pt-stats">
+              <div class="pt-stat"><div class="pt-stat-num">4</div><div class="pt-stat-lbl">SHOWS</div></div>
+              <div class="pt-stat"><div class="pt-stat-num">2</div><div class="pt-stat-lbl">CAST</div></div>
+              <div class="pt-stat"><div class="pt-stat-num">1</div><div class="pt-stat-lbl">CB</div></div>
+            </div>
+          </div>
+        </a>
+        <div class="stale-warn">⚠ Headshot is 9 months old · update?</div>
+      </div>
+
+      <div class="rail-section">
+        <h3 class="rail-title">April 2026</h3>
+        <div class="cal">
+          <div class="cal-head">
+            <button class="cal-nav">‹</button>
+            <span class="cal-month">April 2026</span>
+            <button class="cal-nav">›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-dow">M</div><div class="cal-dow">T</div><div class="cal-dow">W</div><div class="cal-dow">T</div><div class="cal-dow">F</div><div class="cal-dow">S</div><div class="cal-dow">S</div>
+            <div class="cal-day muted">31</div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div>
+            <div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div>
+            <div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div>
+            <div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day today has-event">26</div><div class="cal-day">27</div>
+            <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day has-event">30</div><div class="cal-day muted">1</div><div class="cal-day muted">2</div><div class="cal-day muted callback">3</div><div class="cal-day muted">4</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rail-section">
+        <h3 class="rail-title">News & updates</h3>
+        <div class="news-list">
+          <div class="news-item feature">
+            <span class="news-tag event">★ Save the date</span>
+            <h4 class="news-title">Spring Showcase — May 24</h4>
+            <p class="news-sub">Performers from every Encore show. 7pm at Tuacahn.</p>
+          </div>
+          <div class="news-item">
+            <span class="news-tag opp">Opportunity</span>
+            <h4 class="news-title">Tuacahn summer intensive</h4>
+            <p class="news-sub">Scholarship deadline May 15 · Ages 12+</p>
+          </div>
+          <div class="news-item">
+            <span class="news-tag">Update</span>
+            <h4 class="news-title">Studio closed Memorial Day</h4>
+            <p class="news-sub">Mon May 25 · No rehearsals</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rail-section">
+        <h3 class="rail-title">Upcoming</h3>
+        <div class="day-label">Tomorrow</div>
+        <div class="upcoming-list">
+          <div class="upcoming-item">
+            <div class="up-icon teal">🎤</div>
+            <div class="up-info"><p class="up-title">Sam · <em>Mainstage</em> rehearsal</p><p class="up-sub">Week 4 · 6:30 PM</p></div>
+            <span class="up-time">Mon<br>6:30p</span>
+          </div>
+        </div>
+        <div class="day-label">This week</div>
+        <div class="upcoming-list">
+          <div class="upcoming-item highlight">
+            <div class="up-icon yellow">⭐</div>
+            <div class="up-info"><p class="up-title">Maya · <em>Lion King</em> callback</p><p class="up-sub">Bring contemporary cut</p></div>
+            <span class="up-time">Sat<br>10a</span>
+          </div>
+          <div class="upcoming-item">
+            <div class="up-icon coral">$</div>
+            <div class="up-info"><p class="up-title">Invoice due</p><p class="up-sub"><em>Lion King</em> JR · $145</p></div>
+            <span class="up-time">Fri</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+</div>
+
+<nav class="mobile-tabs">
+  <a class="mt-link active" href="dashboard.html"><span class="mt-icon">▦</span><span>Home</span></a>
+  <a class="mt-link" href="auditions.html"><span class="mt-icon">★</span><span>Auditions</span></a>
+  <a class="mt-link" href="shows.html"><span class="mt-icon">▼</span><span>Shows</span></a>
+  <a class="mt-link" href="performer.html"><span class="mt-icon">♟</span><span>Family</span></a>
+  <a class="mt-link" href="invoices.html"><span class="mt-icon">⚙</span><span>More</span></a>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
