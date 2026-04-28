@@ -462,6 +462,20 @@
     margin: 0 0 12px;
   }
 
+  .info-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 12px;
+  }
+  .info-section-head h3 { margin: 0; }
+  .info-edit-hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
   .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -482,6 +496,31 @@
   .info-item .info-val {
     font-size: 14.5px;
     color: var(--ink);
+    line-height: 1.45;
+  }
+  .info-item .info-val.editable {
+    cursor: text;
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    transition: background 0.1s ease;
+    position: relative;
+  }
+  .info-item .info-val.editable:hover {
+    background: var(--cream-shell);
+  }
+  .info-item .info-val.editable:hover::after {
+    content: '\270E';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .info-item .info-val.editable.empty {
+    color: var(--muted);
+    font-style: italic;
   }
   .info-item.full { grid-column: 1 / -1; }
 
@@ -1824,27 +1863,54 @@
     </div>
 
     <div class="detail-section">
-      <h3>Contact</h3>
+      <div class="info-section-head">
+        <h3>Registration</h3>
+        <span class="info-edit-hint">Tap any field to edit</span>
+      </div>
       <div class="info-grid">
         <div class="info-item">
-          <div class="info-label">Parent</div>
-          <div class="info-val">Sarah Chen</div>
+          <div class="info-label">Parent / guardian</div>
+          <div class="info-val editable" onclick="editInfo(this, 'Parent name')">Sarah Chen</div>
         </div>
         <div class="info-item">
-          <div class="info-label">Phone</div>
-          <div class="info-val">(435) 555-0142</div>
+          <div class="info-label">Parent phone</div>
+          <div class="info-val editable" onclick="editInfo(this, 'Parent phone')">(435) 555-0142</div>
         </div>
         <div class="info-item">
-          <div class="info-label">Email</div>
-          <div class="info-val">sarah.chen@email.com</div>
+          <div class="info-label">Parent email</div>
+          <div class="info-val editable" onclick="editInfo(this, 'Parent email')">sarah.chen@email.com</div>
         </div>
         <div class="info-item">
           <div class="info-label">Performer email</div>
-          <div class="info-val">—</div>
+          <div class="info-val editable empty" onclick="editInfo(this, 'Performer email')">Not provided</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Emergency contact</div>
+          <div class="info-val editable" onclick="editInfo(this, 'Emergency contact')">David Chen · (435) 555-0177</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">T-shirt size</div>
+          <div class="info-val editable" onclick="editInfo(this, 'T-shirt size')">Youth Large</div>
         </div>
         <div class="info-item full">
           <div class="info-label">Home address</div>
-          <div class="info-val">1247 Red Mountain Dr, St. George, UT 84770</div>
+          <div class="info-val editable" onclick="editInfo(this, 'Home address')">1247 Red Mountain Dr, St. George, UT 84770</div>
+        </div>
+        <div class="info-item full">
+          <div class="info-label">Allergies / medical notes</div>
+          <div class="info-val editable" onclick="editInfo(this, 'Allergies')">Mild peanut allergy · carries EpiPen</div>
+        </div>
+        <div class="info-item full">
+          <div class="info-label">Accommodations needed</div>
+          <div class="info-val editable empty" onclick="editInfo(this, 'Accommodations')">None noted</div>
+        </div>
+        <div class="info-item full">
+          <div class="info-label">Previous experience</div>
+          <div class="info-val editable" onclick="editInfo(this, 'Previous experience')">Annie KIDS (2024) — ensemble · Music Man JR (2025) — Amaryllis</div>
+        </div>
+        <div class="info-item full">
+          <div class="info-label">Why this show?</div>
+          <div class="info-val editable" onclick="editInfo(this, 'Why this show')">"I love the songs and I want to play Young Nala or Sarabi!"</div>
         </div>
       </div>
     </div>
@@ -2145,7 +2211,27 @@
     });
   }
 
-  // ===== EDIT MUSIC MODAL =====
+  // ===== INLINE EDIT for registration info fields =====
+  function editInfo(el, label) {
+    if (el.dataset.editing === '1') return;
+    const currentVal = el.classList.contains('empty') ? '' : el.textContent.trim();
+    const newVal = prompt('Edit ' + label + ':', currentVal);
+    if (newVal == null) return;
+    const trimmed = newVal.trim();
+    if (trimmed) {
+      el.textContent = trimmed;
+      el.classList.remove('empty');
+    } else {
+      // Restore an "empty state" look
+      el.textContent = (label === 'Performer email' ? 'Not provided' :
+                        label === 'Accommodations' ? 'None noted' :
+                        '—');
+      el.classList.add('empty');
+    }
+    showSimpleToast(label + ' updated');
+  }
+
+
   function openMusicEdit() {
     document.getElementById('musicEditModal').classList.add('show');
   }

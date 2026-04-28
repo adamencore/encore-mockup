@@ -367,11 +367,14 @@
     align-items: center;
     gap: 10px;
     transition: background 0.1s ease;
+    text-decoration: none;
+    width: 100%;
   }
   .row-menu-item:hover { background: var(--cream-shell); }
   .row-menu-item.danger { color: var(--red); }
   .row-menu-item.danger:hover { background: var(--red-soft); }
   .row-menu-item i { font-size: 14px; opacity: 0.7; }
+  a.row-menu-item:visited { color: var(--ink); }
   .row-menu-divider {
     height: 1px;
     background: var(--line-soft);
@@ -1404,6 +1407,9 @@ function rowDone(a) {
 function menuFor(a) {
   if (openMenuFor !== a.id) return '';
   let items = '';
+  // Universal: View profile (available in every state)
+  items += '<a class="row-menu-item" href="director-view.html" target="_blank"><i class="ph-fill ph-arrow-square-out"></i> View full profile</a>';
+  items += '<div class="row-menu-divider"></div>';
   if (a.status === 'expected' || a.status === 'late') {
     items += '<button class="row-menu-item" onclick="promptName(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit name</button>';
     items += '<div class="row-menu-divider"></div>';
