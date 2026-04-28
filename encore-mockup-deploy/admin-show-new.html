@@ -359,12 +359,12 @@
       <!-- SETUP CHECKLIST -->
       <div class="checklist">
         <h3>Setup checklist</h3>
-        <p class="ch-sub">Complete these before publishing. Estimated time: 15 min.</p>
+        <p class="ch-sub">Complete these before publishing. Required items must be filled before the show goes live.</p>
 
         <div class="checklist-progress">
-          <span class="checklist-progress-text">1 of 7</span>
-          <div class="checklist-bar"><span></span></div>
-          <span class="checklist-progress-text" style="color: var(--coral);">14%</span>
+          <span class="checklist-progress-text">1 of 11</span>
+          <div class="checklist-bar"><span style="width: 9%;"></span></div>
+          <span class="checklist-progress-text" style="color: var(--coral);">9%</span>
         </div>
 
         <div class="check-item done">
@@ -374,51 +374,89 @@
             <div class="check-sub">Started moments ago</div>
           </div>
         </div>
+
+        <!-- BASICS -->
         <div class="check-item">
           <div class="check-circle">1</div>
           <div class="check-info">
-            <div class="check-title">Add show title &amp; basic info</div>
-            <div class="check-sub">Title, age range, season</div>
+            <div class="check-title">Show title &amp; description</div>
+            <div class="check-sub">Public-facing show name and short blurb for parents</div>
           </div>
           <button class="check-action required">Required</button>
         </div>
         <div class="check-item">
           <div class="check-circle">2</div>
           <div class="check-info">
-            <div class="check-title">Set audition window &amp; fees</div>
-            <div class="check-sub">When does registration open and close? What's the fee?</div>
+            <div class="check-title">Age range</div>
+            <div class="check-sub">Min and max ages for auditioners</div>
           </div>
           <button class="check-action required">Required</button>
         </div>
         <div class="check-item">
           <div class="check-circle">3</div>
           <div class="check-info">
-            <div class="check-title">Add roles</div>
-            <div class="check-sub">Lead, supporting, ensemble</div>
+            <div class="check-title">Cost / fees</div>
+            <div class="check-sub">Audition fee + tuition if cast</div>
           </div>
           <button class="check-action required">Required</button>
         </div>
         <div class="check-item">
           <div class="check-circle">4</div>
           <div class="check-info">
-            <div class="check-title">Enter rehearsal &amp; performance dates</div>
-            <div class="check-sub">Auto-populates the conflict checkboxes for parents</div>
+            <div class="check-title">Roles</div>
+            <div class="check-sub">Lead, supporting, ensemble — used for casting</div>
           </div>
           <button class="check-action required">Required</button>
         </div>
+
+        <!-- DATES -->
         <div class="check-item">
           <div class="check-circle">5</div>
           <div class="check-info">
-            <div class="check-title">Set audition slot times</div>
-            <div class="check-sub">When parents pick their audition slot</div>
+            <div class="check-title">Audition dates</div>
+            <div class="check-sub">When parents pick their audition slots</div>
           </div>
           <button class="check-action required">Required</button>
         </div>
         <div class="check-item">
           <div class="check-circle">6</div>
           <div class="check-info">
-            <div class="check-title">Upload show poster</div>
-            <div class="check-sub">Optional · used as the card banner</div>
+            <div class="check-title">Callback dates</div>
+            <div class="check-sub">If you do callbacks — leave blank if not</div>
+          </div>
+          <button class="check-action">Optional</button>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">7</div>
+          <div class="check-info">
+            <div class="check-title">Rehearsal dates</div>
+            <div class="check-sub">Auto-populates the conflict checkboxes for parents</div>
+          </div>
+          <button class="check-action required">Required</button>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">8</div>
+          <div class="check-info">
+            <div class="check-title">Tech &amp; dress dates</div>
+            <div class="check-sub">Tech rehearsals, dress, final dress</div>
+          </div>
+          <button class="check-action required">Required</button>
+        </div>
+        <div class="check-item">
+          <div class="check-circle">9</div>
+          <div class="check-info">
+            <div class="check-title">Performance dates</div>
+            <div class="check-sub">Regular, Preview, ASL, Sensory Friendly</div>
+          </div>
+          <button class="check-action required">Required</button>
+        </div>
+
+        <!-- POSTER -->
+        <div class="check-item">
+          <div class="check-circle">10</div>
+          <div class="check-info">
+            <div class="check-title">Show poster</div>
+            <div class="check-sub">Used as the card banner in the parent dashboard</div>
           </div>
           <button class="check-action">Optional</button>
         </div>
@@ -519,30 +557,78 @@
 
       <!-- ========== SCHEDULE ========== -->
       <div class="panel" data-panel="schedule">
+
         <div class="form-section">
-          <h3>Rehearsal &amp; performance dates</h3>
-          <p class="helper">These auto-populate the conflict checkboxes for parents during registration. Parents will see this list and can mark which dates they can't attend.</p>
+          <h3>Audition dates <span style="color: var(--coral); font-size: 12px; font-weight: 600; margin-left: 4px;">Required</span></h3>
+          <p class="helper">When parents pick their audition slot. Add each audition day plus the slot length, and we'll auto-generate available time slots.</p>
+          <div class="empty-state">
+            <div class="em-icon">★</div>
+            <h4>No audition dates yet</h4>
+            <p>Add the days auditions will run.</p>
+            <button class="btn btn-primary">+ Add audition day</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Callback dates</h3>
+          <p class="helper">Optional. If you don't do callbacks, leave this blank.</p>
+          <div class="empty-state">
+            <div class="em-icon">⭐</div>
+            <h4>No callbacks scheduled</h4>
+            <p>Skip this section if you don't do callbacks for this show.</p>
+            <button class="btn btn-secondary">+ Add callback day</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Rehearsal dates <span style="color: var(--coral); font-size: 12px; font-weight: 600; margin-left: 4px;">Required</span></h3>
+          <p class="helper">All regular rehearsals. These auto-populate the conflict checkboxes parents see during registration, so they can mark which dates they can't attend.</p>
           <div class="empty-state">
             <div class="em-icon">📅</div>
-            <h4>No dates yet</h4>
-            <p>Add each rehearsal, tech rehearsal, and performance. You can also bulk import from a spreadsheet.</p>
+            <h4>No rehearsal dates yet</h4>
+            <p>Add each rehearsal one by one, or paste a list from a spreadsheet.</p>
             <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-              <button class="btn btn-primary">+ Add date</button>
+              <button class="btn btn-primary">+ Add rehearsal</button>
               <button class="btn btn-secondary">📋 Bulk import</button>
             </div>
           </div>
         </div>
 
         <div class="form-section">
-          <h3>Audition slots</h3>
-          <p class="helper">When parents pick their audition slot during registration.</p>
+          <h3>Tech &amp; dress dates <span style="color: var(--coral); font-size: 12px; font-weight: 600; margin-left: 4px;">Required</span></h3>
+          <p class="helper">Tech rehearsal, dress rehearsal, final dress. Usually the week of opening.</p>
           <div class="empty-state">
-            <div class="em-icon">⏰</div>
-            <h4>No slots yet</h4>
-            <p>Add audition days &amp; the slot length. We'll generate the available time slots automatically.</p>
-            <button class="btn btn-primary">+ Add audition day</button>
+            <div class="em-icon">🎭</div>
+            <h4>No tech dates yet</h4>
+            <p>Add tech rehearsal, dress rehearsal, and final dress.</p>
+            <button class="btn btn-primary">+ Add tech date</button>
           </div>
         </div>
+
+        <div class="form-section">
+          <h3>Performance dates <span style="color: var(--coral); font-size: 12px; font-weight: 600; margin-left: 4px;">Required</span></h3>
+          <p class="helper">Each performance can be tagged as Regular, Preview Night, ASL Interpreted, or Sensory Friendly. Tags appear on the parent's calendar and on tickets.</p>
+
+          <div class="empty-state" style="margin-bottom: 14px;">
+            <div class="em-icon">🎟</div>
+            <h4>No performances yet</h4>
+            <p>Add each performance with its date, time, and type.</p>
+            <button class="btn btn-primary">+ Add performance</button>
+          </div>
+
+          <!-- Reference: performance type chips -->
+          <div style="background: var(--cream-shell); border-radius: 10px; padding: 14px; font-size: 12px; color: var(--ink-soft); line-height: 1.55;">
+            <strong style="color: var(--ink); display: block; margin-bottom: 8px;">Performance types:</strong>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <span class="pill yellow">Regular</span>
+              <span class="pill teal">Preview Night</span>
+              <span class="pill" style="background: var(--plum-soft); color: var(--plum);">ASL Interpreted</span>
+              <span class="pill" style="background: var(--sage-soft); color: var(--sage);">Sensory Friendly</span>
+            </div>
+            <p style="margin: 10px 0 0;">Mark accessibility performances so they show up clearly on tickets and the parent's calendar.</p>
+          </div>
+        </div>
+
       </div>
 
       <!-- ========== SETTINGS ========== -->
@@ -596,7 +682,7 @@
         </div>
         <div style="display: flex; gap: 8px;">
           <button class="btn btn-secondary">Save draft</button>
-          <button class="btn btn-primary" disabled style="opacity: 0.5; cursor: not-allowed;">Publish (5 required steps left)</button>
+          <button class="btn btn-primary" disabled style="opacity: 0.5; cursor: not-allowed;">Publish (8 required steps left)</button>
         </div>
       </div>
 
