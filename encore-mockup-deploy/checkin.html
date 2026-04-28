@@ -9,16 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="app.css">
 <style>
-  body {
-    background: var(--cream);
-  }
+  body { background: var(--cream); }
   .checkin-shell {
     max-width: 920px;
     margin: 0 auto;
     padding: 18px 18px 100px;
   }
-
-  /* Top bar — stripped down for kiosk feel */
   .topbar {
     display: flex;
     justify-content: space-between;
@@ -26,12 +22,16 @@
     padding: 14px 4px;
     margin-bottom: 18px;
     border-bottom: 1.5px solid var(--line);
+    gap: 12px;
+    flex-wrap: wrap;
   }
   .topbar-brand {
     font-family: 'Fraunces', serif;
     font-weight: 700;
     font-size: 18px;
     letter-spacing: 0.06em;
+    text-decoration: none;
+    color: inherit;
   }
   .topbar-brand .star { color: var(--yellow-dark); }
   .topbar-show {
@@ -46,9 +46,20 @@
     font-size: 13px;
     color: var(--muted);
     font-variant-numeric: tabular-nums;
+    margin-left: auto;
   }
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .reset-btn:hover { color: var(--coral); border-color: var(--coral); }
 
-  /* Stats */
   .stats-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -62,6 +73,7 @@
     border-radius: 12px;
     padding: 14px 16px;
     text-align: center;
+    transition: all 0.2s ease;
   }
   .stat.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
   .stat.urgent { background: var(--coral); color: white; border-color: var(--coral); }
@@ -81,7 +93,6 @@
     opacity: 0.85;
   }
 
-  /* Big search */
   .checkin-search {
     background: var(--white-soft);
     border: 2px solid var(--ink);
@@ -102,13 +113,11 @@
     font-weight: 500;
     color: var(--ink);
     padding: 6px 0;
+    min-width: 0;
   }
   .checkin-search input:focus { outline: none; }
   .checkin-search input::placeholder { color: var(--muted); }
-  .checkin-search-icon {
-    font-size: 22px;
-    color: var(--muted);
-  }
+  .checkin-search-icon { font-size: 22px; color: var(--muted); }
   .walkin-btn {
     background: var(--coral);
     color: white;
@@ -123,8 +132,8 @@
     white-space: nowrap;
     flex-shrink: 0;
   }
+  .walkin-btn:hover { background: #C95736; }
 
-  /* Filter chips */
   .filter-row {
     display: flex;
     gap: 6px;
@@ -148,7 +157,6 @@
   }
   .filter-chip.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
 
-  /* Auditioner row */
   .audr-list { display: flex; flex-direction: column; gap: 10px; }
   .audr {
     display: grid;
@@ -159,7 +167,7 @@
     border: 1.5px solid var(--line);
     border-radius: 14px;
     padding: 14px 18px;
-    transition: border-color 0.15s ease;
+    transition: all 0.2s ease;
   }
   .audr.checked-in { background: rgba(79, 138, 74, 0.04); border-color: var(--green); }
   .audr.late { background: rgba(192, 74, 61, 0.04); border-color: var(--red); }
@@ -216,6 +224,12 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
+  .audr-meta .walkin-tag {
+    color: var(--coral);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
 
   .audr-status {
     display: flex; align-items: center; gap: 6px;
@@ -228,11 +242,7 @@
   .audr.checked-in .audr-status { color: var(--green); }
   .audr.in-room .audr-status { color: var(--yellow-dark); }
   .audr.late .audr-status { color: var(--red); }
-  .status-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: currentColor;
-  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 
   .audr-actions { display: flex; gap: 6px; flex-shrink: 0; }
   .check-btn {
@@ -245,24 +255,22 @@
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.1s ease;
+    transition: background 0.1s ease, transform 0.05s ease;
     line-height: 1;
   }
   .check-btn:hover { background: var(--teal); }
   .check-btn:active { transform: scale(0.97); }
   .check-btn.green { background: var(--green); }
   .check-btn.green:hover { background: #3F6F3B; }
-  .check-btn.coral { background: var(--coral); }
-  .check-btn.coral:hover { background: #C95736; }
+  .check-btn.yellow { background: var(--yellow-dark); color: var(--ink); }
+  .check-btn.yellow:hover { background: #F8DA5F; }
   .check-btn.outline {
     background: transparent;
     color: var(--ink-soft);
     border: 1.5px solid var(--line);
   }
   .check-btn.outline:hover { border-color: var(--ink-soft); color: var(--ink); }
-  .check-btn.icon-only {
-    padding: 12px 14px;
-  }
+  .check-btn.icon-only { padding: 12px 14px; }
 
   @media (max-width: 700px) {
     .audr {
@@ -275,7 +283,6 @@
     .audr-actions .check-btn { flex: 1; }
   }
 
-  /* Group headers */
   .group-head {
     font-size: 11px;
     font-weight: 700;
@@ -298,7 +305,16 @@
     font-weight: 700;
   }
 
-  /* Walk-in modal */
+  .empty-msg {
+    text-align: center;
+    color: var(--muted);
+    padding: 32px 14px;
+    font-size: 13px;
+    font-style: italic;
+    background: var(--cream-shell);
+    border-radius: 12px;
+  }
+
   .modal {
     position: fixed; inset: 0;
     background: rgba(20, 19, 17, 0.55);
@@ -356,261 +372,104 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--cream);
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 300;
+    pointer-events: none;
+    max-width: calc(100% - 40px);
+    text-align: center;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.success { background: var(--green); }
+  .toast.warn { background: var(--coral); }
 </style>
 </head>
 <body>
 
 <div class="checkin-shell">
 
-  <!-- TOPBAR -->
   <div class="topbar">
-    <a href="admin-show-editor.html" class="topbar-brand" style="text-decoration: none; color: inherit;">← ENCORE<span class="star">★</span> · CHECK-IN</a>
+    <a href="admin-show-editor.html" class="topbar-brand">← ENCORE<span class="star">★</span> · CHECK-IN</a>
     <div class="topbar-show">Disney's <em>Lion King</em> JR · Day 1 of 2</div>
-    <div class="topbar-time">9:23 AM</div>
+    <div class="topbar-time" id="currentTime">—</div>
+    <button class="reset-btn" onclick="resetData()">Reset demo data</button>
   </div>
 
-  <!-- STATS -->
   <div class="stats-row">
     <div class="stat active">
-      <div class="stat-num">14</div>
+      <div class="stat-num" id="stat-checked">0</div>
       <div class="stat-lbl">Checked in</div>
     </div>
     <div class="stat">
-      <div class="stat-num">8</div>
+      <div class="stat-num" id="stat-expected">0</div>
       <div class="stat-lbl">Expected</div>
     </div>
     <div class="stat urgent">
-      <div class="stat-num">2</div>
+      <div class="stat-num" id="stat-late">0</div>
       <div class="stat-lbl">Late</div>
     </div>
     <div class="stat">
-      <div class="stat-num">1</div>
+      <div class="stat-num" id="stat-room">0</div>
       <div class="stat-lbl">In room</div>
     </div>
   </div>
 
-  <!-- SEARCH + WALK-IN -->
   <div class="checkin-search">
     <span class="checkin-search-icon">⌕</span>
-    <input type="text" placeholder="Search by name…" autofocus>
-    <button class="walkin-btn" onclick="document.getElementById('walkinModal').classList.add('show')">+ Walk-in</button>
+    <input type="text" id="searchInput" placeholder="Search by name, parent, or audition #…" autofocus>
+    <button class="walkin-btn" onclick="openWalkin()">+ Walk-in</button>
   </div>
 
-  <!-- FILTERS -->
   <div class="filter-row">
-    <button class="filter-chip active">All <span style="color: var(--muted); font-weight: 500;">· 23</span></button>
-    <button class="filter-chip">Expected · 8</button>
-    <button class="filter-chip">Late · 2</button>
-    <button class="filter-chip">Checked in · 14</button>
-    <button class="filter-chip">Done · 5</button>
+    <button class="filter-chip active" data-filter="all">All <span style="color: var(--muted); font-weight: 500;">· <span data-count="all">0</span></span></button>
+    <button class="filter-chip" data-filter="expected">Expected · <span data-count="expected">0</span></button>
+    <button class="filter-chip" data-filter="late">Late · <span data-count="late">0</span></button>
+    <button class="filter-chip" data-filter="checked-in">Checked in · <span data-count="checked-in">0</span></button>
+    <button class="filter-chip" data-filter="done">Done · <span data-count="done">0</span></button>
   </div>
 
-  <!-- IN ROOM NOW -->
-  <div class="group-head">
-    <span>In room now</span>
-    <span class="group-count">1</span>
-    <span class="group-line"></span>
-  </div>
-
-  <div class="audr-list">
-    <div class="audr in-room">
-      <div class="audr-slot">9:30</div>
-      <div class="audr-num">12</div>
-      <div class="audr-info">
-        <div class="audr-name">Olivia Rodriguez</div>
-        <div class="audr-meta">Age 13 · Auditioning now</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> In room</div>
-      <div class="audr-actions">
-        <button class="check-btn outline">✓ Mark done</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LATE -->
-  <div class="group-head">
-    <span style="color: var(--red);">Late · need attention</span>
-    <span class="group-count" style="background: var(--red); color: white;">2</span>
-    <span class="group-line"></span>
-  </div>
-
-  <div class="audr-list">
-    <div class="audr late">
-      <div class="audr-slot">9:00</div>
-      <div class="audr-num empty">+</div>
-      <div class="audr-info">
-        <div class="audr-name">Maya Chen</div>
-        <div class="audr-meta"><span class="late-tag">23 min late</span> · Age 11 · Mom: Sarah Chen</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> No show?</div>
-      <div class="audr-actions">
-        <button class="check-btn outline icon-only" title="Call parent">📞</button>
-        <button class="check-btn green">+ Check in</button>
-      </div>
-    </div>
-
-    <div class="audr late">
-      <div class="audr-slot">9:15</div>
-      <div class="audr-num empty">+</div>
-      <div class="audr-info">
-        <div class="audr-name">Jackson Park</div>
-        <div class="audr-meta"><span class="late-tag">8 min late</span> · Age 9 · Dad: Mike Park</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> No show?</div>
-      <div class="audr-actions">
-        <button class="check-btn outline icon-only" title="Call parent">📞</button>
-        <button class="check-btn green">+ Check in</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- EXPECTED -->
-  <div class="group-head">
-    <span>Expected next</span>
-    <span class="group-count">3</span>
-    <span class="group-line"></span>
-  </div>
-
-  <div class="audr-list">
-    <div class="audr">
-      <div class="audr-slot">9:45</div>
-      <div class="audr-num empty">+</div>
-      <div class="audr-info">
-        <div class="audr-name">Eli Patel</div>
-        <div class="audr-meta">Age 10 · Mom: Jen Patel</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> Expected</div>
-      <div class="audr-actions">
-        <button class="check-btn green">+ Check in</button>
-      </div>
-    </div>
-    <div class="audr">
-      <div class="audr-slot">10:00</div>
-      <div class="audr-num empty">+</div>
-      <div class="audr-info">
-        <div class="audr-name">Sofia Martinez</div>
-        <div class="audr-meta">Age 12 · Mom: Elena Martinez</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> Expected</div>
-      <div class="audr-actions">
-        <button class="check-btn green">+ Check in</button>
-      </div>
-    </div>
-    <div class="audr">
-      <div class="audr-slot">10:15</div>
-      <div class="audr-num empty">+</div>
-      <div class="audr-info">
-        <div class="audr-name">Liam O'Brien</div>
-        <div class="audr-meta">Age 8 · Dad: Ryan O'Brien</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> Expected</div>
-      <div class="audr-actions">
-        <button class="check-btn green">+ Check in</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CHECKED IN, WAITING -->
-  <div class="group-head">
-    <span style="color: var(--green);">Checked in · waiting</span>
-    <span class="group-count" style="background: var(--green-soft); color: var(--green);">13</span>
-    <span class="group-line"></span>
-  </div>
-
-  <div class="audr-list">
-    <div class="audr checked-in">
-      <div class="audr-slot">9:30</div>
-      <div class="audr-num">11</div>
-      <div class="audr-info">
-        <div class="audr-name">Ava Johnson</div>
-        <div class="audr-meta">Age 11 · Checked in 9:18 AM</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> Waiting</div>
-      <div class="audr-actions">
-        <button class="check-btn outline">Undo</button>
-      </div>
-    </div>
-    <div class="audr checked-in">
-      <div class="audr-slot">9:45</div>
-      <div class="audr-num">13</div>
-      <div class="audr-info">
-        <div class="audr-name">Brooklyn Park</div>
-        <div class="audr-meta">Age 12 · Checked in 9:21 AM</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> Waiting</div>
-      <div class="audr-actions">
-        <button class="check-btn outline">Undo</button>
-      </div>
-    </div>
-    <div class="audr checked-in">
-      <div class="audr-slot">10:00</div>
-      <div class="audr-num">14</div>
-      <div class="audr-info">
-        <div class="audr-name">Carter Brooks</div>
-        <div class="audr-meta">Age 10 · Checked in 9:22 AM</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> Waiting</div>
-      <div class="audr-actions">
-        <button class="check-btn outline">Undo</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DONE -->
-  <div class="group-head">
-    <span>Done</span>
-    <span class="group-count">5</span>
-    <span class="group-line"></span>
-  </div>
-
-  <div class="audr-list">
-    <div class="audr done">
-      <div class="audr-slot">8:30</div>
-      <div class="audr-num">1</div>
-      <div class="audr-info">
-        <div class="audr-name">Mason Hill</div>
-        <div class="audr-meta">Age 12 · Auditioned 8:33 AM</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> Done</div>
-      <div class="audr-actions"></div>
-    </div>
-    <div class="audr done">
-      <div class="audr-slot">8:45</div>
-      <div class="audr-num">2</div>
-      <div class="audr-info">
-        <div class="audr-name">Milo Stevens</div>
-        <div class="audr-meta">Age 10 · Auditioned 8:46 AM</div>
-      </div>
-      <div class="audr-status"><span class="status-dot"></span> Done</div>
-      <div class="audr-actions"></div>
-    </div>
-  </div>
+  <div id="listContainer"></div>
 
 </div>
 
-<!-- WALK-IN MODAL -->
 <div class="modal" id="walkinModal">
   <div class="modal-card">
     <div class="modal-head">
       <h2>Add walk-in auditioner</h2>
-      <button class="modal-close" onclick="document.getElementById('walkinModal').classList.remove('show')">×</button>
+      <button class="modal-close" onclick="closeWalkin()">×</button>
     </div>
     <div class="modal-body">
-      <p style="font-size: 13px; color: var(--ink-soft); margin: 0 0 18px;">For someone who didn't pre-register but showed up. We'll add them to today's list and they'll get the next available number.</p>
+      <p style="font-size: 13px; color: var(--ink-soft); margin: 0 0 18px;">For someone who didn't pre-register but showed up. We'll add them to today's list and assign them the next available number.</p>
 
       <div class="field-block">
-        <label>Performer name</label>
-        <input class="input" placeholder="First and last name">
+        <label>Performer name *</label>
+        <input class="input" id="wi-name" placeholder="First and last name">
       </div>
 
       <div class="form-grid-2">
         <div class="field-block">
-          <label>Age</label>
-          <input class="input" type="number" placeholder="11">
+          <label>Age *</label>
+          <input class="input" id="wi-age" type="number" placeholder="11">
         </div>
         <div class="field-block">
           <label>T-shirt size</label>
-          <select class="input">
+          <select class="input" id="wi-size">
             <option>Youth Small</option>
             <option>Youth Medium</option>
             <option selected>Youth Large</option>
@@ -623,17 +482,17 @@
 
       <div class="field-block">
         <label>Parent name</label>
-        <input class="input" placeholder="Parent or guardian">
+        <input class="input" id="wi-parent" placeholder="Parent or guardian">
       </div>
 
       <div class="form-grid-2">
         <div class="field-block">
           <label>Parent phone</label>
-          <input class="input" type="tel" placeholder="(435) 555-0142">
+          <input class="input" id="wi-phone" type="tel" placeholder="(435) 555-0142">
         </div>
         <div class="field-block">
           <label>Parent email</label>
-          <input class="input" type="email" placeholder="parent@email.com">
+          <input class="input" id="wi-email" type="email" placeholder="parent@email.com">
         </div>
       </div>
 
@@ -642,27 +501,398 @@
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-secondary" onclick="document.getElementById('walkinModal').classList.remove('show')">Cancel</button>
-      <button class="btn btn-primary">Add &amp; check in →</button>
+      <button class="btn btn-secondary" onclick="closeWalkin()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitWalkin()">Add &amp; check in →</button>
     </div>
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-  document.querySelectorAll('.filter-chip').forEach(c => {
-    c.addEventListener('click', () => {
-      document.querySelectorAll('.filter-chip').forEach(x => x.classList.remove('active'));
-      c.classList.add('active');
-    });
-  });
-  document.getElementById('walkinModal').addEventListener('click', (e) => {
-    if (e.target.id === 'walkinModal') e.target.classList.remove('show');
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+const STORAGE_KEY = 'encore-checkin-state-v1';
+
+const SEED_DATA = [
+  { id: 1, name: 'Mason Hill', age: 12, parent: 'Tara Hill', slot: '8:30', status: 'done', number: 1, checkedInAt: '8:25 AM' },
+  { id: 2, name: 'Milo Stevens', age: 10, parent: 'Anna Stevens', slot: '8:45', status: 'done', number: 2, checkedInAt: '8:40 AM' },
+  { id: 3, name: 'Nora Klein', age: 11, parent: 'David Klein', slot: '8:45', status: 'done', number: 3, checkedInAt: '8:42 AM' },
+  { id: 4, name: 'Chloe Murphy', age: 9, parent: 'Beth Murphy', slot: '9:00', status: 'done', number: 4, checkedInAt: '8:55 AM' },
+  { id: 5, name: 'Aiden Kim', age: 8, parent: 'Sue Kim', slot: '9:15', status: 'done', number: 5, checkedInAt: '9:08 AM' },
+  { id: 6, name: 'Maya Chen', age: 11, parent: 'Sarah Chen', slot: '9:00', status: 'late', number: null },
+  { id: 7, name: 'Jackson Park', age: 9, parent: 'Mike Park', slot: '9:15', status: 'late', number: null },
+  { id: 8, name: 'Olivia Rodriguez', age: 13, parent: 'Carla Rodriguez', slot: '9:30', status: 'in-room', number: 12, checkedInAt: '9:18 AM' },
+  { id: 9, name: 'Ava Johnson', age: 11, parent: 'Tom Johnson', slot: '9:30', status: 'checked-in', number: 11, checkedInAt: '9:18 AM' },
+  { id: 10, name: 'Brooklyn Park', age: 12, parent: 'Mike Park', slot: '9:45', status: 'checked-in', number: 13, checkedInAt: '9:21 AM' },
+  { id: 11, name: 'Carter Brooks', age: 10, parent: 'Lisa Brooks', slot: '10:00', status: 'checked-in', number: 14, checkedInAt: '9:22 AM' },
+  { id: 12, name: 'Eli Patel', age: 10, parent: 'Jen Patel', slot: '9:45', status: 'expected', number: null },
+  { id: 13, name: 'Sofia Martinez', age: 12, parent: 'Elena Martinez', slot: '10:00', status: 'expected', number: null },
+  { id: 14, name: "Liam O'Brien", age: 8, parent: "Ryan O'Brien", slot: '10:15', status: 'expected', number: null },
+  { id: 15, name: 'Ruby Vasquez', age: 11, parent: 'Maria Vasquez', slot: '10:15', status: 'expected', number: null },
+  { id: 16, name: 'Owen Foster', age: 9, parent: 'Drew Foster', slot: '10:30', status: 'expected', number: null },
+  { id: 17, name: 'Isabella Rossi', age: 12, parent: 'Gianna Rossi', slot: '10:30', status: 'expected', number: null },
+  { id: 18, name: 'Ethan Wong', age: 11, parent: 'Kim Wong', slot: '10:45', status: 'expected', number: null },
+  { id: 19, name: 'Emma Lee', age: 10, parent: 'Sue Lee', slot: '10:45', status: 'expected', number: null },
+  { id: 20, name: 'Lucia Garcia', age: 13, parent: 'Carlos Garcia', slot: '11:00', status: 'expected', number: null },
+];
+
+let auditioners = [];
+let currentFilter = 'all';
+let searchQuery = '';
+
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try {
+      auditioners = JSON.parse(raw);
+      return;
+    } catch(e) { /* fall through */ }
+  }
+  auditioners = JSON.parse(JSON.stringify(SEED_DATA));
+  saveState();
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(auditioners));
+}
+
+function resetData() {
+  if (confirm('Reset all check-in data to demo defaults? Your test changes will be lost.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    loadState();
+    render();
+    showToast('Demo data reset', 'success');
+  }
+}
+
+function getNextNumber() {
+  const used = auditioners.map(a => a.number).filter(n => n != null);
+  return used.length ? Math.max(...used) + 1 : 1;
+}
+
+function nowTimeStr() {
+  const d = new Date();
+  let h = d.getHours();
+  const m = d.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+}
+
+function showToast(message, type) {
+  const t = document.getElementById('toast');
+  t.textContent = message;
+  t.className = 'toast' + (type ? ' ' + type : '');
+  requestAnimationFrame(() => t.classList.add('show'));
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function checkIn(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  a.status = 'checked-in';
+  a.number = getNextNumber();
+  a.checkedInAt = nowTimeStr();
+  saveState();
+  render();
+  showToast(a.name + ' checked in · #' + a.number, 'success');
+}
+
+function undoCheckIn(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  a.status = isPastSlot(a.slot) ? 'late' : 'expected';
+  a.number = null;
+  delete a.checkedInAt;
+  saveState();
+  render();
+  showToast('Check-in undone', 'warn');
+}
+
+function moveToRoom(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  a.status = 'in-room';
+  saveState();
+  render();
+  showToast(a.name + ' is in the audition room');
+}
+
+function markDone(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  a.status = 'done';
+  saveState();
+  render();
+  showToast(a.name + ' marked done');
+}
+
+function openWalkin() { document.getElementById('walkinModal').classList.add('show'); }
+function closeWalkin() {
+  document.getElementById('walkinModal').classList.remove('show');
+  ['wi-name','wi-age','wi-parent','wi-phone','wi-email'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('wi-size').selectedIndex = 2;
+}
+
+function submitWalkin() {
+  const name = document.getElementById('wi-name').value.trim();
+  const age = document.getElementById('wi-age').value.trim();
+  const parent = document.getElementById('wi-parent').value.trim();
+  if (!name || !age) {
+    showToast('Name and age are required', 'warn');
+    return;
+  }
+  const newId = Math.max(0, ...auditioners.map(a => a.id)) + 1;
+  const newPerson = {
+    id: newId,
+    name: name,
+    age: parseInt(age),
+    parent: parent || '—',
+    slot: 'Walk-in',
+    status: 'checked-in',
+    number: getNextNumber(),
+    checkedInAt: nowTimeStr(),
+    isWalkin: true
+  };
+  auditioners.push(newPerson);
+  saveState();
+  closeWalkin();
+  render();
+  showToast(name + ' added · #' + newPerson.number, 'success');
+}
+
+function slotToMinutes(slot) {
+  if (!slot || slot === 'Walk-in') return null;
+  const m = slot.match(/(\d+):(\d+)/);
+  if (!m) return null;
+  let hr = parseInt(m[1]);
+  const min = parseInt(m[2]);
+  if (hr < 8) hr += 12;
+  return hr * 60 + min;
+}
+
+function getDemoNow() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+}
+
+function isPastSlot(slot) {
+  const slotMin = slotToMinutes(slot);
+  if (slotMin == null) return false;
+  return slotMin < getDemoNow();
+}
+
+function recomputeLateStatus() {
+  auditioners.forEach(a => {
+    if (a.status === 'expected' && isPastSlot(a.slot)) {
+      a.status = 'late';
     }
   });
+}
+
+function matchesSearch(a) {
+  if (!searchQuery) return true;
+  const q = searchQuery.toLowerCase();
+  return a.name.toLowerCase().includes(q) ||
+         (a.parent && a.parent.toLowerCase().includes(q)) ||
+         (a.number != null && String(a.number) === q);
+}
+
+function matchesFilter(a) {
+  if (currentFilter === 'all') return true;
+  return a.status === currentFilter;
+}
+
+function render() {
+  recomputeLateStatus();
+
+  const counts = {
+    'checked-in': auditioners.filter(a => a.status === 'checked-in').length,
+    'expected': auditioners.filter(a => a.status === 'expected').length,
+    'late': auditioners.filter(a => a.status === 'late').length,
+    'in-room': auditioners.filter(a => a.status === 'in-room').length,
+    'done': auditioners.filter(a => a.status === 'done').length,
+    'all': auditioners.length
+  };
+  document.getElementById('stat-checked').textContent = counts['checked-in'];
+  document.getElementById('stat-expected').textContent = counts['expected'];
+  document.getElementById('stat-late').textContent = counts['late'];
+  document.getElementById('stat-room').textContent = counts['in-room'];
+
+  Object.keys(counts).forEach(k => {
+    const el = document.querySelector('[data-count="' + k + '"]');
+    if (el) el.textContent = counts[k];
+  });
+
+  const visible = auditioners.filter(a => matchesFilter(a) && matchesSearch(a));
+
+  const groups = {
+    'in-room': visible.filter(a => a.status === 'in-room'),
+    'late': visible.filter(a => a.status === 'late').sort((x, y) => (slotToMinutes(x.slot) || 0) - (slotToMinutes(y.slot) || 0)),
+    'expected': visible.filter(a => a.status === 'expected').sort((x, y) => (slotToMinutes(x.slot) || 0) - (slotToMinutes(y.slot) || 0)),
+    'checked-in': visible.filter(a => a.status === 'checked-in').sort((x, y) => (slotToMinutes(x.slot) || 0) - (slotToMinutes(y.slot) || 0)),
+    'done': visible.filter(a => a.status === 'done')
+  };
+
+  const container = document.getElementById('listContainer');
+  let html = '';
+
+  if (visible.length === 0) {
+    html = '<div class="empty-msg">No auditioners match your search or filter.</div>';
+  }
+
+  if (groups['in-room'].length) {
+    html += groupHead('In room now', groups['in-room'].length);
+    html += '<div class="audr-list">' + groups['in-room'].map(rowInRoom).join('') + '</div>';
+  }
+  if (groups['late'].length) {
+    html += groupHead('Late · need attention', groups['late'].length, 'red');
+    html += '<div class="audr-list">' + groups['late'].map(rowLate).join('') + '</div>';
+  }
+  if (groups['expected'].length) {
+    html += groupHead('Expected next', groups['expected'].length);
+    html += '<div class="audr-list">' + groups['expected'].map(rowExpected).join('') + '</div>';
+  }
+  if (groups['checked-in'].length) {
+    html += groupHead('Checked in · waiting', groups['checked-in'].length, 'green');
+    html += '<div class="audr-list">' + groups['checked-in'].map(rowCheckedIn).join('') + '</div>';
+  }
+  if (groups['done'].length) {
+    html += groupHead('Done', groups['done'].length);
+    html += '<div class="audr-list">' + groups['done'].map(rowDone).join('') + '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function groupHead(label, count, tone) {
+  const labelStyle = tone === 'red' ? 'color: var(--red);' : tone === 'green' ? 'color: var(--green);' : '';
+  const countStyle = tone === 'red' ? 'background: var(--red); color: white;' :
+                     tone === 'green' ? 'background: var(--green-soft); color: var(--green);' : '';
+  return '<div class="group-head"><span style="' + labelStyle + '">' + label + '</span><span class="group-count" style="' + countStyle + '">' + count + '</span><span class="group-line"></span></div>';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function rowExpected(a) {
+  const walkInTag = a.isWalkin ? '<span class="walkin-tag">Walk-in</span> · ' : '';
+  return '<div class="audr">' +
+    '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
+    '<div class="audr-num empty">+</div>' +
+    '<div class="audr-info">' +
+      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<div class="audr-meta">' + walkInTag + 'Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + '</div>' +
+    '</div>' +
+    '<div class="audr-status"><span class="status-dot"></span> Expected</div>' +
+    '<div class="audr-actions">' +
+      '<button class="check-btn green" onclick="checkIn(' + a.id + ')">+ Check in</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function rowLate(a) {
+  const slotMin = slotToMinutes(a.slot);
+  const minsLate = slotMin != null ? Math.max(0, getDemoNow() - slotMin) : 0;
+  return '<div class="audr late">' +
+    '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
+    '<div class="audr-num empty">+</div>' +
+    '<div class="audr-info">' +
+      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<div class="audr-meta"><span class="late-tag">' + minsLate + ' min late</span> · Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + '</div>' +
+    '</div>' +
+    '<div class="audr-status"><span class="status-dot"></span> No show?</div>' +
+    '<div class="audr-actions">' +
+      '<button class="check-btn outline icon-only" title="Call parent" onclick="alert(\'Would call ' + escapeHtml(a.parent).replace(/\'/g, '\\\'') + '\')">📞</button>' +
+      '<button class="check-btn green" onclick="checkIn(' + a.id + ')">+ Check in</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function rowCheckedIn(a) {
+  const walkInTag = a.isWalkin ? '<span class="walkin-tag">Walk-in</span> · ' : '';
+  return '<div class="audr checked-in">' +
+    '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
+    '<div class="audr-num">' + a.number + '</div>' +
+    '<div class="audr-info">' +
+      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<div class="audr-meta">' + walkInTag + 'Age ' + a.age + ' · Checked in ' + escapeHtml(a.checkedInAt || '') + '</div>' +
+    '</div>' +
+    '<div class="audr-status"><span class="status-dot"></span> Waiting</div>' +
+    '<div class="audr-actions">' +
+      '<button class="check-btn yellow" onclick="moveToRoom(' + a.id + ')">→ In room</button>' +
+      '<button class="check-btn outline" onclick="undoCheckIn(' + a.id + ')">Undo</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function rowInRoom(a) {
+  return '<div class="audr in-room">' +
+    '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
+    '<div class="audr-num">' + a.number + '</div>' +
+    '<div class="audr-info">' +
+      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<div class="audr-meta">Age ' + a.age + ' · Auditioning now</div>' +
+    '</div>' +
+    '<div class="audr-status"><span class="status-dot"></span> In room</div>' +
+    '<div class="audr-actions">' +
+      '<button class="check-btn outline" onclick="markDone(' + a.id + ')">✓ Mark done</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function rowDone(a) {
+  return '<div class="audr done">' +
+    '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
+    '<div class="audr-num">' + (a.number || '—') + '</div>' +
+    '<div class="audr-info">' +
+      '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+      '<div class="audr-meta">Age ' + a.age + ' · Auditioned ' + escapeHtml(a.checkedInAt || '') + '</div>' +
+    '</div>' +
+    '<div class="audr-status"><span class="status-dot"></span> Done</div>' +
+    '<div class="audr-actions"></div>' +
+  '</div>';
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value.trim();
+  render();
+});
+
+document.querySelectorAll('.filter-chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    currentFilter = c.dataset.filter;
+    render();
+  });
+});
+
+document.getElementById('walkinModal').addEventListener('click', (e) => {
+  if (e.target.id === 'walkinModal') closeWalkin();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+  }
+});
+
+function tickClock() {
+  const d = new Date();
+  let h = d.getHours();
+  const m = d.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('currentTime').textContent = h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+}
+
+loadState();
+render();
+tickClock();
+setInterval(tickClock, 1000 * 30);
+setInterval(render, 1000 * 60);
 </script>
 
 </body>
