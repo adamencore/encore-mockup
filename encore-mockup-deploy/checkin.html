@@ -233,6 +233,13 @@
   .audr.late { background: rgba(214, 91, 91, 0.04); border-color: var(--red); }
   .audr.in-room { background: var(--yellow-soft); border-color: var(--yellow-dark); }
   .audr.done { opacity: 0.55; }
+  .audr.no-show {
+    opacity: 0.65;
+    background: var(--cream-shell);
+    border-color: var(--line);
+    border-style: dashed;
+  }
+  .audr.no-show .audr-name { text-decoration: line-through; text-decoration-thickness: 1.5px; text-decoration-color: var(--muted); }
   .audr.menu-open { z-index: 60; }
 
   /* When number-entry is active, hide the status column to give room */
@@ -498,6 +505,15 @@
   .audr.in-room .audr-num { background: var(--yellow-dark); color: var(--ink); }
   .audr.late .audr-num.empty { border-color: var(--red); color: var(--red); }
 
+  .audr-num.no-show-badge {
+    background: var(--cream-shell);
+    border: 1.5px solid var(--line);
+    color: var(--muted);
+    font-size: 18px;
+    font-family: 'Outfit', sans-serif;
+  }
+  .audr-num.no-show-badge i { font-size: 18px; }
+
   .audr-info {
     min-width: 0;
     display: flex;
@@ -570,6 +586,7 @@
   .audr.checked-in .audr-status { color: var(--green); }
   .audr.in-room .audr-status { color: var(--yellow-dark); }
   .audr.late .audr-status { color: var(--red); }
+  .audr.no-show .audr-status { color: var(--muted); }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 
   .audr-actions { display: flex; gap: 6px; flex-shrink: 0; }
@@ -778,6 +795,7 @@
     <button class="filter-chip" data-filter="late">Late · <span data-count="late">0</span></button>
     <button class="filter-chip" data-filter="checked-in">Checked in · <span data-count="checked-in">0</span></button>
     <button class="filter-chip" data-filter="done">Done · <span data-count="done">0</span></button>
+    <button class="filter-chip" data-filter="no-show">No-show · <span data-count="no-show">0</span></button>
   </div>
 
   <div class="sort-row">
@@ -999,6 +1017,28 @@ function removeAuditioner(id) {
   saveState();
   render();
   showToast(a.name + ' removed', 'warn');
+}
+
+function markNoShow(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  a.status = 'no-show';
+  a.number = null; // free up their number for someone else
+  openMenuFor = null;
+  saveState();
+  render();
+  showToast(a.name + ' marked no-show', 'warn');
+}
+
+function undoNoShow(id) {
+  const a = auditioners.find(x => x.id === id);
+  if (!a) return;
+  // Send back to expected or late depending on whether their slot has passed
+  a.status = isPastSlot(a.slot) ? 'late' : 'expected';
+  openMenuFor = null;
+  saveState();
+  render();
+  showToast(a.name + ' restored to ' + a.status, 'success');
 }
 
 function promptName(id) {
@@ -1232,6 +1272,7 @@ function render() {
     'late': auditioners.filter(a => a.status === 'late').length,
     'in-room': auditioners.filter(a => a.status === 'in-room').length,
     'done': auditioners.filter(a => a.status === 'done').length,
+    'no-show': auditioners.filter(a => a.status === 'no-show').length,
     'all': auditioners.length
   };
   document.getElementById('stat-checked').textContent = counts['checked-in'];
@@ -1270,7 +1311,8 @@ function render() {
     'late': sortFn(visible.filter(a => a.status === 'late')),
     'expected': sortFn(visible.filter(a => a.status === 'expected')),
     'checked-in': sortFn(visible.filter(a => a.status === 'checked-in')),
-    'done': sortFn(visible.filter(a => a.status === 'done'))
+    'done': sortFn(visible.filter(a => a.status === 'done')),
+    'no-show': sortFn(visible.filter(a => a.status === 'no-show'))
   };
 
   const container = document.getElementById('listContainer');
@@ -1299,6 +1341,10 @@ function render() {
   if (groups['done'].length) {
     html += groupHead('Done', groups['done'].length);
     html += '<div class="audr-list">' + groups['done'].map(rowDone).join('') + '</div>';
+  }
+  if (groups['no-show'].length) {
+    html += groupHead('No-shows', groups['no-show'].length);
+    html += '<div class="audr-list">' + groups['no-show'].map(rowNoShow).join('') + '</div>';
   }
 
   container.innerHTML = html;
@@ -1399,6 +1445,7 @@ function rowLate(a) {
     '<div class="audr-status"><span class="status-dot"></span> No show?</div>' +
     '<div class="audr-actions">' +
       '<button class="check-btn outline icon-only" title="Call parent" onclick="alert(\'Would call ' + escapeHtml(a.parent).replace(/\'/g, '\\\'') + '\')"><i class="ph-fill ph-phone"></i></button>' +
+      '<button class="check-btn outline" title="Mark as no-show" onclick="markNoShow(' + a.id + ')"><i class="ph-fill ph-prohibit"></i> No-show</button>' +
       '<button class="check-btn green" onclick="promptNumber(' + a.id + ')">+ Check in</button>' +
       '<button class="check-btn outline more-btn" onclick="toggleMenu(event, ' + a.id + ')" title="More actions">⋯</button>' +
       menuFor(a) +
@@ -1472,6 +1519,26 @@ function rowDone(a) {
   '</div>';
 }
 
+function rowNoShow(a) {
+  const menuClass = openMenuFor === a.id ? ' menu-open' : '';
+  return '<div class="audr no-show' + menuClass + '">' +
+    '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
+    '<div class="audr-num empty no-show-badge"><i class="ph-fill ph-prohibit"></i></div>' +
+    '<div class="audr-info">' +
+      '<div class="audr-name-row">' +
+        '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
+        profileLink(a) +
+      '</div>' +
+      '<div class="audr-meta">Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + ' · Did not attend</div>' +
+    '</div>' +
+    '<div class="audr-status"><span class="status-dot"></span> No-show</div>' +
+    '<div class="audr-actions">' +
+      '<button class="check-btn outline more-btn" onclick="toggleMenu(event, ' + a.id + ')" title="More actions">⋯</button>' +
+      menuFor(a) +
+    '</div>' +
+  '</div>';
+}
+
 function menuFor(a) {
   if (openMenuFor !== a.id) return '';
   let items = '';
@@ -1481,6 +1548,7 @@ function menuFor(a) {
   if (a.status === 'expected' || a.status === 'late') {
     items += '<button class="row-menu-item" onclick="promptName(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit name</button>';
     items += '<div class="row-menu-divider"></div>';
+    items += '<button class="row-menu-item" onclick="markNoShow(' + a.id + ')"><i class="ph-fill ph-prohibit"></i> Mark as no-show</button>';
     items += '<button class="row-menu-item danger" onclick="removeAuditioner(' + a.id + ')"><i class="ph-fill ph-trash"></i> Remove from list</button>';
   } else if (a.status === 'checked-in') {
     items += '<button class="row-menu-item" onclick="promptNumber(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit number</button>';
@@ -1499,6 +1567,11 @@ function menuFor(a) {
     items += '<div class="row-menu-divider"></div>';
     items += '<button class="row-menu-item" onclick="unmarkDone(' + a.id + ')"><i class="ph-fill ph-arrow-u-up-left"></i> Send back to in-room</button>';
     items += '<button class="row-menu-item" onclick="sendBackToWaiting(' + a.id + ')"><i class="ph-fill ph-arrow-u-up-left"></i> Send back to waiting</button>';
+  } else if (a.status === 'no-show') {
+    items += '<button class="row-menu-item" onclick="promptName(' + a.id + ')"><i class="ph-fill ph-pencil-simple"></i> Edit name</button>';
+    items += '<div class="row-menu-divider"></div>';
+    items += '<button class="row-menu-item" onclick="undoNoShow(' + a.id + ')"><i class="ph-fill ph-arrow-u-up-left"></i> They showed up — restore</button>';
+    items += '<button class="row-menu-item danger" onclick="removeAuditioner(' + a.id + ')"><i class="ph-fill ph-trash"></i> Remove from list</button>';
   }
   return '<div class="row-menu" onclick="event.stopPropagation()">' + items + '</div>';
 }
