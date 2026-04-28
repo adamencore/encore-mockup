@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 <link rel="stylesheet" href="app.css">
 <style>
   .sidebar.admin {
@@ -478,22 +479,22 @@
   <aside class="sidebar admin">
     <a href="admin-dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
     <nav class="sb-nav">
-      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
-      <a class="sb-link active" href="admin-shows.html"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
-      <a class="sb-link" href="admin-show-editor.html"><span class="sb-icon">✎</span> Show editor</a>
-      <a class="sb-link" href="#"><span class="sb-icon">★</span> Auditioners</a>
-      <a class="sb-link" href="checkin.html"><span class="sb-icon">📋</span> Check-in</a>
-      <a class="sb-link" href="director-running-order.html"><span class="sb-icon">▶</span> Running order</a>
-      <a class="sb-link" href="#"><span class="sb-icon">♟</span> Families</a>
+      <a class="sb-link" href="admin-dashboard.html"><i class="ph-fill ph-house sb-icon"></i> Dashboard</a>
+      <a class="sb-link active" href="admin-shows.html"><i class="ph-fill ph-mask-happy sb-icon"></i> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
+      <a class="sb-link" href="admin-show-editor.html"><i class="ph-fill ph-pencil-simple sb-icon"></i> Show editor</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-star sb-icon"></i> Auditioners</a>
+      <a class="sb-link" href="checkin.html"><i class="ph-fill ph-clipboard-text sb-icon"></i> Check-in</a>
+      <a class="sb-link" href="director-running-order.html"><i class="ph-fill ph-play sb-icon"></i> Running order</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-users-three sb-icon"></i> Families</a>
       <div class="sb-section-label">Super admin</div>
-      <a class="sb-link" href="admin-invoices.html"><span class="sb-icon">$</span> Invoices</a>
-      <a class="sb-link" href="admin-content.html"><span class="sb-icon">📰</span> Content</a>
-      <a class="sb-link" href="#"><span class="sb-icon">📊</span> Reports</a>
+      <a class="sb-link" href="admin-invoices.html"><i class="ph-fill ph-currency-dollar-simple sb-icon"></i> Invoices</a>
+      <a class="sb-link" href="admin-content.html"><i class="ph-fill ph-newspaper sb-icon"></i> Content</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-chart-bar sb-icon"></i> Reports</a>
     </nav>
     <div class="sb-foot">
-      <a class="sb-link" href="dashboard.html"><span class="sb-icon">↗</span> View as parent</a>
-      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
-      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+      <a class="sb-link" href="dashboard.html"><i class="ph-fill ph-arrow-square-out sb-icon"></i> View as parent</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-gear sb-icon"></i> Settings</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-sign-out sb-icon"></i> Log out</a>
     </div>
   </aside>
 
@@ -504,7 +505,7 @@
         <div class="search"><input type="text" placeholder="Search…"></div>
         <div class="header-actions">
           <span class="admin-mode-badge">★ Super Admin</span>
-          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <button class="icon-btn" aria-label="Notifications"><i class="ph-fill ph-bell"></i><span class="dot"></span></button>
           <div class="header-user">
             <div class="header-avatar" style="background: var(--ink);">AR</div>
             <div class="hu-info"><span class="hu-name">Adam Record</span><span class="hu-sub">Owner</span></div>
@@ -545,7 +546,7 @@
         </div>
 
         <div class="check-item done">
-          <div class="check-circle">✓</div>
+          <div class="check-circle"><i class="ph-fill ph-check"></i></div>
           <div class="check-info">
             <div class="check-title">Show created</div>
             <div class="check-sub">Started moments ago</div>
@@ -722,7 +723,7 @@
           <h3>Show poster</h3>
           <p class="helper">Optional. Used as the card banner on the parent dashboard. Recommended 600 × 900 px.</p>
           <div style="display: flex; gap: 16px; align-items: center;">
-            <div style="width: 100px; height: 100px; border-radius: 12px; background: var(--cream-shell); border: 1.5px dashed var(--line); display: grid; place-items: center; color: var(--muted); font-size: 28px;">📷</div>
+            <div style="width: 100px; height: 100px; border-radius: 12px; background: var(--cream-shell); border: 1.5px dashed var(--line); display: grid; place-items: center; color: var(--muted); font-size: 28px;"><i class="ph-fill ph-camera"></i></div>
             <div>
               <button class="btn btn-secondary">Upload poster</button>
               <p style="font-size: 12px; color: var(--muted); margin: 8px 0 0;">JPG or PNG · max 5 MB</p>
@@ -761,13 +762,13 @@
           <h3>Rehearsal dates <span style="color: var(--coral); font-size: 12px; font-weight: 600; margin-left: 4px;">Required</span></h3>
           <p class="helper">All regular rehearsals. These auto-populate the conflict checkboxes parents see during registration, so they can mark which dates they can't attend.</p>
           <div class="empty-state">
-            <div class="em-icon">📅</div>
+            <div class="em-icon"><i class="ph-fill ph-calendar-blank"></i></div>
             <h4>No rehearsal dates yet</h4>
             <p>The fastest way is the pattern generator — pick days of the week and a date range, and we'll create them all at once.</p>
             <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
               <button class="btn btn-primary" onclick="document.getElementById('patternModal').classList.add('show')">✦ Generate from pattern</button>
               <button class="btn btn-secondary">+ Add one date</button>
-              <button class="btn btn-secondary">📋 Bulk import</button>
+              <button class="btn btn-secondary"><i class="ph-fill ph-clipboard-text"></i> Bulk import</button>
             </div>
           </div>
         </div>
@@ -776,7 +777,7 @@
           <h3>Tech &amp; dress dates <span style="color: var(--coral); font-size: 12px; font-weight: 600; margin-left: 4px;">Required</span></h3>
           <p class="helper">Tech rehearsal, dress rehearsal, final dress. Usually the week of opening.</p>
           <div class="empty-state">
-            <div class="em-icon">🎭</div>
+            <div class="em-icon"><i class="ph-fill ph-mask-happy"></i></div>
             <h4>No tech dates yet</h4>
             <p>Add tech rehearsal, dress rehearsal, and final dress.</p>
             <button class="btn btn-primary">+ Add tech date</button>
@@ -788,7 +789,7 @@
           <p class="helper">Each performance can be tagged as Regular, Preview Night, ASL Interpreted, or Sensory Friendly. Tags appear on the parent's calendar and on tickets.</p>
 
           <div class="empty-state" style="margin-bottom: 14px;">
-            <div class="em-icon">🎟</div>
+            <div class="em-icon"><i class="ph-fill ph-ticket"></i></div>
             <h4>No performances yet</h4>
             <p>Add each performance with its date, time, and type.</p>
             <button class="btn btn-primary">+ Add performance</button>

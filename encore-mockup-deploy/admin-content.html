@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 <link rel="stylesheet" href="app.css">
 <style>
   .sidebar.admin { background: var(--ink); border-right: 1px solid #2C2C28; }
@@ -126,22 +127,22 @@
   <aside class="sidebar admin">
     <a href="admin-dashboard.html" class="sb-brand">ENCORE<span class="star">★</span></a>
     <nav class="sb-nav">
-      <a class="sb-link" href="admin-dashboard.html"><span class="sb-icon">▦</span> Dashboard</a>
-      <a class="sb-link" href="admin-shows.html"><span class="sb-icon">▼</span> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
-      <a class="sb-link" href="admin-show-editor.html"><span class="sb-icon">✎</span> Show editor</a>
-      <a class="sb-link" href="#"><span class="sb-icon">★</span> Auditioners</a>
-      <a class="sb-link" href="checkin.html"><span class="sb-icon">📋</span> Check-in</a>
-      <a class="sb-link" href="director-running-order.html"><span class="sb-icon">▶</span> Running order</a>
-      <a class="sb-link" href="#"><span class="sb-icon">♟</span> Families</a>
+      <a class="sb-link" href="admin-dashboard.html"><i class="ph-fill ph-house sb-icon"></i> Dashboard</a>
+      <a class="sb-link" href="admin-shows.html"><i class="ph-fill ph-mask-happy sb-icon"></i> Shows <span class="badge" style="background: var(--yellow); color: var(--ink);">5</span></a>
+      <a class="sb-link" href="admin-show-editor.html"><i class="ph-fill ph-pencil-simple sb-icon"></i> Show editor</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-star sb-icon"></i> Auditioners</a>
+      <a class="sb-link" href="checkin.html"><i class="ph-fill ph-clipboard-text sb-icon"></i> Check-in</a>
+      <a class="sb-link" href="director-running-order.html"><i class="ph-fill ph-play sb-icon"></i> Running order</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-users-three sb-icon"></i> Families</a>
       <div class="sb-section-label">Super admin</div>
-      <a class="sb-link" href="admin-invoices.html"><span class="sb-icon">$</span> Invoices</a>
-      <a class="sb-link active" href="admin-content.html"><span class="sb-icon">📰</span> Content</a>
-      <a class="sb-link" href="#"><span class="sb-icon">📊</span> Reports</a>
+      <a class="sb-link" href="admin-invoices.html"><i class="ph-fill ph-currency-dollar-simple sb-icon"></i> Invoices</a>
+      <a class="sb-link active" href="admin-content.html"><i class="ph-fill ph-newspaper sb-icon"></i> Content</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-chart-bar sb-icon"></i> Reports</a>
     </nav>
     <div class="sb-foot">
-      <a class="sb-link" href="dashboard.html"><span class="sb-icon">↗</span> View as parent</a>
-      <a class="sb-link" href="#"><span class="sb-icon">⚙</span> Settings</a>
-      <a class="sb-link" href="#"><span class="sb-icon">↪</span> Log out</a>
+      <a class="sb-link" href="dashboard.html"><i class="ph-fill ph-arrow-square-out sb-icon"></i> View as parent</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-gear sb-icon"></i> Settings</a>
+      <a class="sb-link" href="#"><i class="ph-fill ph-sign-out sb-icon"></i> Log out</a>
     </div>
   </aside>
 
@@ -152,7 +153,7 @@
         <div class="search"><input type="text" placeholder="Search content…"></div>
         <div class="header-actions">
           <span class="admin-mode-badge">★ Super Admin</span>
-          <button class="icon-btn" aria-label="Notifications">🔔<span class="dot"></span></button>
+          <button class="icon-btn" aria-label="Notifications"><i class="ph-fill ph-bell"></i><span class="dot"></span></button>
           <div class="header-user">
             <div class="header-avatar" style="background: var(--ink);">AR</div>
             <div class="hu-info"><span class="hu-name">Adam Record</span><span class="hu-sub">Owner</span></div>

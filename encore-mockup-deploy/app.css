@@ -481,3 +481,25 @@ label.field-label {
   .mt-link.active .mt-icon { color: var(--coral); }
   .mt-icon { font-size: 19px; line-height: 1; }
 }
+
+
+/* PHOSPHOR ICON SIZING — added by icon migration */
+.ph-fill, .ph-duotone, .ph-regular {
+  font-style: normal;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+.sb-icon, i.sb-icon {
+  font-size: 18px !important;
+  width: 18px;
+  text-align: center;
+}
+.mt-icon, i.mt-icon {
+  font-size: 20px !important;
+  line-height: 1;
+}
+.icon-sm { font-size: 14px; }
+.icon-md { font-size: 18px; }
+.icon-lg { font-size: 24px; }
+.icon-xl { font-size: 32px; }

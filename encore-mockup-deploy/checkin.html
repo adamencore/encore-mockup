@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 <link rel="stylesheet" href="app.css">
 <style>
   body { background: var(--cream); }
@@ -1067,7 +1068,7 @@ function emptyNumBadge(a) {
                  'onkeydown="handleNumberKey(event, ' + a.id + ')">' +
                errorHtml +
              '</div>' +
-             '<button class="num-confirm" onclick="confirmFromInput(' + a.id + ')" title="Save number">✓</button>' +
+             '<button class="num-confirm" onclick="confirmFromInput(' + a.id + ')" title="Save number"><i class="ph-fill ph-check"></i></button>' +
              '<button class="num-cancel" onclick="cancelPrompt()" title="Cancel">×</button>' +
            '</div>';
   }
@@ -1102,7 +1103,7 @@ function rowLate(a) {
     '</div>' +
     '<div class="audr-status"><span class="status-dot"></span> No show?</div>' +
     '<div class="audr-actions">' +
-      '<button class="check-btn outline icon-only" title="Call parent" onclick="alert(\'Would call ' + escapeHtml(a.parent).replace(/\'/g, '\\\'') + '\')">📞</button>' +
+      '<button class="check-btn outline icon-only" title="Call parent" onclick="alert(\'Would call ' + escapeHtml(a.parent).replace(/\'/g, '\\\'') + '\')"><i class="ph-fill ph-phone"></i></button>' +
       '<button class="check-btn green" onclick="promptNumber(' + a.id + ')">+ Check in</button>' +
     '</div>' +
   '</div>';
