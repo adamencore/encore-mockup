@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running Order — Encore Auditions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  body { background: var(--cream); }
+  .ro-shell {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 18px 18px 100px;
+  }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 4px;
+    margin-bottom: 18px;
+    border-bottom: 1.5px solid var(--line);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .topbar-brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    color: inherit;
+  }
+  .topbar-brand .star { color: var(--yellow-dark); }
+  .topbar-show {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .topbar-show em { font-style: italic; color: var(--coral); }
+  .topbar-time {
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    margin-left: auto;
+  }
+  .sync-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-soft);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+  }
+  .sync-pill::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Now reviewing — hero card */
+  .now-card {
+    background: linear-gradient(135deg, #2C2C28, var(--ink));
+    color: var(--cream);
+    border-radius: 18px;
+    padding: 24px 26px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .now-card.empty {
+    background: var(--cream-shell);
+    color: var(--muted);
+    border: 1.5px dashed var(--line);
+    text-align: center;
+  }
+  .now-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 12px;
+  }
+  .now-card.empty .now-label { color: var(--muted); }
+  .now-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .now-num {
+    width: 78px; height: 78px;
+    border-radius: 18px;
+    background: var(--yellow);
+    color: var(--ink);
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 38px;
+    line-height: 1;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .now-info { flex: 1; min-width: 0; }
+  .now-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1.1;
+    margin: 0 0 4px;
+  }
+  .now-meta {
+    font-size: 13px;
+    color: rgba(251, 246, 236, 0.7);
+    margin: 0;
+  }
+  .now-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .now-btn {
+    background: var(--yellow);
+    color: var(--ink);
+    border: none;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    flex: 1;
+    line-height: 1;
+    transition: background 0.1s ease, transform 0.05s ease;
+  }
+  .now-btn:hover { background: #F8DA5F; }
+  .now-btn:active { transform: scale(0.98); }
+  .now-btn.secondary {
+    background: rgba(255,255,255,0.1);
+    color: var(--cream);
+  }
+  .now-btn.secondary:hover { background: rgba(255,255,255,0.2); }
+
+  /* Up next list */
+  .next-card {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .next-head {
+    padding: 14px 20px;
+    border-bottom: 1.5px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .next-head h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0;
+  }
+  .next-count {
+    background: var(--cream-shell);
+    color: var(--ink-soft);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+
+  .next-row {
+    display: grid;
+    grid-template-columns: 50px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 20px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .next-row:first-child { border-top: none; }
+  .next-row.up-next {
+    background: var(--yellow-soft);
+  }
+  .next-num {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--green);
+    color: white;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 16px;
+    display: grid; place-items: center;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .next-row.up-next .next-num {
+    background: var(--yellow-dark);
+    color: var(--ink);
+  }
+  .next-info { min-width: 0; }
+  .next-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+  .next-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .up-next-tag {
+    color: var(--yellow-dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+  }
+  .next-action {
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.1s ease;
+  }
+  .next-action:hover { background: var(--teal); }
+
+  /* Done section */
+  .done-card {
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .done-card .next-head { background: var(--cream-shell); }
+  .done-row {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 20px;
+    border-top: 1px solid var(--line-soft);
+    opacity: 0.7;
+    font-size: 13px;
+  }
+  .done-row:first-child { border-top: none; }
+  .done-row .done-num {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--cream-dark);
+    color: var(--ink-soft);
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 13px;
+    display: grid; place-items: center;
+    line-height: 1;
+  }
+  .done-name { font-weight: 600; }
+  .done-rating-area {
+    display: flex; gap: 6px;
+    color: var(--yellow-dark);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .done-rating-area .e { color: #C9BE9F; }
+
+  .empty-msg {
+    padding: 28px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--cream);
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 300;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--green); }
+
+  @media (max-width: 600px) {
+    .now-row { gap: 14px; }
+    .now-num { width: 64px; height: 64px; font-size: 30px; }
+    .now-name { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ro-shell">
+
+  <div class="topbar">
+    <a href="admin-show-editor.html" class="topbar-brand">← ENCORE<span class="star">★</span> · DIRECTOR</a>
+    <div class="topbar-show">Disney's <em>Lion King</em> JR · Day 1 of 2</div>
+    <div class="topbar-time" id="currentTime">—</div>
+    <a href="checkin.html" style="text-decoration: none; color: var(--teal); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 10px; border: 1px solid var(--teal); border-radius: 6px;">Check-in →</a>
+    <span class="sync-pill">Live · synced</span>
+  </div>
+
+  <p style="font-size: 13px; color: var(--ink-soft); margin: 0 0 22px;">Real-time view of who's checked in and ready. Stage manager updates check-ins on a separate device — your view stays current automatically.</p>
+
+  <!-- NOW REVIEWING -->
+  <div id="nowReviewing"></div>
+
+  <!-- UP NEXT -->
+  <div class="next-card">
+    <div class="next-head">
+      <h3>Ready to audition</h3>
+      <span class="next-count" id="readyCount">0</span>
+    </div>
+    <div id="readyList"></div>
+  </div>
+
+  <!-- DONE -->
+  <div class="done-card">
+    <div class="next-head">
+      <h3>Done today</h3>
+      <span class="next-count" id="doneCount">0</span>
+    </div>
+    <div id="doneList"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'encore-checkin-state-v1';
+
+// Same seed data as check-in screen so first load works even without check-in being opened first
+const SEED_DATA = [
+  { id: 1, name: 'Mason Hill', age: 12, parent: 'Tara Hill', slot: '8:30', status: 'done', number: 1, checkedInAt: '8:25 AM' },
+  { id: 2, name: 'Milo Stevens', age: 10, parent: 'Anna Stevens', slot: '8:45', status: 'done', number: 2, checkedInAt: '8:40 AM' },
+  { id: 3, name: 'Nora Klein', age: 11, parent: 'David Klein', slot: '8:45', status: 'done', number: 3, checkedInAt: '8:42 AM' },
+  { id: 4, name: 'Chloe Murphy', age: 9, parent: 'Beth Murphy', slot: '9:00', status: 'done', number: 4, checkedInAt: '8:55 AM' },
+  { id: 5, name: 'Aiden Kim', age: 8, parent: 'Sue Kim', slot: '9:15', status: 'done', number: 5, checkedInAt: '9:08 AM' },
+  { id: 6, name: 'Maya Chen', age: 11, parent: 'Sarah Chen', slot: '9:00', status: 'late', number: null },
+  { id: 7, name: 'Jackson Park', age: 9, parent: 'Mike Park', slot: '9:15', status: 'late', number: null },
+  { id: 8, name: 'Olivia Rodriguez', age: 13, parent: 'Carla Rodriguez', slot: '9:30', status: 'in-room', number: 12, checkedInAt: '9:18 AM' },
+  { id: 9, name: 'Ava Johnson', age: 11, parent: 'Tom Johnson', slot: '9:30', status: 'checked-in', number: 11, checkedInAt: '9:18 AM' },
+  { id: 10, name: 'Brooklyn Park', age: 12, parent: 'Mike Park', slot: '9:45', status: 'checked-in', number: 13, checkedInAt: '9:21 AM' },
+  { id: 11, name: 'Carter Brooks', age: 10, parent: 'Lisa Brooks', slot: '10:00', status: 'checked-in', number: 14, checkedInAt: '9:22 AM' },
+  { id: 12, name: 'Eli Patel', age: 10, parent: 'Jen Patel', slot: '9:45', status: 'expected', number: null },
+  { id: 13, name: 'Sofia Martinez', age: 12, parent: 'Elena Martinez', slot: '10:00', status: 'expected', number: null },
+  { id: 14, name: "Liam O'Brien", age: 8, parent: "Ryan O'Brien", slot: '10:15', status: 'expected', number: null },
+  { id: 15, name: 'Ruby Vasquez', age: 11, parent: 'Maria Vasquez', slot: '10:15', status: 'expected', number: null },
+  { id: 16, name: 'Owen Foster', age: 9, parent: 'Drew Foster', slot: '10:30', status: 'expected', number: null },
+  { id: 17, name: 'Isabella Rossi', age: 12, parent: 'Gianna Rossi', slot: '10:30', status: 'expected', number: null },
+  { id: 18, name: 'Ethan Wong', age: 11, parent: 'Kim Wong', slot: '10:45', status: 'expected', number: null },
+  { id: 19, name: 'Emma Lee', age: 10, parent: 'Sue Lee', slot: '10:45', status: 'expected', number: null },
+  { id: 20, name: 'Lucia Garcia', age: 13, parent: 'Carlos Garcia', slot: '11:00', status: 'expected', number: null },
+];
+
+let auditioners = [];
+
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try { auditioners = JSON.parse(raw); return; } catch(e) {}
+  }
+  auditioners = JSON.parse(JSON.stringify(SEED_DATA));
+  saveState();
+}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(auditioners)); }
+
+function showToast(message, type) {
+  const t = document.getElementById('toast');
+  t.textContent = message;
+  t.className = 'toast' + (type ? ' ' + type : '');
+  requestAnimationFrame(() => t.classList.add('show'));
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function callNext() {
+  // Find the lowest-numbered checked-in person
+  const ready = auditioners.filter(a => a.status === 'checked-in').sort((x, y) => (x.number || 0) - (y.number || 0));
+  if (!ready.length) {
+    showToast('No one is ready');
+    return;
+  }
+  const nxt = ready[0];
+  // If someone is currently in room, mark them done first
+  const current = auditioners.find(a => a.status === 'in-room');
+  if (current) current.status = 'done';
+  nxt.status = 'in-room';
+  saveState();
+  render();
+  showToast('Calling #' + nxt.number + ' · ' + nxt.name, 'success');
+}
+
+function markDone() {
+  const current = auditioners.find(a => a.status === 'in-room');
+  if (!current) {
+    showToast('No one is in the room');
+    return;
+  }
+  current.status = 'done';
+  saveState();
+  render();
+  showToast(current.name + ' done');
+}
+
+function callSpecific(id) {
+  const target = auditioners.find(a => a.id === id);
+  if (!target) return;
+  const current = auditioners.find(a => a.status === 'in-room');
+  if (current) current.status = 'done';
+  target.status = 'in-room';
+  saveState();
+  render();
+  showToast('Calling #' + target.number + ' · ' + target.name, 'success');
+}
+
+function render() {
+  // Now reviewing
+  const current = auditioners.find(a => a.status === 'in-room');
+  const ready = auditioners.filter(a => a.status === 'checked-in').sort((x, y) => (x.number || 0) - (y.number || 0));
+  const done = auditioners.filter(a => a.status === 'done').sort((x, y) => (x.number || 0) - (y.number || 0));
+
+  const nowEl = document.getElementById('nowReviewing');
+  if (current) {
+    nowEl.innerHTML =
+      '<div class="now-card">' +
+        '<div class="now-label">★ Now reviewing</div>' +
+        '<div class="now-row">' +
+          '<div class="now-num">' + current.number + '</div>' +
+          '<div class="now-info">' +
+            '<div class="now-name">' + escapeHtml(current.name) + '</div>' +
+            '<div class="now-meta">Age ' + current.age + ' · Slot ' + escapeHtml(current.slot) + ' · ' + escapeHtml(current.parent || '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="now-actions">' +
+          '<button class="now-btn" onclick="markDone()">✓ Mark done</button>' +
+          (ready.length ? '<button class="now-btn secondary" onclick="callNext()">Done &amp; call next →</button>' : '') +
+        '</div>' +
+      '</div>';
+  } else if (ready.length) {
+    const nxt = ready[0];
+    nowEl.innerHTML =
+      '<div class="now-card">' +
+        '<div class="now-label">Up next</div>' +
+        '<div class="now-row">' +
+          '<div class="now-num">' + nxt.number + '</div>' +
+          '<div class="now-info">' +
+            '<div class="now-name">' + escapeHtml(nxt.name) + '</div>' +
+            '<div class="now-meta">Age ' + nxt.age + ' · Slot ' + escapeHtml(nxt.slot) + ' · ' + escapeHtml(nxt.parent || '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="now-actions">' +
+          '<button class="now-btn" onclick="callNext()">▶ Call into room</button>' +
+        '</div>' +
+      '</div>';
+  } else {
+    nowEl.innerHTML = '<div class="now-card empty"><div class="now-label">Waiting</div><p style="margin: 0; font-size: 14px;">No one is checked in yet. Stage manager will mark people as they arrive.</p></div>';
+  }
+
+  // Ready list
+  const readyList = document.getElementById('readyList');
+  document.getElementById('readyCount').textContent = ready.length;
+  if (ready.length === 0) {
+    readyList.innerHTML = '<div class="empty-msg">No one waiting yet.</div>';
+  } else {
+    readyList.innerHTML = ready.map((a, i) => {
+      const isUpNext = i === 0 && !current;
+      return '<div class="next-row' + (isUpNext ? ' up-next' : '') + '">' +
+        '<div class="next-num">' + a.number + '</div>' +
+        '<div class="next-info">' +
+          '<div class="next-name">' + escapeHtml(a.name) + '</div>' +
+          '<div class="next-meta">' + (isUpNext ? '<span class="up-next-tag">Up next</span> · ' : '') + 'Age ' + a.age + ' · Slot ' + escapeHtml(a.slot) + '</div>' +
+        '</div>' +
+        '<button class="next-action" onclick="callSpecific(' + a.id + ')">Call</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Done list
+  const doneList = document.getElementById('doneList');
+  document.getElementById('doneCount').textContent = done.length;
+  if (done.length === 0) {
+    doneList.innerHTML = '<div class="empty-msg">No one has auditioned yet.</div>';
+  } else {
+    doneList.innerHTML = done.map(a => {
+      return '<div class="done-row">' +
+        '<div class="done-num">' + (a.number || '—') + '</div>' +
+        '<div class="next-info">' +
+          '<div class="done-name">' + escapeHtml(a.name) + '</div>' +
+          '<div class="next-meta">Age ' + a.age + ' · Slot ' + escapeHtml(a.slot) + '</div>' +
+        '</div>' +
+        '<div class="done-rating-area">★★★<span class="e">★★</span></div>' +
+      '</div>';
+    }).join('');
+  }
+}
+
+function tickClock() {
+  const d = new Date();
+  let h = d.getHours();
+  const m = d.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('currentTime').textContent = h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+}
+
+loadState();
+render();
+tickClock();
+setInterval(tickClock, 1000 * 30);
+
+// CRITICAL: sync with check-in screen via storage event
+window.addEventListener('storage', (e) => {
+  if (e.key === STORAGE_KEY) {
+    loadState();
+    render();
+    showToast('Updated from check-in', 'success');
+  }
+});
+</script>
+
+</body>
+</html>

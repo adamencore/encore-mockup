@@ -193,8 +193,28 @@
     display: grid; place-items: center;
     font-variant-numeric: tabular-nums;
     line-height: 1;
+    border: none;
+    padding: 0;
   }
-  .audr-num.empty {
+  button.audr-num.empty {
+    background: var(--cream-shell);
+    border: 1.5px dashed var(--line);
+    color: var(--muted);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  button.audr-num.empty:hover {
+    background: var(--green);
+    border-color: var(--green);
+    border-style: solid;
+    color: white;
+    transform: scale(1.05);
+  }
+  button.audr-num.empty:active { transform: scale(0.95); }
+  div.audr-num.empty {
     background: var(--cream-shell);
     border: 1.5px dashed var(--line);
     color: var(--muted);
@@ -408,7 +428,8 @@
     <a href="admin-show-editor.html" class="topbar-brand">← ENCORE<span class="star">★</span> · CHECK-IN</a>
     <div class="topbar-show">Disney's <em>Lion King</em> JR · Day 1 of 2</div>
     <div class="topbar-time" id="currentTime">—</div>
-    <button class="reset-btn" onclick="resetData()">Reset demo data</button>
+    <a href="director-running-order.html" class="reset-btn" style="text-decoration: none; color: var(--teal); border-color: var(--teal);">Director view →</a>
+    <button class="reset-btn" onclick="resetData()">Reset demo</button>
   </div>
 
   <div class="stats-row">
@@ -727,11 +748,11 @@ function render() {
   const visible = auditioners.filter(a => matchesFilter(a) && matchesSearch(a));
 
   const groups = {
-    'in-room': visible.filter(a => a.status === 'in-room'),
+    'in-room': visible.filter(a => a.status === 'in-room').sort((x, y) => (x.number || 0) - (y.number || 0)),
     'late': visible.filter(a => a.status === 'late').sort((x, y) => (slotToMinutes(x.slot) || 0) - (slotToMinutes(y.slot) || 0)),
     'expected': visible.filter(a => a.status === 'expected').sort((x, y) => (slotToMinutes(x.slot) || 0) - (slotToMinutes(y.slot) || 0)),
-    'checked-in': visible.filter(a => a.status === 'checked-in').sort((x, y) => (slotToMinutes(x.slot) || 0) - (slotToMinutes(y.slot) || 0)),
-    'done': visible.filter(a => a.status === 'done')
+    'checked-in': visible.filter(a => a.status === 'checked-in').sort((x, y) => (x.number || 0) - (y.number || 0)),
+    'done': visible.filter(a => a.status === 'done').sort((x, y) => (x.number || 0) - (y.number || 0))
   };
 
   const container = document.getElementById('listContainer');
@@ -780,7 +801,7 @@ function rowExpected(a) {
   const walkInTag = a.isWalkin ? '<span class="walkin-tag">Walk-in</span> · ' : '';
   return '<div class="audr">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
-    '<div class="audr-num empty">+</div>' +
+    '<button class="audr-num empty" onclick="checkIn(' + a.id + ')" title="Tap to assign number and check in">+</button>' +
     '<div class="audr-info">' +
       '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
       '<div class="audr-meta">' + walkInTag + 'Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + '</div>' +
@@ -797,7 +818,7 @@ function rowLate(a) {
   const minsLate = slotMin != null ? Math.max(0, getDemoNow() - slotMin) : 0;
   return '<div class="audr late">' +
     '<div class="audr-slot">' + escapeHtml(a.slot) + '</div>' +
-    '<div class="audr-num empty">+</div>' +
+    '<button class="audr-num empty" onclick="checkIn(' + a.id + ')" title="Tap to assign number and check in">+</button>' +
     '<div class="audr-info">' +
       '<div class="audr-name">' + escapeHtml(a.name) + '</div>' +
       '<div class="audr-meta"><span class="late-tag">' + minsLate + ' min late</span> · Age ' + a.age + (a.parent ? ' · Parent: ' + escapeHtml(a.parent) : '') + '</div>' +
@@ -893,6 +914,14 @@ render();
 tickClock();
 setInterval(tickClock, 1000 * 30);
 setInterval(render, 1000 * 60);
+
+// Sync across tabs/windows: if another window updates state, reload and re-render
+window.addEventListener('storage', (e) => {
+  if (e.key === STORAGE_KEY) {
+    loadState();
+    render();
+  }
+});
 </script>
 
 </body>
