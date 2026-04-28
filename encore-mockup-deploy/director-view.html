@@ -486,6 +486,31 @@
   .info-item.full { grid-column: 1 / -1; }
 
   /* CONFLICTS list */
+  .conflict-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .conflict-header h3 { margin: 0; }
+  .conflict-add-btn {
+    background: var(--cream-shell);
+    border: 1.5px solid var(--line);
+    color: var(--ink);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.1s ease;
+  }
+  .conflict-add-btn:hover { background: var(--cream-dark); border-color: var(--ink-soft); }
+  .conflict-add-btn i { font-size: 11px; }
+
   .conflict-list {
     background: var(--white-soft);
     border: 1.5px solid var(--line);
@@ -495,9 +520,11 @@
   .conflict-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 12px 16px;
     border-top: 1px solid var(--line-soft);
     font-size: 14px;
+    gap: 10px;
   }
   .conflict-item:first-child { border-top: none; }
   .conflict-item.perf {
@@ -505,8 +532,34 @@
     color: var(--ink);
     font-weight: 600;
   }
-  .conflict-day { color: var(--ink); }
-  .conflict-detail { color: var(--muted); }
+  .conflict-day {
+    color: var(--ink);
+    flex-shrink: 0;
+    min-width: 110px;
+  }
+  .conflict-detail {
+    color: var(--muted);
+    flex: 1;
+    text-align: left;
+  }
+  .conflict-remove {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--muted);
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.1s ease, color 0.1s ease;
+  }
+  .conflict-item:hover .conflict-remove { opacity: 1; }
+  .conflict-remove:hover {
+    background: var(--red-soft);
+    color: var(--red);
+  }
 
   .empty-conflicts {
     background: var(--white-soft);
@@ -929,6 +982,157 @@
     transition: background 0.15s ease;
   }
   .lightbox-close:hover { background: rgba(255, 255, 255, 0.22); }
+
+  /* EDIT MODALS — replace music, add conflict */
+  .edit-modal {
+    position: fixed; inset: 0;
+    background: rgba(20, 19, 17, 0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 20px;
+    z-index: 200;
+    overflow-y: auto;
+    animation: fadeIn 0.2s ease;
+  }
+  .edit-modal.show { display: flex; }
+  .edit-modal-card {
+    background: var(--white-soft);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 520px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .edit-modal-head {
+    padding: 22px 26px;
+    border-bottom: 1.5px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .edit-modal-head h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700; font-size: 19px;
+    margin: 0; letter-spacing: -0.015em;
+  }
+  .edit-modal-close {
+    background: none; border: none;
+    color: var(--muted); font-size: 22px;
+    cursor: pointer; padding: 4px 8px;
+    line-height: 1;
+  }
+  .edit-modal-close:hover { color: var(--ink); }
+  .edit-modal-body { padding: 22px 26px; }
+  .edit-modal-foot {
+    padding: 16px 26px;
+    background: var(--cream-shell);
+    border-top: 1.5px solid var(--line);
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+  .edit-modal-note {
+    font-size: 13px; color: var(--ink-soft);
+    margin: 0 0 18px;
+    background: var(--cream-shell);
+    padding: 10px 14px;
+    border-radius: 8px;
+  }
+  .edit-modal-note strong { color: var(--ink); font-weight: 700; }
+
+  .source-tabs {
+    display: flex; gap: 4px;
+    background: var(--cream-shell);
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+  }
+  .source-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 9px 10px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    line-height: 1;
+  }
+  .source-tab.active {
+    background: var(--white-soft);
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .source-tab i { font-size: 13px; }
+
+  .upload-zone {
+    display: block;
+    border: 2px dashed var(--line);
+    border-radius: 14px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.1s ease;
+  }
+  .upload-zone:hover {
+    border-color: var(--ink-soft);
+    background: var(--cream-shell);
+  }
+  .upload-zone-icon {
+    font-size: 32px;
+    color: var(--coral);
+    margin-bottom: 10px;
+  }
+  .upload-zone-text { font-size: 14px; color: var(--ink); }
+  .upload-zone-text strong { color: var(--coral); font-weight: 700; }
+  .upload-zone-hint { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  .field-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .field-input {
+    width: 100%;
+    background: var(--white-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--ink);
+  }
+  .field-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 4px 0 14px;
+  }
+
+  .cut-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .cut-time {
+    font-family: monospace !important;
+    font-variant-numeric: tabular-nums;
+    font-size: 16px !important;
+    text-align: center;
+  }
 
   /* TAGS — Detail view */
   .tag-list {
@@ -1439,8 +1643,9 @@
           <button class="music-play" aria-label="Play cut">▶</button>
           <span class="music-time">0:48 / 1:24</span>
           <div class="music-actions">
-            <button class="music-btn">↻ Restart cut</button>
-            <button class="music-btn primary">↑ Volume</button>
+            <button class="music-btn"><i class="ph-fill ph-arrow-clockwise"></i> Restart cut</button>
+            <button class="music-btn primary"><i class="ph-fill ph-speaker-high"></i> Volume</button>
+            <button class="music-btn" onclick="openMusicEdit()"><i class="ph-fill ph-pencil-simple"></i> Edit</button>
           </div>
         </div>
 
@@ -1489,19 +1694,25 @@
     </div>
 
     <div class="detail-section">
-      <h3>Conflicts</h3>
-      <div class="conflict-list">
+      <div class="conflict-header">
+        <h3>Conflicts</h3>
+        <button class="conflict-add-btn" onclick="openAddConflict()"><i class="ph-fill ph-plus"></i> Add conflict</button>
+      </div>
+      <div class="conflict-list" id="conflictList">
         <div class="conflict-item">
           <span class="conflict-day">Tue, Jun 9</span>
           <span class="conflict-detail">Rehearsal · 6:30–9:00pm</span>
+          <button class="conflict-remove" onclick="this.closest('.conflict-item').remove()" title="Remove"><i class="ph-fill ph-x"></i></button>
         </div>
         <div class="conflict-item">
           <span class="conflict-day">Wed, Jun 17</span>
           <span class="conflict-detail">Rehearsal · 6:30–9:00pm</span>
+          <button class="conflict-remove" onclick="this.closest('.conflict-item').remove()" title="Remove"><i class="ph-fill ph-x"></i></button>
         </div>
         <div class="conflict-item perf">
-          <span class="conflict-day">Sun, Jun 28 ⚠</span>
+          <span class="conflict-day">Sun, Jun 28 <i class="ph-fill ph-warning"></i></span>
           <span class="conflict-detail">Closing matinee · 2:00pm</span>
+          <button class="conflict-remove" onclick="this.closest('.conflict-item').remove()" title="Remove"><i class="ph-fill ph-x"></i></button>
         </div>
       </div>
     </div>
@@ -1653,6 +1864,97 @@
   <div class="lightbox-content">
     <img class="lightbox-img" id="lightboxImg" src="" alt="">
     <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+
+<!-- EDIT MUSIC MODAL -->
+<div class="edit-modal" id="musicEditModal">
+  <div class="edit-modal-card">
+    <div class="edit-modal-head">
+      <h2>Replace audition music</h2>
+      <button class="edit-modal-close" onclick="closeMusicEdit()" aria-label="Close">×</button>
+    </div>
+    <div class="edit-modal-body">
+      <p class="edit-modal-note">Currently: <strong>Castle on a Cloud</strong> · 0:48 → 1:24 · uploaded MP3</p>
+
+      <div class="source-tabs">
+        <button class="source-tab active" data-source="upload" onclick="selectMusicSource('upload')"><i class="ph-fill ph-upload-simple"></i> Upload file</button>
+        <button class="source-tab" data-source="youtube" onclick="selectMusicSource('youtube')"><i class="ph-fill ph-youtube-logo"></i> YouTube</button>
+        <button class="source-tab" data-source="spotify" onclick="selectMusicSource('spotify')"><i class="ph-fill ph-spotify-logo"></i> Spotify</button>
+      </div>
+
+      <div class="source-panel" id="source-upload">
+        <label class="upload-zone">
+          <input type="file" accept="audio/*" hidden>
+          <div class="upload-zone-icon"><i class="ph-fill ph-music-notes-plus"></i></div>
+          <div class="upload-zone-text"><strong>Tap to upload</strong> or drop an MP3 here</div>
+          <div class="upload-zone-hint">Most uploads are 2–4 MB · MP3, M4A, WAV</div>
+        </label>
+      </div>
+
+      <div class="source-panel" id="source-youtube" style="display: none;">
+        <label class="field-label">YouTube URL</label>
+        <input class="field-input" type="url" placeholder="https://youtube.com/watch?v=...">
+        <p class="field-hint">Paste any YouTube link — we'll extract just the audio.</p>
+      </div>
+
+      <div class="source-panel" id="source-spotify" style="display: none;">
+        <label class="field-label">Spotify track URL</label>
+        <input class="field-input" type="url" placeholder="https://open.spotify.com/track/...">
+        <p class="field-hint">Open the song in Spotify, tap Share → Copy Link.</p>
+      </div>
+
+      <div class="cut-row">
+        <div class="cut-field">
+          <label class="field-label">Cut starts</label>
+          <input class="field-input cut-time" type="text" value="0:48" placeholder="0:00">
+        </div>
+        <div class="cut-field">
+          <label class="field-label">Cut ends</label>
+          <input class="field-input cut-time" type="text" value="1:24" placeholder="0:00">
+        </div>
+      </div>
+      <p class="field-hint" style="margin-top: -4px;">Most directors prefer 32–60 seconds.</p>
+    </div>
+    <div class="edit-modal-foot">
+      <button class="btn btn-secondary" onclick="closeMusicEdit()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMusicEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CONFLICT MODAL -->
+<div class="edit-modal" id="conflictAddModal">
+  <div class="edit-modal-card">
+    <div class="edit-modal-head">
+      <h2>Add conflict date</h2>
+      <button class="edit-modal-close" onclick="closeAddConflict()" aria-label="Close">×</button>
+    </div>
+    <div class="edit-modal-body">
+      <p class="edit-modal-note">Mark a date the performer can't attend rehearsal or performances.</p>
+
+      <div class="cut-row">
+        <div class="cut-field">
+          <label class="field-label">Date</label>
+          <input class="field-input" type="date" id="conflictDate">
+        </div>
+        <div class="cut-field">
+          <label class="field-label">Conflict type</label>
+          <select class="field-input" id="conflictType">
+            <option value="rehearsal">Rehearsal day</option>
+            <option value="performance">Performance day ⚠</option>
+            <option value="full">Full day</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="field-label">Reason (optional, for director only)</label>
+      <input class="field-input" type="text" id="conflictReason" placeholder="e.g., Dance recital, Family wedding">
+    </div>
+    <div class="edit-modal-foot">
+      <button class="btn btn-secondary" onclick="closeAddConflict()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveConflict()">Add conflict</button>
+    </div>
   </div>
 </div>
 
@@ -1841,6 +2143,104 @@
         detailNumber.classList.remove('empty');
       }
     });
+  }
+
+  // ===== EDIT MUSIC MODAL =====
+  function openMusicEdit() {
+    document.getElementById('musicEditModal').classList.add('show');
+  }
+  function closeMusicEdit() {
+    document.getElementById('musicEditModal').classList.remove('show');
+  }
+  function selectMusicSource(source) {
+    document.querySelectorAll('.source-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.source-tab[data-source="' + source + '"]').classList.add('active');
+    ['upload', 'youtube', 'spotify'].forEach(s => {
+      document.getElementById('source-' + s).style.display = (s === source) ? '' : 'none';
+    });
+  }
+  function saveMusicEdit() {
+    // In a real build this would upload + save. For mockup, just close and toast.
+    closeMusicEdit();
+    showSimpleToast('Music updated');
+  }
+
+  // ===== ADD CONFLICT MODAL =====
+  function openAddConflict() {
+    document.getElementById('conflictAddModal').classList.add('show');
+  }
+  function closeAddConflict() {
+    document.getElementById('conflictAddModal').classList.remove('show');
+    // Clear form
+    document.getElementById('conflictDate').value = '';
+    document.getElementById('conflictReason').value = '';
+    document.getElementById('conflictType').selectedIndex = 0;
+  }
+  function saveConflict() {
+    const dateRaw = document.getElementById('conflictDate').value;
+    const type = document.getElementById('conflictType').value;
+    const reason = document.getElementById('conflictReason').value.trim();
+    if (!dateRaw) {
+      showSimpleToast('Pick a date first');
+      return;
+    }
+    // Format the date as "Mon, Jun 9"
+    const d = new Date(dateRaw + 'T12:00:00');
+    const dayStr = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+    let typeLabel = '';
+    let isPerformance = false;
+    if (type === 'rehearsal') typeLabel = 'Rehearsal' + (reason ? ' · ' + reason : ' · 6:30–9:00pm');
+    else if (type === 'performance') { typeLabel = (reason || 'Performance') + ' · 2:00pm'; isPerformance = true; }
+    else typeLabel = reason || 'Full day unavailable';
+
+    const list = document.getElementById('conflictList');
+    const item = document.createElement('div');
+    item.className = 'conflict-item' + (isPerformance ? ' perf' : '');
+    item.innerHTML =
+      '<span class="conflict-day">' + dayStr + (isPerformance ? ' <i class="ph-fill ph-warning"></i>' : '') + '</span>' +
+      '<span class="conflict-detail">' + typeLabel + '</span>' +
+      '<button class="conflict-remove" onclick="this.closest(\'.conflict-item\').remove()" title="Remove"><i class="ph-fill ph-x"></i></button>';
+    list.appendChild(item);
+
+    closeAddConflict();
+    showSimpleToast('Conflict added');
+  }
+
+  // Click outside to close edit modals
+  document.querySelectorAll('.edit-modal').forEach(m => {
+    m.addEventListener('click', (e) => {
+      if (e.target === m) {
+        m.classList.remove('show');
+      }
+    });
+  });
+  // Escape to close edit modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.edit-modal.show').forEach(m => m.classList.remove('show'));
+    }
+  });
+
+  // Tiny toast helper for director view
+  function showSimpleToast(msg) {
+    let t = document.getElementById('directorToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'directorToast';
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--cream);padding:14px 22px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.25);opacity:0;transition:opacity 0.2s ease,transform 0.2s ease;z-index:300;pointer-events:none;';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    requestAnimationFrame(() => {
+      t.style.opacity = '1';
+      t.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    clearTimeout(window._dirToastTimer);
+    window._dirToastTimer = setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2200);
   }
 </script>
 
